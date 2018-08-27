@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.wow.common.dao.StatisticsDao">
+
+	<select id="statisticsNum" resultType="java.util.Map" parameterType="java.util.Map">
+		select 1 type, count(*) num, case when sum(price) is null then 0 else sum(price) end price from sign_record sr left join app a on sr.app_id = a.id
+		<where>
+			a.is_delete = 0 and type =1 
+
+			<if test="startCreateTime != null and startCreateTime != ''">
+				and sr.create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
+			</if>
+
+			<if test="endCreateTime != null and endCreateTime != ''">
+				and sr.create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
+			</if>
+		</where>
+		UNION
+		select 2 type, count(*) num, case when sum(price) is null then 0 else sum(price) end price from sign_record sr left join app a on sr.app_id = a.id
+		<where>
+			a.is_delete = 0 and type =2 
+
+			<if test="startCreateTime != null and startCreateTime != ''">
+				and sr.create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
+			</if>
+
+			<if test="endCreateTime != null and endCreateTime != ''">
+				and sr.create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
+			</if>
+		</where>
+	</select>
+
+	<!-- 证书统计 -->
+	<select id="statisticsCertificate" resultType="java.util.Map">
+		SELECT c.name, count(*) num FROM sign_record sr LEFT JOIN certificate c ON
+		c.id = sr.cert_id WHERE c.is_delete = 0 GROUP BY cert_id UNION ALL
+		SELECT name, 0 FROM certificate WHERE id NOT IN (SELECT DISTINCT
+		cert_id FROM sign_record sr left join app a on sr.app_id = a.id where
+		a.is_delete = 0 ) order by num desc
+	</select>
+
+</mapper>

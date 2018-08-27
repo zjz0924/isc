@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wow.common.dao.CertificateDao">
+	<resultMap id="BaseResultMap" type="cn.wow.common.domain.Certificate">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="cert_expire_date" jdbcType="DATE" property="certExpireDate" />
+		<result column="desc_expire_date" jdbcType="DATE" property="descExpireDate" />
+		<result column="cert_file" jdbcType="VARCHAR" property="certFile" />
+		<result column="desc_file" jdbcType="VARCHAR" property="descFile" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+		<result column="is_delete" jdbcType="INTEGER" property="isDelete" />
+	</resultMap>
+	
+	<sql id="base_columns">
+		id, name, cert_expire_date, desc_expire_date, cert_file, desc_file, create_time, remark, is_delete
+	</sql>
+	
+	<select id="selectOne" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		select <include refid="base_columns" /> from certificate where id = #{id,jdbcType=BIGINT}
+	</select>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from certificate where id = #{id,jdbcType=BIGINT}
+	</delete>
+	
+	<insert id="insert" parameterType="cn.wow.common.domain.Certificate">
+		<selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+		    SELECT @@IDENTITY
+		</selectKey>
+		insert into certificate (name, cert_expire_date, desc_expire_date, cert_file, desc_file, create_time, remark, is_delete)
+		values (#{name,jdbcType=VARCHAR}, #{certExpireDate,jdbcType=DATE},
+		#{descExpireDate,jdbcType=DATE}, #{certFile,jdbcType=VARCHAR}, #{descFile,jdbcType=VARCHAR},
+		#{createTime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR}, #{isDelete,jdbcType=INTEGER})
+	</insert>
+	
+	<update id="update" parameterType="cn.wow.common.domain.Certificate">
+		update certificate
+		<set>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="certExpireDate != null">
+				cert_expire_date = #{certExpireDate,jdbcType=DATE},
+			</if>
+			<if test="descExpireDate != null">
+				desc_expire_date = #{descExpireDate,jdbcType=DATE},
+			</if>
+			<if test="certFile != null">
+				cert_file = #{certFile,jdbcType=VARCHAR},
+			</if>
+			<if test="descFile != null">
+				desc_file = #{descFile,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+				remark = #{remark,jdbcType=VARCHAR},
+			<if test="isDelete != null">
+				is_delete = #{isDelete,jdbcType=INTEGER},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	
+	<select id="selectAllList" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select <include refid="base_columns" /> from certificate
+		<where>
+			<if test="name != null and name != ''">
+				and name = #{name,jdbcType=VARCHAR}
+			</if>
+
+			<if test="qname != null and qname != ''">
+				and name like concat('%', #{qname,jdbcType=VARCHAR}, '%')
+			</if>
+
+			<if test="isDelete != null and isDelete != ''">
+				and is_delete = #{isDelete,jdbcType=INTEGER}
+			</if>
+
+			<if test="startCertExpireDate != null and startCertExpireDate != ''">
+				and cert_expire_date &gt;= #{startCertExpireDate, jdbcType=DATE}
+			</if>
+
+			<if test="endCertExpireDate != null and endCertExpireDate != ''">
+				and cert_expire_date &lt;= #{endCertExpireDate, jdbcType=DATE}
+			</if>
+			
+			<if test="startDescExpireDate != null and startDescExpireDate != ''">
+				and desc_expire_date &gt;= #{startDescExpireDate, jdbcType=DATE}
+			</if>
+
+			<if test="endDescExpireDate != null and endDescExpireDate != ''">
+				and desc_expire_date &lt;= #{endDescExpireDate, jdbcType=DATE}
+			</if>
+
+			<if test="startCreateTime != null and startCreateTime != ''">
+				and create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
+			</if>
+
+			<if test="endCreateTime != null and endCreateTime != ''">
+				and create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
+			</if>
+
+		</where>
+
+		<choose>
+			<when test="custom_order_sql != null">
+				order by ${custom_order_sql}
+			</when>
+			<otherwise>
+				order by id desc
+			</otherwise>
+		</choose>
+	</select>
+	
+</mapper>

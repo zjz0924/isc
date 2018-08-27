@@ -64,8 +64,10 @@
 				</dt>
 				<dd style="display: block;">
 					<ul>
-						<li><a data-href="article-list.html" data-title="签名管理" href="javascript:void(0)">签名管理</a></li>
-						<li><a data-href="article-list.html" data-title="证书管理" href="javascript:void(0)">证书管理</a></li>
+						<li><a data-href="${ctx}/app/list" data-title="APP管理" href="javascript:void(0)">APP管理</a></li>
+						<li><a data-href="${ctx}/certificate/list" data-title="证书管理" href="javascript:void(0)">证书管理</a></li>
+						<li><a data-href="${ctx}/contacts/list" data-title="客户管理" href="javascript:void(0)">客户管理</a></li>
+						<li><a data-href="${ctx}/combo/list" data-title="套餐管理" href="javascript:void(0)">套餐管理</a></li>
 					</ul>
 				</dd>
 			</dl>
@@ -88,8 +90,8 @@
 				</dt>
 				<dd>
 					<ul>
-						<li><a data-href="system-base.html" data-title="用户管理" href="javascript:void(0)">用户管理</a></li>
-						<li><a data-href="system-category.html" data-title="系统日志" href="javascript:void(0)">系统日志</a></li>
+						<li><a data-href="${ctx}/accountlist" data-title="用户管理" href="javascript:void(0)">用户管理</a></li>
+						<li><a data-href="${ctx}/operationlog/list" data-title="系统日志" href="javascript:void(0)">系统日志</a></li>
 					</ul>
 				</dd>
 			</dl>

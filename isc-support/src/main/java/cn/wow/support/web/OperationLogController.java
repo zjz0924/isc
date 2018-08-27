@@ -42,13 +42,52 @@ public class OperationLogController extends AbstractController {
 	private OperationLogService operationLogService;
 
 	@RequestMapping(value = "/list")
-	public String list(HttpServletRequest request, Model model, String userName, String type,
-			String startTimeFrom, String startTimeTo, String detail, String operation) {
-		
-		request.setAttribute("typeList", EntityServiceTypeMap.getAllType());
-		request.setAttribute("operationList", OperationType.getAllType());
-		request.setAttribute("defaultPageSize", defaultPageSize);
-		
+	public String list(HttpServletRequest request, Model model, String userName, String type, String startTimeFrom,
+			String startTimeTo, String detail, String operation) {
+
+		Map<String, Object> map = new PageMap(request);
+		map.put("custom_order_sql", "time desc");
+
+		if (StringUtils.isNotBlank(userName)) {
+			map.put("userName", userName);
+			model.addAttribute("userName", userName);
+		}
+		if (StringUtils.isNotBlank(type)) {
+			map.put("type", type);
+			model.addAttribute("type", type);
+		}
+		if (StringUtils.isNotBlank(operation)) {
+			map.put("operation", operation);
+			model.addAttribute("operation", operation);
+		}
+		if (StringUtils.isNotBlank(detail)) {
+			map.put("detail", detail);
+		}
+		if (StringUtils.isNotBlank(startTimeFrom)) {
+			map.put("startTimeFrom", startTimeFrom + " 00:00:00");
+			model.addAttribute("startTimeFrom", startTimeFrom);
+		}
+		if (StringUtils.isNotBlank(startTimeTo)) {
+			map.put("startTimeTo", startTimeTo + " 23:59:59");
+			model.addAttribute("startTimeTo", startTimeTo);
+		}
+		List<OperationLog> opeartionLogList = operationLogService.selectAllList(map);
+
+		if (opeartionLogList != null && opeartionLogList.size() > 0) {
+			for (OperationLog operationLog : opeartionLogList) {
+				if (StringUtils.isNotBlank(operationLog.getDetail())) {
+					operationLog
+							.setDetail(operationLog.getDetail().replaceAll("\\\\r\\\\n", "").replaceAll("\\\\", ""));
+				}
+			}
+		}
+
+		// 分页
+		Page<OperationLog> dataList = (Page<OperationLog>) opeartionLogList;
+		model.addAttribute("dataList", dataList);
+
+		model.addAttribute("typeList", EntityServiceTypeMap.getAllType());
+
 		return "sys/operationlog/operationlog_list";
 	}
 
@@ -57,75 +96,74 @@ public class OperationLogController extends AbstractController {
 		List<FieldValue> dataList = new ArrayList<FieldValue>();
 
 		OperationLog operationLog = operationLogService.selectOne(id);
-		if (!"任务管理".equals(operationLog.getType()) && !"费用管理".equals(operationLog.getType()) && !"申请管理".equals(operationLog.getType()) && !"实验管理".equals(operationLog.getType()) && !"任务管理".equals(operationLog.getType())) {
-			try {
-				String detailStr = operationLog.getDetail();
-				Map<String, String> strMap = null;
+		
+		try {
+			String detailStr = operationLog.getDetail();
+			Map<String, String> strMap = null;
 
-				if (!StringUtils.isEmpty(detailStr)) {
-					strMap = JsonUtil.fromJson(detailStr);
-				}
-
-				if (strMap != null && strMap.containsKey(OpLogDetailCoder.KEY_ENTITYTYPE)) {
-					Map<String, String> oldJsonDetail = null;
-					Map<String, String> newJsonDetail = null;
-
-					boolean isCollection = OpLogDetailCoder.isCollection(strMap.get(OpLogDetailCoder.KEY_ENTITYTYPE));
-					if (strMap.get(OpLogDetailCoder.KEY_OLDENTITY) != null) {
-						if (isCollection) {
-							oldJsonDetail = new HashMap<String, String>();
-							oldJsonDetail.put("Entities", strMap.get(OpLogDetailCoder.KEY_OLDENTITY));
-						} else {
-							oldJsonDetail = onlyParseFirstLevel(JsonUtil.fromJson(
-									strMap.get(OpLogDetailCoder.KEY_OLDENTITY), Map.class, String.class, Object.class));
-						}
-					}
-					if (strMap.get(OpLogDetailCoder.KEY_ENTITY) != null) {
-						if (isCollection) {
-							newJsonDetail = new HashMap<String, String>();
-							newJsonDetail.put("Entities", strMap.get(OpLogDetailCoder.KEY_ENTITY));
-						} else {
-							newJsonDetail = onlyParseFirstLevel(JsonUtil.fromJson(
-									strMap.get(OpLogDetailCoder.KEY_ENTITY), Map.class, String.class, Object.class));
-						}
-					}
-
-					dataList = toFacade(newJsonDetail, oldJsonDetail);
-					model.addAttribute("operation", strMap.get(OpLogDetailCoder.KEY_OPERATION));
-				} else {
-					if (strMap != null && strMap.get(OpLogDetailCoder.KEY_FROM) != null) {
-						FieldValue val = new FieldValue();
-						val.setName(strMap.get(OpLogDetailCoder.KEY_NAME));
-						val.setNewValue(strMap.get(OpLogDetailCoder.KEY_TO));
-						val.setOldValue(strMap.get(OpLogDetailCoder.KEY_FROM));
-
-						dataList.add(val);
-					}
-				}
-			} catch (Exception ex) {
-				ex.printStackTrace();
+			if (!StringUtils.isEmpty(detailStr)) {
+				strMap = JsonUtil.fromJson(detailStr);
 			}
+
+			if (strMap != null && strMap.containsKey(OpLogDetailCoder.KEY_ENTITYTYPE)) {
+				Map<String, String> oldJsonDetail = null;
+				Map<String, String> newJsonDetail = null;
+
+				boolean isCollection = OpLogDetailCoder.isCollection(strMap.get(OpLogDetailCoder.KEY_ENTITYTYPE));
+				if (strMap.get(OpLogDetailCoder.KEY_OLDENTITY) != null) {
+					if (isCollection) {
+						oldJsonDetail = new HashMap<String, String>();
+						oldJsonDetail.put("Entities", strMap.get(OpLogDetailCoder.KEY_OLDENTITY));
+					} else {
+						oldJsonDetail = onlyParseFirstLevel(JsonUtil.fromJson(
+								strMap.get(OpLogDetailCoder.KEY_OLDENTITY), Map.class, String.class, Object.class));
+					}
+				}
+				if (strMap.get(OpLogDetailCoder.KEY_ENTITY) != null) {
+					if (isCollection) {
+						newJsonDetail = new HashMap<String, String>();
+						newJsonDetail.put("Entities", strMap.get(OpLogDetailCoder.KEY_ENTITY));
+					} else {
+						newJsonDetail = onlyParseFirstLevel(JsonUtil.fromJson(strMap.get(OpLogDetailCoder.KEY_ENTITY),
+								Map.class, String.class, Object.class));
+					}
+				}
+
+				dataList = toFacade(newJsonDetail, oldJsonDetail);
+				model.addAttribute("operation", strMap.get(OpLogDetailCoder.KEY_OPERATION));
+			} else {
+				if (strMap != null && strMap.get(OpLogDetailCoder.KEY_FROM) != null) {
+					FieldValue val = new FieldValue();
+					val.setName(strMap.get(OpLogDetailCoder.KEY_NAME));
+					val.setNewValue(strMap.get(OpLogDetailCoder.KEY_TO));
+					val.setOldValue(strMap.get(OpLogDetailCoder.KEY_FROM));
+
+					dataList.add(val);
+				}
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
 
 		model.addAttribute("opeartionLog", operationLog);
 		model.addAttribute("dataList", dataList);
 		return "sys/operationlog/operationlog_detail";
 	}
-	
+
 	/**
 	 * 获取数据
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getLogList")
 	public Map<String, Object> getLogList(HttpServletRequest request, Model model, String userName, String type,
-			String startTimeFrom, String startTimeTo, String detail, String operation){
-		
+			String startTimeFrom, String startTimeTo, String detail, String operation) {
+
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
 		if (!StringUtils.isNotBlank(pageSize)) {
 			request.setAttribute("pageSize", defaultPageSize);
 		}
-		
+
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "time desc");
 
@@ -148,25 +186,25 @@ public class OperationLogController extends AbstractController {
 			map.put("startTimeTo", startTimeTo + " 23:59:59");
 		}
 		List<OperationLog> opeartionLogList = operationLogService.selectAllList(map);
-		
+
 		if (opeartionLogList != null && opeartionLogList.size() > 0) {
 			for (OperationLog operationLog : opeartionLogList) {
 				if (StringUtils.isNotBlank(operationLog.getDetail())) {
-					operationLog.setDetail(operationLog.getDetail().replaceAll("\\\\r\\\\n", "").replaceAll("\\\\", ""));
+					operationLog
+							.setDetail(operationLog.getDetail().replaceAll("\\\\r\\\\n", "").replaceAll("\\\\", ""));
 				}
 			}
 		}
-		
+
 		// 分页
-		Page<OperationLog> pageList = (Page<OperationLog>)opeartionLogList;
-		
+		Page<OperationLog> pageList = (Page<OperationLog>) opeartionLogList;
+
 		Map<String, Object> dataMap = new HashMap<String, Object>();
 		dataMap.put("total", pageList.getTotal());
 		dataMap.put("rows", pageList.getResult());
-		
+
 		return dataMap;
 	}
-	
 
 	public List<FieldValue> toFacade(Map<String, String> entityMap, Map<String, String> oldEntityMap) {
 		List<FieldValue> dataList = new ArrayList<FieldValue>();

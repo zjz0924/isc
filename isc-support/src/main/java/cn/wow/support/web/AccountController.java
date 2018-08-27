@@ -23,7 +23,6 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -59,9 +58,6 @@ public class AccountController extends AbstractController {
 	
 	private final static String DEFAULT_PWD = "888888";
 
-	@Value("${account.sign.url}")
-	protected String signlUrl;
-	
 	@Autowired
 	private AccountService accountService;
 	@Autowired
@@ -251,12 +247,17 @@ public class AccountController extends AbstractController {
 	@RequestMapping(value = "/lock")
 	public AjaxVO lock(HttpServletRequest request, String id, String lock) {
 		AjaxVO vo = new AjaxVO();
-		vo.setData("操作成功");
+		vo.setMsg("操作成功");
 		
 		try {
 			if (StringUtils.isNotBlank(id)) {
 				Account account = accountService.selectOne(Long.parseLong(id));
 
+				if(Contants.SUPER_ROLE_CODE.equals(account.getUserName())) {
+					vo.setSuccess(false);
+					vo.setMsg("不能操作超级管理员");
+				}
+				
 				account.setLock(lock);
 				accountService.update(getCurrentUserName(), account);
 			}
@@ -279,14 +280,17 @@ public class AccountController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/resetPwd")
 	public AjaxVO resetPwd(HttpServletRequest request, String id, String lock) {
-		Account currentAccount = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 		AjaxVO vo = new AjaxVO();
 		vo.setMsg("密码重置成功，默认密码为：888888");
 		
 		try {
 			if (StringUtils.isNotBlank(id)) {
 				Account account = accountService.selectOne(Long.parseLong(id));
-
+				if(Contants.SUPER_ROLE_CODE.equals(account.getUserName())) {
+					vo.setSuccess(false);
+					vo.setMsg("不能操作超级管理员");
+				}
+				
 				String newPwd = MD5.getMD5(DEFAULT_PWD, "utf-8").toUpperCase();
 
 				account.setPassword(newPwd);

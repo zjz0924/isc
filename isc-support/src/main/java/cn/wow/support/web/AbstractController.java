@@ -3,6 +3,8 @@ package cn.wow.support.web;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,10 +33,20 @@ public class AbstractController {
 	/**
 	 * 普通照片上传
 	 */
-	public String uploadImg(MultipartFile multipartFile, String path, boolean isRename) throws Exception {
+	public String uploadImg(MultipartFile multipartFile, String path, boolean isRename, Date date) throws Exception {
 		if (multipartFile != null && multipartFile.getSize() > 0) {
 			// 原始文件名
 			String sourceName = multipartFile.getOriginalFilename();
+			
+			if(date != null) {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+				String str = sdf.format(date);
+				
+				String name = sourceName.substring(0, sourceName.indexOf("."));
+				String suffix = sourceName.substring(sourceName.indexOf("."));
+				sourceName = name + "_" + str + suffix;
+			}
+			
 			String newName = System.currentTimeMillis() + sourceName.substring(sourceName.indexOf("."));
 			// 文件上传路径
 			String uploadPath = rootPath + "/" + path;

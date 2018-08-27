@@ -11,12 +11,13 @@ import java.io.Serializable;
  *
  */
 public enum ServiceType implements Serializable {
-	ACCOUNT("用户管理"), 
-	SYSTEM("系统管理"),
-	APPLY("申请管理"),
-	LAB("实验管理"),
-	COST("费用管理"),
-	TASK("任务管理");
+	ACCOUNT("用户管理"),
+	APP("APP管理"),
+	CERTIFICATE("证书管理"),
+	SIGN("签名管理"),
+	COMBO("套餐管理"),
+	SIGNRECORD("签名记录"),
+	CONTACTS("客户管理");
 
 	private String displayName;
 

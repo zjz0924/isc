@@ -1,455 +1,217 @@
 <%@ page contentType="text/html;charset=utf-8" pageEncoding="utf-8"%>
 <%@include file="/page/taglibs.jsp"%>
+<%@include file="/page/NavPageBar.jsp" %>
 
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<title>SGMW</title>
-		<%@include file="../../common/source.jsp"%>
-		<script src="${ctx}/resources/js/jquery.form.js"></script>
-		<script type="text/javascript">
-			var accountGetDataUrl = "${ctx}/account/getList";
-			var accountDetailUrl = "${ctx}/account/detail";
-			var accountDatagrid = "accountTable";
-			
-			var toolbar = [{
-		           text:'新增',
-		           iconCls:'icon-add',
-		           handler: function(){
-		           	accountInfo(accountDetailUrl);	
-		           }
-		       }, '-',  {
-		           text:'编辑',
-		           iconCls:'icon-edit',
-		           handler: function(){
-		           	var row = $("#" + accountDatagrid).datagrid('getSelected');
-		           	if(isNull(row)){
-		           		errorMsg("请选择一条记录进行操作!");
-		           		return;
-		           	}
-		           	
-		           	accountInfo(accountDetailUrl + "?id=" + row.id);	
-		           }
-		       }, '-',  {
-				text : '重置密码',
-				iconCls : 'icon-key',
-				handler : function() {
-					var row = $("#" + accountDatagrid).datagrid('getSelected');
-		           	if(isNull(row)){
-		           		errorMsg("请选择一条记录进行操作!");
-		           		return;
-		           	}
-		           	
-		           	 $.messager.confirm('系统提示', "此操作将重置该用户密码，您确定要继续吗？", function(r){
-		                    if (r){
-		                        $.ajax({
-		                        	url: "${ctx}/account/resetPwd",
-		                        	data: {
-		                        		id: row.id,
-		                        	},
-		                        	success: function(data){
-		                        		if(data.success){
-		                					tipMsg(data.msg);
-		                				}else{
-		                					errorMsg(data.msg);
-		                				}
-		                        	}
-		                        });
-		                    }
-		                });
-		           	
-				}
-			}, '-',  {
-				text : '导入',
-				iconCls : 'icon-import',
-				handler : function() {
-					$('#excelDialog').dialog('open');
-					$('#excelDialog').window('center');
-				}
-			}, '-',  {
-				text : '导出',
-				iconCls : 'icon-export',
-				handler : function() {
-					window.location.href = "${ctx}/account/exportUser";
-				}
-			}, '-',  {
-				text : '删除',
-				iconCls : 'icon-remove',
-				handler : function() {
-					var row = $("#" + accountDatagrid).datagrid('getSelected');
-		           	if(isNull(row)){
-		           		errorMsg("请选择一条记录进行操作!");
-		           		return;
-		           	}
-		           	
-		           	 $.messager.confirm('系统提示', "此操作将删除该用户，您确定要继续吗？", function(r){
-		                    if (r){
-		                        $.ajax({
-		                        	url: "${ctx}/account/delete",
-		                        	data: {
-		                        		id: row.id,
-		                        	},
-		                        	success: function(data){
-		                        		if(data.success){
-		                        			tipMsg(data.msg, function(){
-		               						$('#' + accountDatagrid).datagrid('reload');
-		               					});
-		                				}else{
-		                					errorMsg(data.msg);
-		                				}
-		                        	}
-		                        });
-		                    }
-		                });
-				}
-		 	 }, '-',  {
-				text : '导入模块',
-				iconCls : 'icon-large-smartart',
-				handler : function() {
-					window.location.href = "${ctx}/resources/template/用户导入模板.xlsx";
-				}
-			}];
-			
-		
-			$(function(){
-				 $("#" + accountDatagrid).datagrid({
-			        url : accountGetDataUrl,
-			      //  checkOnSelect: true,
-			        singleSelect : true, /*是否选中一行*/
-			        width:'auto', 
-			        pagination : true,  /*是否显示下面的分页菜单*/
-			        border:false,
-			        rownumbers: true,
-			        toolbar : toolbar,
-			        height: '400px',
-			        title: "用户信息",
-			        idField: 'id',
-			        columns : [ [  /* {
-			        	field: 'ck',
-			        	checkbox: true
-			        }, */{
-			            field : 'id', 
-			            hidden: 'true'
-			        }, {
-			            field : 'userName',
-			            title : '用户名',
-			            width : '100',
-			            align : 'center',
-			            formatter: formatCellTooltip
-			        }, {
-			            field : 'nickName',
-			            title : '姓名',
-			            width : '100',
-			            align : 'center',
-			            formatter: formatCellTooltip
-			        }, {
-			            field : 'mobile',
-			            title : '手机号码',
-			            width : '100',
-			            align : 'center',
-			            formatter: formatCellTooltip
-			        }, {
-			            field : 'org',
-			            title : '机构名称',
-			            width : '160',
-			            align : 'center',
-			            formatter: function(val){
-			            	if(val){
-			            		return "<span title='" + val.name + "'>" + val.name + "</span>";
-			            	}
-			            }
-			        }, {
-			            field : 'role',
-			            title : '角色',
-			            width : '140',
-			            align : 'center',
-			            formatter: function(val){
-			            	if(val){
-			            		return "<span title='" + val.name + "'>" + val.name + "</span>";
-			            	}
-						}
-					}, {
-						field : 'email',
-						title : '邮箱',
-						width : '140',
-						align : 'center',
-						formatter : formatCellTooltip
-					}, {
-						field : 'isCharge',
-						title : '是否收费',
-						width : '80',
-						align : 'center',
-						formatter : function(val){
-							var str = "是";
-							if(isNull(val) || val == 0){
-								str = "否";
-							}
-							return "<span title='" + str + "'>" + str + "</span>";
-						}
-					}, {
-						field : 'lock',
-						title : '状态',
-						width : '120',
-						align : 'center',
-						formatter : function(val, row){
-							if(!isNull(val) && val == 'Y'){
-								return '<a class="editlock l-btn l-btn-small l-btn-plain" href="javascript:void(0);" onclick="lockOrUnlock(' + row.id + ', \'N\')"><span class="icon-timg lock-unlock">&nbsp;</span><span style="color:red;font-weight:bold;" title="解锁">解锁 </span></a>';
-							}else{
-								return '<a class="editlock l-btn l-btn-small l-btn-plain" href="javascript:void(0);"  onclick="lockOrUnlock(' + row.id + ', \'Y\')"><span class="icon-lock1 lock-unlock">&nbsp;</span><span title="锁定">锁定</span></a>';
-							}
-						}
-					}, {
-						field : 'createTime',
-						title : '创建时间',
-						width : '150',
-						align : 'center',
-						formatter : DateTimeFormatter
-					} ] ],
-					onDblClickRow : function(rowIndex, rowData) {
-						accountInfo(accountDetailUrl + "?id=" + rowData.id);
-					}
-				});
-		
-				// 分页信息
-				$('#' + accountDatagrid).datagrid('getPager').pagination({
-					pageSize : "${defaultPageSize}",
-					pageNumber : 1,
-					displayMsg : '当前显示 {from} - {to} 条记录    共  {total} 条记录',
-					onSelectPage : function(pageNumber, pageSize) {//分页触发  
-						var data = {
-							'userName' : $("#q_account").textbox("getValue"), 
-							'nickName' : $("#q_nickName").textbox("getValue"),
-							'startCreateTime' : $("#q_startCreateTime").val(),
-							'endCreateTime' : $("#q_endCreateTime").val(),
-							'mobile': $("#q_mobile").textbox("getValue"),
-							'lock': $("#q_lock").val(),
-							'isCharge': $("#q_isCharge").val(),
-							'orgId': $("#q_org").combotree("getValue"),
-							'roleId': $("#q_role").combotree("getValue"),
-							'pageNum' : pageNumber,
-							'pageSize' : pageSize
-						}
-						getData(accountDatagrid, accountGetDataUrl, data);
-					}
-				});
-				
-				
-				$('#q_role').combotree({
-					url: '${ctx}/role/tree',
-					multiple: false,
-					animate: true	
-				});
-				
-				// 只有角色才能选择
-				var t = $('#q_role').combotree('tree');	
-				t.tree({
-				   onBeforeSelect: function(node){
-					   if(node.id.indexOf("r") != -1){
-							return true;
-					   }else{
-						   return false;
-					   }
-				   }
-				});
-				
-			});
-		
-			function doSearch() {
-				var data = {
-					'userName' : $("#q_account").textbox("getValue"), 
-					'nickName' : $("#q_nickName").textbox("getValue"),
-					'startCreateTime' : $("#q_startCreateTime").val(),
-					'endCreateTime' : $("#q_endCreateTime").val(),
-					'mobile': $("#q_mobile").textbox("getValue"),
-					'lock': $("#q_lock").val(),
-					'isCharge': $("#q_isCharge").val(),
-					'orgId': $("#q_org").combotree("getValue"),
-					'roleId': $("#q_role").combotree("getValue")
-				}
-				getData(accountDatagrid, accountGetDataUrl, data);
-			}
-		
-			function doClear() {
-				$("#q_account").textbox('clear');
-				$("#q_nickName").textbox('clear');
-				$("#q_mobile").textbox('clear');
-				$("#q_lock").combobox('select', "");
-				$("#q_isCharge").combobox('select', "");
-				$("#q_startCreateTime").val('');
-				$("#q_endCreateTime").val('');
-				$("#q_org").combotree("setValue","");
-				$("#q_role").combotree("setValue","");
-				getData(accountDatagrid, accountGetDataUrl, {});
-			}
-		
-			function accountInfo(url) {
-				$('#accountDialog').dialog({
-					title : '用户信息',
-					width : 850,
-					height : 450,
-					closed : false,
-					cache : false,
-					href : url,
-					modal : true
-				});
-				$('#accountDialog').window('center');
-			}
-			
-			function lockOrUnlock(id, type){
-				var message = "此操作将解锁该用户，您确定要继续吗？";
-				if(type == "Y"){
-					message = "此操作将锁定该用户，您确定要继续吗？";
-				}
-				
-				 $.messager.confirm('系统提示', message, function(r){
-		               if (r){
-		                   $.ajax({
-		                   	url: "${ctx}/account/lock",
-		                   	data: {
-		                   		id: id,
-		                   		lock: type
-		                   	},
-		                   	success: function(data){
-		                   		if(data.success){
-		           					tipMsg(data.msg, function(){
-		           						$('#' + accountDatagrid).datagrid('reload');
-		           					});
-		           				}else{
-		           					errorMsg(data.msg);
-		           				}
-		                   	}
-		                   });
-		               }
-		           });
-			}
-			
-			// 关掉对话时回调
-			function closeAccountDialog(msg) {
-				$('#accountDialog').dialog('close');
-				tipMsg(msg, function(){
-					$('#' + accountDatagrid).datagrid('reload');
-				});
-			}
-			
-			function importExcel() {
-				$("#result").html("");
-				
-				var fileDir = $("#upfile").filebox("getValue");
-				var suffix = fileDir.substr(fileDir.lastIndexOf("."));
-				if ("" == fileDir) {
-					$("#fileInfo").html("请选择要导入的Excel文件");
-					return false;
-				}
-				if (".xls" != suffix && ".xlsx" != suffix) {
-					$("#fileInfo").html("请选择Excel格式的文件导入！");
-					return false;
-				}
-				
-				$("#fileInfo").html("");
-		
-				$('#uploadForm').ajaxSubmit({
-					url : '${ctx}/account/importUser',
-					dataType : 'text',
-					success : function(msg) {
-						var data = eval('(' + msg + ')');
-						$("#upfile").filebox("clear");
-						$("#result").html(data.msg);
-						$('#' + accountDatagrid).datagrid('reload');
-					}
-				});
-			}
-		</script>
-		
-		
-		<style style="text/css">
-			.lock-unlock {
-				display: inline-block;
-			    width: 16px;
-			    height: 16px;
-			    margin-right: 3px;
-			}
-			
-			.title_span{
-				display: inline-block;
-				width: 70px;
-				text-align: right;
-			}
-		</style>
-		
-	</head>
+<head>
+	<meta charset="utf-8">
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	<meta http-equiv="Cache-Control" content="no-siteapp" />
+	<link rel="stylesheet" type="text/css" href="${ctx}/resources/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="${ctx}/resources/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="${ctx}/resources/css/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="${ctx}/resources/css/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="${ctx}/resources/css/style.css" />
+	<title>用户列表</title>
+</head>
 
-	<body>
-		<div style="margin-top: 15px; padding-left: 20px; margin-bottom: 10px;font-size:12px;">
-			<div>
-				<span class="title_span">用户名：</span>
-				<input id="q_account" name="q_account" class="easyui-textbox" style="width: 130px;">
+<body>
+	<form id="queryForm" name="queryForm" action="${ctx}/accountlist" method="post">
+		<div class="page-container">
+			<div class="text-c"> 
+				用户名：<input type="text" class="input-text" style="width:150px" placeholder="用户名" id="userName" name="userName" value="${userName}">&nbsp;&nbsp;&nbsp;&nbsp;
+				昵称：<input type="text" class="input-text" style="width:150px" placeholder="昵称" id="nickName" name="nickName" value="${nickName}">&nbsp;&nbsp;&nbsp;&nbsp;
+			            创建时间：
+				<input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'endCreateTime\')||\'%y-%M-%d\'}' })" id="startCreateTime" name="startCreateTime" class="input-text Wdate" style="width:120px;" value="${startCreateTime}">
+				-
+				<input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'startCreateTime\')}',maxDate:'%y-%M-%d' })" id="endCreateTime" name="endCreateTime" class="input-text Wdate" style="width:120px;" value="${endCreateTime}">&nbsp;&nbsp;&nbsp;&nbsp;
 				
-				<span class="title_span">手机号码：</span>
-				<input id="q_mobile" name="q_mobile" class="easyui-textbox" style="width: 130px;">
-				
-				<span class="title_span" >姓名：</span>
-				<input id="q_nickName" name="q_nickName" class="easyui-textbox" style="width: 130px;">
-			
-		      	<span class="title_span" style="margin-left: 50px;">创建时间：</span>
-				<input type="text" id="q_startCreateTime" name="q_startCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endCreateTime\')}'})" class="textbox" style="line-height: 23px;width:120px;display:inline-block"/> - 
-				<input type="text" id="q_endCreateTime" name="q_endCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startCreateTime\')}'})" class="textbox"  style="line-height: 23px;width:120px;display:inline-block;"/>
-		      	
-			</div>
-		
-			<div style="margin-top:10px;">
-				<span class="title_span">状态：</span> 
-				<select id="q_lock" name="q_lock"  class="easyui-combobox" style="width: 130px;" data-options="panelHeight:'auto'">
-				   <option value="">全部</option>
-		           <option value="N" <c:if test="${lock == 'N'}">selected=selected</c:if>>正常</option>
-		           <option value="Y" <c:if test="${lock == 'Y'}">selected=selected</c:if>>锁定</option>
-		      	</select>
-		      	
-		      	<span class="title_span">是否收费：</span> 
-				<select id="q_isCharge" name="q_isCharge"  class="easyui-combobox" style="width: 130px;" data-options="panelHeight:'auto'">
-				   <option value="">全部</option>
-		           <option value="0">否</option>
-		           <option value="1">是</option>
-		      	</select>
-				
-				<span class="title_span">机构：</span>
-		      	<input id="q_org" name="q_org"  class="easyui-combotree" data-options="url:'${ctx}/org/tree'" style="width: 230px;">&nbsp;&nbsp;&nbsp;&nbsp;
-		      	
-		      	<span class="title_span">角色： </span>
-		      	<input id="q_role" name="q_role" style="width: 230px;">
+				<button type="button" class="btn btn-success" onclick="searchData();"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
+				<button type="button" class="btn btn-danger" onclick="resetData();"><i class="Hui-iconfont">&#xe665;</i> 重置</button>
 			</div>
 			
-			<div style="margin-top:10px;margin-left:25px;">
-				<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="doSearch()">查询</a>
-				<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear'" style="width:80px;" onclick="doClear()">清空</a>
+			<div class="cl pd-5 bg-1 bk-gray mt-20"> 
+				<span class="l" style="float: right !important;margin-right: 10px;">
+					<a href="javascript:void(0);" onclick="addOrUpdateAccount()" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加用户</a>
+				</span> 
 			</div>
+			
+			<table class="table table-border table-bordered table-bg">
+				<thead>
+					<tr class="text-c">
+						<th width="40">序号</th>
+						<th width="80">用户名</th>
+						<th width="80">昵称</th>
+						<th width="120">电话</th>
+						<th width="130">邮箱</th>
+						<th width="60">是否锁定</th>
+						<th width="100">创建时间</th>
+						<th width="140">备注</th>
+						<th width="100">操作</th>
+					</tr> 
+				</thead>
+				
+				<tbody>
+					<c:forEach items="${dataList}" var="vo" varStatus="var">
+						<tr class="text-c">
+							<td>${var.index + 1}</td>
+							<td>${vo.userName}</td>
+							<td>${vo.nickName}</td>
+							<td>${vo.mobile}</td>
+							<td>${vo.email}</td>
+							<td class="td-status"><c:if test="${vo.lock == 'Y' }"><span class="label radius">是</c:if><c:if test="${ vo.lock == 'N' }"><span class="label label-success radius">否</c:if></td>
+							<td><fmt:formatDate value='${vo.createTime }' type="date" pattern="yyyy-MM-dd"/>-<fmt:formatDate value='${vo.createTime}' type="date" pattern="yyyy-MM-dd"/></td>
+							<td>${vo.remark}</td>
+							<td class="td-manage">
+								
+								<c:choose>
+									<c:when test="${currentAccount.userName == 'admin' }">
+										<a title="编辑" href="javascript:void(0)" onclick="addOrUpdateAccount(${vo.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> &nbsp;
+									</c:when>
+									<c:otherwise>
+										<c:if test="${vo.userName != 'admin'}">
+											<a title="编辑" href="javascript:void(0)" onclick="addOrUpdateAccount(${vo.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> &nbsp;
+										</c:if>
+									</c:otherwise>
+								</c:choose>
+								
+								<c:if test="${currentAccount.userName == 'admin' }">
+									<c:if test="${ vo.lock == 'N' }">
+										<a style="text-decoration:none" onClick="lockOrUnlock(${vo.id}, 'Y')" href="javascript:void(0)" title="锁定">
+											<i class="Hui-iconfont">&#xe631;</i>
+										</a> 
+									</c:if>
+									<c:if test="${vo.lock == 'Y' }">
+										<a style="text-decoration:none" onClick="lockOrUnlock(${vo.id}, 'N')" href="javascript:void(0)" title="解除">
+											<i class="Hui-iconfont">&#xe615;</i>
+										</a>
+									</c:if>
+									
+									<a title="删除" href="javascript:void(0)" onclick="deleteAccount(${vo.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>
+								
+									<a title="重置密码" href="javascript:void(0)" onclick="resetPwd(${vo.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe68f;</i></a> 
+								</c:if>
+								
+								
+							</td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+			<pagination:pagebar startRow="${dataList.getStartRow()}" id="queryForm" pageSize="${dataList.getPageSize()}"  totalSize="${dataList.getTotal()}"   showbar="true"  showdetail="true"/>
 		</div>
-				
-		<div style="margin-top:10px;">
-			<table id="accountTable" style="height:auto;width:auto"></table>
-		</div>
-		
-		<div id="accountDialog"></div>
-		
-		<!-- Excel 导入 -->
-		<div id="excelDialog" class="easyui-dialog" title="用户导入" style="width: 300px; height: 200px; padding: 10px;" data-options="modal: true" closed="true">
-			<form method="POST" enctype="multipart/form-data" id="uploadForm">
-				<div>
-					请选择要导入的文件（<span style="color: red;">只支持 Excel</span>）：
-				</div>
-				
-				<div style="margin-top: 10px;">
-					<input class="easyui-filebox" id="upfile" name="upfile" style="width: 90%" data-options="buttonText: '选择文件'">
-					<p id="fileInfo" style="color:red;margin-top:5px;"></p>
-				</div>
-				
-				<div style="margin-top: 15px;">
-					<a href="javascript:void(0);" class="easyui-linkbutton" style="width: 90%" onclick="importExcel()">上传</a>
-				</div>
-				
-				<div id="result" style="margin-top:5px;"></div>
-			</form>
-		</div>
+	</form>
 	
-	</body>
+	<!--_footer 作为公共模版分离出去-->
+	<script type="text/javascript" src="${ctx}/resources/js/jquery.min.js"></script>
+	<script type="text/javascript" src="${ctx}/resources/js/layer/2.4/layer.js"></script>
+	<script type="text/javascript" src="${ctx}/resources/js/H-ui.min.js"></script>
+	<script type="text/javascript" src="${ctx}/resources/js/H-ui.admin.js"></script>
+	<!--/_footer 作为公共模版分离出去-->
+	
+	<script type="text/javascript" src="${ctx}/resources/js/My97DatePicker/4.8/WdatePicker.js"></script> 
+	<script type="text/javascript" src="${ctx}/resources/js/laypage/1.2/laypage.js"></script>
+	<script type="text/javascript">
+		function searchData(){
+			document.getElementById("queryForm").submit();
+		} 
+		
+		function resetData(){
+			$("#userName").val("");
+			$("#nickName").val("");
+			$("#startCreateTime").val("");
+			$("#endCreateTime").val("");
+			document.getElementById("queryForm").submit();
+		}
+		
+		function addOrUpdateAccount(id){
+			/*
+				参数解释：
+				title	标题
+				url		请求的url
+				id		需要操作的数据id
+				w		弹出层宽度（缺省调默认值）
+				h		弹出层高度（缺省调默认值）
+			*/
+			var url = "${ctx}/account/detail";
+			if(id != null){
+				url += "?id=" + id
+			}
+			
+			layer_show("添加用户", url, '600', '500');
+		}
+		
+		function lockOrUnlock(id, type){
+			var message = "此操作将解锁该用户，您确定要继续吗？";
+			if(type == "Y"){
+				message = "此操作将锁定该用户，您确定要继续吗？";
+			}
+			
+			layer.confirm(message, function(index){
+				 $.ajax({
+                  	url: "${ctx}/account/lock",
+                  	data: {
+                  		id: id,
+                  		lock: type
+                  	},
+                  	success: function(data){
+                  		if(data.success){
+                  			layer.msg(data.msg, {icon: 6, time:1000}, function(){
+                  				window.location.reload();
+                  			});
+          				 }else {
+          					layer.msg(msg, {icon: 5,time:1000});
+          				 }
+                  	}
+                 });
+				 
+				 
+				 
+			});
+		}
+		
+		function deleteAccount(id){
+			layer.confirm("此操作将删除该用户，您确定要继续吗？", function(index){
+				 $.ajax({
+                 	url: "${ctx}/account/delete",
+                 	data: {
+                 		id: id,
+                 	},
+                 	success: function(data){
+                 		if(data.success){
+                 			layer.msg(data.msg, {icon: 6,time:1000}, function(){
+                 				window.location.reload();
+                 			});
+         				}else{
+         					layer.msg(data.msg, {icon: 5,time:1000});
+         				}
+                 	}
+                 });
+			});
+		}
+		
+		function resetPwd(id){
+			layer.confirm("此操作将重置该用户密码，您确定要继续吗？", function(index) {
+				$.ajax({
+	            	url: "${ctx}/account/resetPwd",
+	            	data: {
+	            		id: id,
+	            	},
+	            	success: function(data){
+	            		if(data.success){
+	            			layer.msg(data.msg, {icon: 6, time:2000});
+	    				}else{
+	    					layer.msg(data.msg, {icon: 5, time:2000});
+	    				}
+	            	}
+	            });
+			});
+		}
+		
+	</script>
+	
+</body>
 </html>

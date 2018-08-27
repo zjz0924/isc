@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.wow.common.dao.SignRecordDao">
+	<resultMap id="BaseResultMap" type="cn.wow.common.domain.SignRecord">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="type" property="type" jdbcType="INTEGER" />
+		<result column="combo_id" property="comboId" jdbcType="BIGINT" />
+		<result column="cert_id" property="certId" jdbcType="BIGINT" />
+		<result column="price" property="price" jdbcType="DOUBLE" />
+		<result column="effective_date" property="effectiveDate" jdbcType="DATE" />
+		<result column="expire_date" property="expireDate" jdbcType="DATE" />
+		<result column="app_id" property="appId" jdbcType="BIGINT" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<association property="certificate" javaType="cn.wow.common.domain.Certificate" column="combo_id" select="cn.wow.common.dao.CertificateDao.selectOne"/> 
+		<association property="combo" javaType="cn.wow.common.domain.Combo" column="combo_id" select="cn.wow.common.dao.ComboDao.selectOne"/> 
+		<association property="app" javaType="cn.wow.common.domain.App" column="app_id" select="cn.wow.common.dao.AppDao.selectOne"/> 
+	</resultMap>
+	
+	<sql id="base_columns">
+		id, type, combo_id, price, effective_date, expire_date, app_id, create_time, cert_id
+	</sql>
+	
+	<select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="base_columns" /> from sign_record where id = #{id,jdbcType=BIGINT}
+	</select>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from sign_record where id = #{id,jdbcType=BIGINT}
+	</delete>
+	
+	<insert id="insert" parameterType="cn.wow.common.domain.SignRecord">
+		insert into sign_record (type, combo_id, price, effective_date, expire_date, app_id, create_time, cert_id)
+		values (#{type,jdbcType=INTEGER}, #{comboId,jdbcType=BIGINT}, #{price,jdbcType=DOUBLE}, #{effectiveDate,jdbcType=DATE}, #{expireDate,jdbcType=DATE},
+		#{appId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{certId,jdbcType=BIGINT})
+	</insert>
+	
+	<update id="update" parameterType="cn.wow.common.domain.SignRecord">
+		update sign_record
+		<set>
+			<if test="type != null">
+				type = #{type,jdbcType=INTEGER},
+			</if>
+			<if test="comboId != null">
+				combo_id = #{comboId,jdbcType=BIGINT},
+			</if>
+			<if test="certId != null">
+				cert_id = #{certId,jdbcType=BIGINT},
+			</if>
+			<if test="price != null">
+				price = #{price,jdbcType=DOUBLE},
+			</if>
+			<if test="effectiveDate != null">
+				effective_date = #{effectiveDate,jdbcType=DATE},
+			</if>
+			<if test="expireDate != null">
+				expire_date = #{expireDate,jdbcType=DATE},
+			</if>
+			<if test="appId != null">
+				app_id = #{appId,jdbcType=BIGINT},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	
+    <select id="selectAllList" resultMap="BaseResultMap" parameterType="java.util.Map" >
+  	select 
+    <include refid="base_columns" />
+      from sign_record
+     <where>
+	      <if test="type != null">
+		    and type = #{type,jdbcType=INTEGER}
+	      </if>
+	      <if test="comboId != null">
+			and combo_id = #{comboId,jdbcType=BIGINT}
+	      </if>
+	      <if test="startEffectiveDate != null and startEffectiveDate != ''">  
+	    	and effective_date &gt;= #{startEffectiveDate, jdbcType=DATE}
+	      </if>
+	      <if test="endEffectiveDate != null and endEffectiveDate != ''">  
+	    	and effective_date &lt;= #{endEffectiveDate, jdbcType=DATE}
+	      </if>
+	      <if test="startExpireDate != null and startExpireDate != ''">  
+	    	and expire_date &gt;= #{startExpireDate, jdbcType=DATE}
+	      </if>
+	      <if test="endExpireDate != null and endExpireDate != ''">  
+	    	and expire_date &lt;= #{endExpireDate, jdbcType=DATE}
+	      </if>
+	      <if test="appId != null">
+			and app_id = #{appId,jdbcType=BIGINT}
+	      </if>
+	      <if test="certId != null">
+			and cert_id = #{certId,jdbcType=BIGINT}
+			</if>
+	      <if test="startCreateTime != null and startCreateTime != ''">  
+	    	and create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
+	      </if>
+	      <if test="endCreateTime != null and endCreateTime != ''">  
+	    	and create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
+	      </if>
+      </where>
+      
+	  <choose>
+  		<when test="custom_order_sql != null">
+  			order by ${custom_order_sql}
+  		</when>
+  		<otherwise>
+  			order by id desc
+  		</otherwise>
+ 	 </choose>
+  </select>
+	
+	
+</mapper>

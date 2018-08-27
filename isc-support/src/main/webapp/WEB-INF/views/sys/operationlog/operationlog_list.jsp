@@ -1,155 +1,105 @@
 <%@ page contentType="text/html;charset=utf-8" pageEncoding="utf-8"%>
 <%@include file="/page/taglibs.jsp"%>
+<%@include file="/page/NavPageBar.jsp" %>
 
 <!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>SGMW</title>
-		<%@include file="../../common/source.jsp"%>
-		
-		<script type="text/javascript">
-			var url = "${ctx}/operationlog/getLogList";
-			var datagrid = "operationTable";
-			
-			$(function(){
-				 $("#" + datagrid).datagrid({
-			        url : url,
-			        singleSelect : true, /*是否选中一行*/
-			        width:'auto', 
-			        pagination : true,  /*是否显示下面的分页菜单*/
-			        border:false,
-			        rownumbers: true,
-			        height: "380px",
-			        title: '日志信息',
-			        columns : [ [  {
-			            field : 'id', 
-			            hidden: 'true'
-			        }, {
-			            field : 'userName',
-			            title : '用户名',
-			            width : '120',
-			            align : 'center'
-			        }, {
-			            field : 'type',
-			            title : '类型',
-			            width : '120',
-			            align : 'center'
-			        }, {
-			            field : 'operation',
-			            title : '操作',
-			            width : '120',
-			            align : 'center'
-			        }, {
-			            field : 'clientIp',
-			            title : '访问IP',
-			            width : '120',
-			            align : 'center'
-			        }, {
-			            field : 'detail',
-			            title : '详情',
-			            width : '480',
-			            align : 'center',
-			            formatter: formatCellTooltip
-			        }, {
-			            field : 'time',
-			            title : '时间',
-			            width : '140',
-			            align : 'center',
-			            formatter: DateTimeFormatter
-			        }
-			        ]],
-			        onClickRow:function(rowIndex,rowData){
-			        	info("${ctx}/operationlog/detail?id=" + rowData.id);
-			       	}
-			    });
-				 
-				// 分页信息
-				$('#' + datagrid).datagrid('getPager').pagination({  
-	                pageSize: "${defaultPageSize}",  
-	                pageNumber: 1,  
-	                displayMsg: '当前显示 {from} - {to} 条记录    共  {total} 条记录',
-	                onSelectPage: function (pageNumber, pageSize) {//分页触发  
-	                	var data = {
-	                        'userName' : $("#account").val(),
-	                        'type' : $("#type").val(),
-	                        'startTimeFrom' : $("#startTimeFrom").val(),
-	                        'startTimeTo' : $("#startTimeTo").val(),
-	                        'operation' : $("#operation").val(),
-	                        'pageNum' : pageNumber,
-	                        'pageSize' : pageSize
-	                    }
-	                	getData(datagrid, url, data);
-	            	} 
-				});
-			});
-			
-			function doSearch(){
-				var data = {
-	                'userName' : $("#account").textbox('getValue'),
-	                'type' : $("#type").val(),
-	                'startTimeFrom' : $("#startTimeFrom").val(),
-	                'startTimeTo' : $("#startTimeTo").val(),
-	                'operation' : $("#operation").val()
-	            }
-				getData(datagrid, url, data);
-			}
-			
-			function doClear(){
-				$("#account").textbox('clear');
-				$("#operation").combobox('select', "");  
-				$("#type").combobox('select', "");
-				$("#startTimeFrom").val('');
-				$("#startTimeTo").val('');
-				getData(datagrid, url, {});
-			}
-			
-			function info(url){
-				$('#dd').dialog({
-				    title: '日志信息',
-				    width: 800,
-				    height: 500,
-				    closed: false,
-				    cache: false,
-				    href: url,
-				    modal: true
-				});
-				$('#dd').window('center');
-			}
-		</script>
-		
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<link rel="stylesheet" type="text/css" href="${ctx}/resources/css/H-ui.min.css" />
+	    <link rel="stylesheet" type="text/css" href="${ctx}/resources/css/H-ui.admin.css" />
+	    <link rel="stylesheet" type="text/css" href="${ctx}/resources/css/iconfont.css" />
+	    <link rel="stylesheet" type="text/css" href="${ctx}/resources/css/skin/default/skin.css" id="skin" />
+	    <link rel="stylesheet" type="text/css" href="${ctx}/resources/css/style.css" />
+		<title>日志列表</title>		
 	</head>
 	
 	<body>
-		<div style="margin-top: 15px; padding-left: 20px; margin-bottom: 10px;font-size:12px;">
-			用户名：<input id="account" name="account" class="easyui-textbox" style="width: 130px;"> &nbsp;&nbsp;&nbsp;
-			
-			类型：<select id="type" name="type" class="easyui-combobox" style="width: 130px;" data-options="panelHeight:'auto'"> 
-				<option value="">全部</option>
-				<c:forEach items="${typeList}" var="vo">
-					<option value="${vo}">${vo}</option>
-				</c:forEach>
-			</select> &nbsp;&nbsp;&nbsp;
-			
-			<%-- 操作：<select id="operation" name="operation" class="easyui-combobox" data-options="panelHeight:'auto'" style="width: 130px;margin-right:20px;" >
-				<option value="">全部</option>
-				<c:forEach items="${operationList}" var="vo">
-	                  <option value="${vo}">${vo}</option>
-	               </c:forEach>
-			</select> --%>&nbsp;&nbsp;&nbsp;
-	
-			 时间：<input type="text" id="startTimeFrom" name="startTimeFrom" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'startTimeTo\')}'})" class="textbox" style="line-height: 23px;width:130px;display:inline-block"/> -
-	            <input type="text" id="startTimeTo" name="startTimeTo" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'startTimeFrom\')}'})" class="textbox" style="line-height: 23px;width:130px;display:inline-block"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			
-			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="doSearch()">查询</a>
-			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="doClear()">清空</a>
-		</div>
-	
-		<div style="margin-top:10px;">
-			<table id="operationTable" style="height:auto;width:auto"></table>
-		</div>
+		<form id="queryForm" name="queryForm" action="${ctx}/operationlog/list" method="post">
+			<div class="page-container">
+				<div class="text-c" style="margin-bottom:25px;"> 
+					用户名：<input type="text" class="input-text" style="width:150px" placeholder="用户名" id="userName" name="userName" value="${userName}">&nbsp;&nbsp;&nbsp;&nbsp;
+				    
+				           类型：<select class="select input-text" id="type" name="type" style="width:150px">
+						<option value="">全部</option>
+						<c:forEach items="${typeList}" var="vo">
+							<option value="${vo}" <c:if test="${vo == type}">selected="selected"</c:if>>${vo}</option>
+						</c:forEach>
+					</select>&nbsp;&nbsp;&nbsp;&nbsp;
+				          
+				           创建时间：
+					<input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'startTimeTo\')||\'%y-%M-%d\'}' })" id="startTimeFrom" name="startTimeFrom" class="input-text Wdate" style="width:120px;" value="${startTimeFrom}">
+					-
+					<input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'startTimeFrom\')}',maxDate:'%y-%M-%d' })" id="startTimeTo" name="startTimeTo" class="input-text Wdate" style="width:120px;" value="${startTimeTo}">&nbsp;&nbsp;&nbsp;&nbsp;
+					
+					<button type="button" class="btn btn-success" onclick="searchData();"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
+					<button type="button" class="btn btn-danger" onclick="resetData();"><i class="Hui-iconfont">&#xe665;</i> 重置</button>
+				</div>
+				
+				<table class="table table-border table-bordered table-bg">
+					<thead>
+						<tr class="text-c">
+							<th width="40">序号</th>
+							<th width="80">用户名</th>
+							<th width="80">类型</th>
+							<th width="80">操作</th>
+							<th width="100">访问IP</th>
+							<th>详情</th>
+							<th width="130">创建时间</th>
+							<th width="50">操作</th>
+						</tr> 
+					</thead>
+					
+					<tbody>
+						<c:forEach items="${dataList}" var="vo" varStatus="var">
+							<tr class="text-c">
+								<td>${var.index + 1}</td>
+								<td>${vo.userName}</td>
+								<td>${vo.type}</td>
+								<td>${vo.operation}</td>
+								<td>${vo.clientIp}</td>
+								<td><a href="javascript:void(0)" onclick="info(${vo.id})">${vo.detail}</a></td>
+								<td><fmt:formatDate value='${vo.time }' type="date" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+								<td><a title="详情" href="javascript:void(0)" onclick="info(${vo.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe665;</i></a></td>
+							</tr>
+						</c:forEach>
+					</tbody>
+				</table>
+				<pagination:pagebar startRow="${dataList.getStartRow()}" id="queryForm" pageSize="${dataList.getPageSize()}"  totalSize="${dataList.getTotal()}"   showbar="true"  showdetail="true"/>
+			</div>
+		</form>
 		
-		<div id="dd"></div>
+		<!--_footer 作为公共模版分离出去-->
+		<script type="text/javascript" src="${ctx}/resources/js/jquery.min.js"></script>
+		<script type="text/javascript" src="${ctx}/resources/js/layer/2.4/layer.js"></script>
+		<script type="text/javascript" src="${ctx}/resources/js/H-ui.min.js"></script>
+		<script type="text/javascript" src="${ctx}/resources/js/H-ui.admin.js"></script>
+		<!--/_footer 作为公共模版分离出去-->
+		
+		<script type="text/javascript" src="${ctx}/resources/js/My97DatePicker/4.8/WdatePicker.js"></script> 
+		<script type="text/javascript">
+			function searchData(){
+				document.getElementById("queryForm").submit();
+			} 
+			
+			function resetData(){
+				$("#userName").val("");
+				$("#type").val("");
+				$("#startTimeTo").val("");
+				$("#startTimeFrom").val("");
+				document.getElementById("queryForm").submit();
+			}
+		
+			function info(id){
+				layer_show("日志信息", "${ctx}/operationlog/detail?id=" + id, '700', '500');
+			}
+			
+		</script>
+		
 	</body>
 </html>
 	

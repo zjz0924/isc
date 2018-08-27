@@ -1,6 +1,22 @@
 <%@ page contentType="text/html;charset=utf-8" pageEncoding="utf-8"%>
 <%@include file="/page/taglibs.jsp"%>
 
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	<meta http-equiv="Cache-Control" content="no-siteapp" />
+	<link rel="stylesheet" type="text/css" href="${ctx}/resources/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="${ctx}/resources/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="${ctx}/resources/css/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="${ctx}/resources/css/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="${ctx}/resources/css/style.css" />
+	<title>日志信息</title>
+</head>
+
 <body>
 	<div style="margin-left:10px;">
 		<div class="data-row">
@@ -35,51 +51,40 @@
 	</div>	
 	
 	<div style="margin-top:10px;">
-		<div style="font-weight:bold;margin-left:10px;">Detail Information</div>
+		<div style="font-weight:bold;margin-left:10px;">详细信息</div>
 		
 		<c:choose>
 			<c:when test="${not empty dataList}">
-				<c:choose>
-					<c:when test="${opeartionLog.operation != 'Move' }">
-						<table class="table table-bordered table-striped table-condensed table-hover" style="width: 70%;margin-left: 5px;">
-							<thead>
-								<tr>
-									<th>Field</th>
-									<th>Value</th>
-									
-									<c:if test="${operation == '编辑'}">
-										<th>Old Value</th>
-									</c:if>
-								</tr>
-							</thead>
+				<table class="table table-border table-bordered table-bg table-hover table-sort" style="width:90%; margin-left: 10px; margin-top: 10px;margin-bottom: 20px;">
+					<thead>
+						<tr class="text-c">
+							<th style="width:100px">属性</th>
+							<th>当前值</th>
 							
-							<c:forEach items="${dataList}" var="vo" > 
-								<tr>
-									<td>${vo.name}</td>
-									<c:choose>
-										<c:when test="${opeartionLog.operation == '编辑'}">
-											<td>${vo.newValue}</td>
-											<td>${vo.oldValue}</td>
-										</c:when>
-										<c:when test="${opeartionLog.operation == '新建'}">
-											<td>${vo.newValue}</td>
-										</c:when>
-										<c:otherwise>
-											<td>${vo.oldValue}</td>
-										</c:otherwise>
-									</c:choose>
-								</tr>
-							</c:forEach> 
-						</table>
-					</c:when>
-					<c:otherwise>
-						<c:forEach items="${dataList}" var="vo" > 
-							<p>区域名称： ${vo.name}</p>
-							<p>从： ${vo.oldValue}</p>
-							<p>到: ${vo.newValue }</p>
-						</c:forEach>
-					</c:otherwise>
-				</c:choose>	
+							<c:if test="${operation == '编辑'}">
+								<th>原值</th>
+							</c:if>
+						</tr>
+					</thead>
+					
+					<c:forEach items="${dataList}" var="vo" > 
+						<tr>
+							<td>${vo.name}</td>
+							<c:choose>
+								<c:when test="${opeartionLog.operation == '编辑'}">
+									<td>${vo.newValue}</td>
+									<td>${vo.oldValue}</td>
+								</c:when>
+								<c:when test="${opeartionLog.operation == '新建'}">
+									<td>${vo.newValue}</td>
+								</c:when>
+								<c:otherwise>
+									<td>${vo.oldValue}</td>
+								</c:otherwise>
+							</c:choose>
+						</tr>
+					</c:forEach> 
+				</table>
 			</c:when>
 			<c:otherwise>
 				<div style="margin-left: 10px;margin-top: 5px;">${opeartionLog.detail }</div>
@@ -96,13 +101,6 @@
 		.data-title{
 			display:inline-block;
 			width: 120px;
-		}
-		
-		.table thead > tr > th, .table tbody > tr > th, .table tfoot > tr > th, .table thead > tr > td, .table tbody > tr > td, .table tfoot > tr > td {
-			padding: 5px;
-			text-align:left;
-			font-weight: normal;
-			font-size: 14px;
 		}
 	</style>
 	

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.wow.common.dao.ContactsDao" >
+  <resultMap id="BaseResultMap" type="cn.wow.common.domain.Contacts" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="wechat" property="wechat" jdbcType="VARCHAR" />
+    <result column="alipay" property="alipay" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="is_delete" property="isDelete" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <sql id="base_columns" >
+    id, name, wechat, alipay, phone, remark, is_delete, create_time
+  </sql>
+  
+  <select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select <include refid="base_columns" /> from contacts
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    update contacts set is_delete = 1 where id = #{id,jdbcType=BIGINT}
+  </delete>
+  
+  <insert id="insert" parameterType="cn.wow.common.domain.Contacts" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+	    SELECT @@IDENTITY
+	</selectKey>
+		
+    insert into contacts (name, wechat, alipay, phone, remark, is_delete, create_time)
+    values (#{name,jdbcType=VARCHAR}, #{wechat,jdbcType=VARCHAR}, #{alipay,jdbcType=VARCHAR}, 
+    	#{phone,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{isDelete,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+
+  <update id="update" parameterType="cn.wow.common.domain.Contacts" >
+    update contacts
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="wechat != null" >
+        wechat = #{wechat,jdbcType=VARCHAR},
+      </if>
+      <if test="alipay != null" >
+        alipay = #{alipay,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null" >
+        is_delete = #{isDelete,jdbcType=INTEGER},
+      </if>
+      remark = #{remark,jdbcType=VARCHAR}
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+   <select id="selectAllList" resultMap="BaseResultMap" parameterType="java.util.Map" >
+  	select 
+    <include refid="base_columns" />
+      from contacts
+     <where>
+     	  <if test="name != null" >
+	         and name = #{name,jdbcType=VARCHAR}
+	      </if>
+	      <if test="qname != null" >
+	         and name like concat('%', #{qname,jdbcType=VARCHAR}, '%') 
+	      </if>
+	      <if test="wechat != null" >
+	        and wechat like concat('%', #{wechat,jdbcType=VARCHAR}, '%')
+	      </if>
+	      <if test="alipay != null" >
+	        and alipay like concat('%', #{alipay,jdbcType=VARCHAR}, '%')
+	      </if>
+	      <if test="phone != null" >
+	        and phone like concat('%', #{phone,jdbcType=VARCHAR}, '%')
+	      </if>
+	      <if test="isDelete != null" >
+	        and is_delete = #{isDelete,jdbcType=INTEGER}
+	      </if>
+	      <if test="startCreateTime != null and startCreateTime != ''">  
+	    	and create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
+	      </if>
+	      <if test="endCreateTime != null and endCreateTime != ''">  
+	    	and create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
+	      </if>
+	      <if test="id != null">
+				and id &lt;&gt; #{id,jdbcType=BIGINT}
+		  </if>
+      </where>
+      
+	  <choose>
+  		<when test="custom_order_sql != null">
+  			order by ${custom_order_sql}
+  		</when>
+  		<otherwise>
+  			order by id desc
+  		</otherwise>
+ 	 </choose>
+  </select>
+  
+  
+
+</mapper>
