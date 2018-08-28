@@ -4,13 +4,13 @@ Navicat MySQL Data Transfer
 Source Server         : localhost
 Source Server Version : 50556
 Source Host           : localhost:3306
-Source Database       : cqc
+Source Database       : isc
 
 Target Server Type    : MYSQL
 Target Server Version : 50556
 File Encoding         : 65001
 
-Date: 2017-11-17 00:47:53
+Date: 2018-08-29 02:30:03
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -27,240 +27,142 @@ CREATE TABLE `account` (
   `mobile` varchar(16) DEFAULT NULL COMMENT '手机',
   `create_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '创建时间',
   `lock` enum('N','Y') DEFAULT 'N' COMMENT '状态',
-  `role_id` bigint(50) DEFAULT NULL,
-  `org_id` bigint(20) DEFAULT NULL,
   `email` varchar(50) DEFAULT NULL,
   `remark` varchar(200) DEFAULT NULL,
-  `sign_type` int(11) DEFAULT NULL,
-  `pic` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNQ_name` (`username`) USING BTREE
-) ENGINE=MyISAM AUTO_INCREMENT=45 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=50 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of account
 -- ----------------------------
-INSERT INTO `account` VALUES ('1', 'admin', 'admin', 'E10ADC3949BA59ABBE56E057F20F883E', '13434343422', '2016-12-18 23:06:04', 'N', '1', '15', '312265264@qq.com', '', '1', null);
-INSERT INTO `account` VALUES ('7', 'bill', 'ad', 'E10ADC3949BA59ABBE56E057F20F883E', '13512342323', '2017-06-21 23:30:12', 'N', '15', '15', '2422292577@qq.com', '', '1', null);
-INSERT INTO `account` VALUES ('8', 'lily', 'lily', 'E10ADC3949BA59ABBE56E057F20F883E', '13723423434', '2017-06-21 23:30:34', 'N', '17', '21', '2422192577@qq.com', '', '1', null);
-INSERT INTO `account` VALUES ('13', 'William', 'William', 'E10ADC3949BA59ABBE56E057F20F883E', '15918703417', '2017-06-21 23:33:15', 'N', '17', '20', '2522292577@qq.com', '', '1', null);
+INSERT INTO `account` VALUES ('1', 'admin', 'admin', 'E10ADC3949BA59ABBE56E057F20F883E', '13318668638', '2016-12-18 23:06:04', 'N', '312265264@qq.com', '');
+INSERT INTO `account` VALUES ('48', 'test', 'test', '21218CCA77804D2BA1922C33E0151105', null, '2018-08-25 10:14:17', 'N', '', '');
 
 -- ----------------------------
--- Table structure for `apply_record`
+-- Table structure for `app`
 -- ----------------------------
-DROP TABLE IF EXISTS `apply_record`;
-CREATE TABLE `apply_record` (
+DROP TABLE IF EXISTS `app`;
+CREATE TABLE `app` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `v_id` bigint(20) DEFAULT NULL,
-  `p_id` bigint(20) DEFAULT NULL,
-  `m_id` bigint(20) DEFAULT NULL,
-  `t_id` bigint(20) DEFAULT NULL,
-  `a_id` bigint(20) DEFAULT NULL,
-  `state` int(11) DEFAULT NULL,
-  `pf_result_ids` varchar(100) DEFAULT NULL,
-  `atlas_result` varchar(100) DEFAULT NULL,
-  `type` int(11) DEFAULT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `effective_date` date DEFAULT NULL,
+  `expire_date` date DEFAULT NULL,
+  `contacts_id` bigint(20) DEFAULT NULL,
   `remark` varchar(200) DEFAULT NULL,
-  `create_time` timestamp NULL DEFAULT NULL,
-  `confirm_time` timestamp NULL DEFAULT NULL,
+  `unsign_file` varchar(100) DEFAULT NULL,
+  `sign_file` varchar(100) DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  `is_delete` int(11) DEFAULT NULL,
+  `cert_id` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of apply_record
+-- Records of app
 -- ----------------------------
+INSERT INTO `app` VALUES ('5', '速来应急', '2018-08-24', '2018-09-24', '6', '', '/app/20180829015914/速来应急.ipa', '/app/20180829015914/速来应急_resigned.ipa', '2018-08-24 01:59:14', '2018-08-24 01:59:14', '0', '5');
+INSERT INTO `app` VALUES ('6', '秒钱贷', '2018-08-24', '2018-09-24', '7', '', '/app/20180829020201/人人花.ipa', '/app/20180829020201/人人花_resigned.ipa', '2018-08-24 02:02:01', '2018-08-24 02:02:01', '0', '3');
+INSERT INTO `app` VALUES ('7', '快快钱包', '2018-08-27', '2018-11-27', '8', '', '/app/20180829020244/快快钱包.ipa', '/app/20180829020244/快快钱包_resigned.ipa', '2018-08-27 02:02:44', '2018-08-27 02:02:44', '0', '5');
+INSERT INTO `app` VALUES ('8', '安心花', '2018-08-27', '2018-09-27', '9', '', '/app/20180829020319/安心花.ipa', '/app/20180829020319/安心花_resigned.ipa', '2018-08-27 02:03:19', '2018-08-27 02:03:19', '0', '3');
+INSERT INTO `app` VALUES ('9', '来来宝', '2018-08-27', '2018-09-27', '10', '', '/app/20180829020421/来来宝.ipa', '/app/20180829020421/来来宝_resigned.ipa', '2018-08-27 02:04:21', '2018-08-27 02:04:21', '0', '3');
+INSERT INTO `app` VALUES ('10', '提钱周转', '2018-08-28', '2018-09-28', '11', '', '/app/20180829020521/提钱周转.ipa', '/app/20180829020521/提钱周转_resigned.ipa', '2018-08-28 02:05:21', '2018-08-28 02:05:21', '0', '5');
+INSERT INTO `app` VALUES ('11', '菠萝钱包', '2018-08-28', '2018-09-28', '11', '', '/app/20180829020556/菠萝钱包.ipa', '/app/20180829020556/菠萝钱包_resigned.ipa', '2018-08-28 02:05:56', '2018-08-28 02:05:56', '0', '5');
+INSERT INTO `app` VALUES ('12', '曙光贷', '2018-08-28', '2018-09-28', '12', '', '/app/20180829020646/曙光贷.ipa', '/app/20180829020646/曙光贷_resigned.ipa', '2018-08-28 02:06:46', '2018-08-28 02:06:46', '0', '5');
+INSERT INTO `app` VALUES ('13', '我养你', '2018-08-28', '2018-11-28', '13', '', '/app/20180829020724/我养你.ipa', '/app/20180829020724/我养你_resigned.ipa', '2018-08-28 02:07:24', '2018-08-28 02:07:24', '0', '5');
+INSERT INTO `app` VALUES ('14', '芝麻花', '2018-08-28', '2018-09-28', '14', '', '/app/20180829020752/芝麻花.ipa', '/app/20180829020752/芝麻花_resigned.ipa', '2018-08-28 02:07:52', '2018-08-28 02:07:52', '0', '5');
+INSERT INTO `app` VALUES ('15', '人人花', '2018-08-28', '2018-09-28', '15', '', '/app/20180829020843/人人花.ipa', '/app/20180829020843/人人花_resigned.ipa', '2018-08-28 02:08:43', '2018-08-28 02:08:43', '0', '3');
+INSERT INTO `app` VALUES ('16', '溜溜花', '2018-08-28', '2018-09-28', '16', '', '/app/20180829020916/溜溜花.ipa', '/app/20180829020916/溜溜花_resigned.ipa', '2018-08-28 02:09:16', '2018-08-28 02:09:16', '0', '3');
+INSERT INTO `app` VALUES ('17', '58钱站', '2018-08-28', '2018-11-28', '17', '', '/app/20180829020946/58钱站.ipa', '/app/20180829020946/58钱站_resigned.ipa', '2018-08-28 02:09:46', '2018-08-28 02:09:46', '0', '3');
+INSERT INTO `app` VALUES ('18', '喜贷钱包', '2018-08-28', '2018-11-28', '18', '', '/app/20180829021014/58钱站.ipa', '/app/20180829021014/58钱站_resigned.ipa', '2018-08-28 02:10:14', '2018-08-28 02:10:14', '0', '3');
+INSERT INTO `app` VALUES ('19', '蚂蚁口袋', '2018-08-28', '2018-09-28', '19', '', '/app/20180829021038/蚂蚁口袋.ipa', '/app/20180829021038/蚂蚁口袋_resigned.ipa', '2018-08-28 02:10:38', '2018-08-28 02:10:38', '0', '3');
 
 -- ----------------------------
--- Table structure for `area`
+-- Table structure for `certificate`
 -- ----------------------------
-DROP TABLE IF EXISTS `area`;
-CREATE TABLE `area` (
+DROP TABLE IF EXISTS `certificate`;
+CREATE TABLE `certificate` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `code` varchar(50) DEFAULT NULL,
-  `name` varchar(50) DEFAULT NULL,
-  `parentid` bigint(20) DEFAULT NULL,
-  `desc` varchar(200) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=112 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of area
--- ----------------------------
-INSERT INTO `area` VALUES ('1', '000', '地区', '0', '根节点');
-INSERT INTO `area` VALUES ('2', '001', '广州', '1', '');
-INSERT INTO `area` VALUES ('5', '003', '惠州', '1', null);
-INSERT INTO `area` VALUES ('24', '007', '天河区', '2', '天');
-INSERT INTO `area` VALUES ('89', '008', '白云区', '2', '白云区');
-INSERT INTO `area` VALUES ('90', '009', '荔湾区', '2', '荔湾区');
-
--- ----------------------------
--- Table structure for `atlas_result`
--- ----------------------------
-DROP TABLE IF EXISTS `atlas_result`;
-CREATE TABLE `atlas_result` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `t_id` bigint(20) DEFAULT NULL,
-  `type` int(11) DEFAULT NULL,
-  `pic` varchar(100) DEFAULT NULL,
-  `remark` varchar(500) DEFAULT NULL,
-  `create_time` timestamp NULL DEFAULT NULL,
-  `catagory` int(11) DEFAULT NULL,
-  `exp_no` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=277 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of atlas_result
--- ----------------------------
-
--- ----------------------------
--- Table structure for `cost_record`
--- ----------------------------
-DROP TABLE IF EXISTS `cost_record`;
-CREATE TABLE `cost_record` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `t_id` bigint(20) DEFAULT NULL,
-  `a_id` bigint(20) DEFAULT NULL,
-  `lab_id` bigint(20) DEFAULT NULL,
-  `orgs` varchar(200) DEFAULT NULL,
-  `state` int(11) DEFAULT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `cert_expire_date` date DEFAULT NULL,
+  `desc_expire_date` date DEFAULT NULL,
+  `cert_file` varchar(200) DEFAULT NULL,
+  `desc_file` varchar(200) DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
   `remark` varchar(200) DEFAULT NULL,
-  `create_time` timestamp NULL DEFAULT NULL,
-  `times` int(11) DEFAULT NULL,
-  `lab_type` int(11) DEFAULT NULL,
-  `send_time` timestamp NULL DEFAULT NULL,
-  `lab_result` int(11) DEFAULT NULL,
+  `is_delete` int(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of cost_record
+-- Records of certificate
 -- ----------------------------
+INSERT INTO `certificate` VALUES ('3', 'SunShine', '2021-08-17', '2019-08-18', '/certification/3/SunShine Insurance Distribution.p12', '/certification/3/SunShine_Insurance_distribution.mobileprovision', '2018-08-29 01:51:37', '租4k', '0');
+INSERT INTO `certificate` VALUES ('4', 'yunxun', '2019-10-18', '2019-03-08', '/certification/4/证书.p12', '/certification/4/shenzhenyunxun.mobileprovision', '2018-08-29 01:52:45', '租500', '0');
+INSERT INTO `certificate` VALUES ('5', 'digigen', '2021-08-25', '2019-08-26', '/certification/5/DIGIGEN TECHNOLOGY Distribution.p12', '/certification/5/DigigenTechnology_Distribution.mobileprovision', '2018-08-29 01:55:01', '', '0');
 
 -- ----------------------------
--- Table structure for `dictionary`
+-- Table structure for `combo`
 -- ----------------------------
-DROP TABLE IF EXISTS `dictionary`;
-CREATE TABLE `dictionary` (
+DROP TABLE IF EXISTS `combo`;
+CREATE TABLE `combo` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) DEFAULT NULL,
-  `val` varchar(50) DEFAULT NULL,
-  `desc` varchar(200) DEFAULT NULL,
-  `create_time` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of dictionary
--- ----------------------------
-
--- ----------------------------
--- Table structure for `email_record`
--- ----------------------------
-DROP TABLE IF EXISTS `email_record`;
-CREATE TABLE `email_record` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `subject` varchar(100) DEFAULT NULL,
-  `content` text,
-  `addr` varchar(1000) DEFAULT NULL,
-  `task_id` bigint(20) DEFAULT NULL,
-  `a_id` bigint(20) DEFAULT NULL,
-  `state` int(11) DEFAULT NULL,
-  `type` int(11) DEFAULT NULL,
-  `orgin_email` varchar(50) DEFAULT NULL,
-  `create_time` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=95 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of email_record
--- ----------------------------
-
--- ----------------------------
--- Table structure for `examine_record`
--- ----------------------------
-DROP TABLE IF EXISTS `examine_record`;
-CREATE TABLE `examine_record` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `t_id` bigint(20) DEFAULT NULL,
-  `a_id` bigint(20) DEFAULT NULL,
-  `state` int(11) DEFAULT NULL,
+  `name` varchar(100) DEFAULT NULL,
   `remark` varchar(200) DEFAULT NULL,
-  `create_time` timestamp NULL DEFAULT NULL,
-  `type` int(11) DEFAULT NULL,
-  `catagory` int(11) DEFAULT NULL,
-  `task_type` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=384 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of examine_record
--- ----------------------------
-
--- ----------------------------
--- Table structure for `exp_item`
--- ----------------------------
-DROP TABLE IF EXISTS `exp_item`;
-CREATE TABLE `exp_item` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `a_id` bigint(20) DEFAULT NULL,
-  `project` varchar(50) DEFAULT NULL,
-  `standard` varchar(500) DEFAULT NULL,
   `price` double DEFAULT NULL,
-  `num` int(11) DEFAULT NULL,
-  `total` double DEFAULT NULL,
-  `remark` varchar(200) DEFAULT NULL,
-  `create_time` timestamp NULL DEFAULT NULL,
-  `c_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of exp_item
--- ----------------------------
-
--- ----------------------------
--- Table structure for `info`
--- ----------------------------
-DROP TABLE IF EXISTS `info`;
-CREATE TABLE `info` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `v_id` bigint(20) DEFAULT NULL,
-  `p_id` bigint(20) DEFAULT NULL,
-  `m_id` bigint(20) DEFAULT NULL,
-  `type` int(11) DEFAULT NULL,
-  `state` int(11) DEFAULT NULL,
-  `remark` varchar(200) DEFAULT NULL,
+  `duration` int(11) DEFAULT NULL,
+  `is_delete` int(11) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=84 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of info
+-- Records of combo
 -- ----------------------------
+INSERT INTO `combo` VALUES ('2', '套餐1-内测版', '分发量较小 安装量上限：1万,适用于个人测试', '300', '1', '0', '2018-08-29 01:34:20');
+INSERT INTO `combo` VALUES ('3', '套餐2-公测版/1个月', '分发量中等  安装量上限：1万-3万,适用于公司内部分发使用', '600', '1', '0', '2018-08-29 01:34:59');
+INSERT INTO `combo` VALUES ('4', '套餐2-公测版/3个月', '分发量中等  安装量上限：1万-3万,适用于公司内部分发使用', '1500', '3', '0', '2018-08-29 01:35:50');
+INSERT INTO `combo` VALUES ('5', '套餐2-公测版/6个月', '分发量中等  安装量上限：1万-3万,适用于公司内部分发使用', '2500', '6', '0', '2018-08-29 01:44:38');
+INSERT INTO `combo` VALUES ('6', '套餐3-分发版/1个月', '分发量较大  无限制安装,适用于对外投放,金融,彩票,直播类建议用该版本', '1500', '1', '0', '2018-08-29 01:45:02');
+INSERT INTO `combo` VALUES ('7', '套餐3-分发版/3个月', '分发量较大  无限制安装,适用于对外投放,金融,彩票,直播类建议用该版本', '3888', '3', '0', '2018-08-29 01:45:23');
+INSERT INTO `combo` VALUES ('8', '套餐3-分发版/6个月', '分发量较大  无限制安装,适用于对外投放,金融,彩票,直播类建议用该版本', '5888', '6', '0', '2018-08-29 01:45:48');
+INSERT INTO `combo` VALUES ('9', '套餐4-尊享版/1个月', '全新账号，签名app不超20个，稳定性极高', '2500', '1', '0', '2018-08-29 01:46:30');
+INSERT INTO `combo` VALUES ('10', '套餐4-尊享版/3个月', '全新账号，签名app不超20个，稳定性极高', '6888', '3', '0', '2018-08-29 01:46:56');
 
 -- ----------------------------
--- Table structure for `material`
+-- Table structure for `contacts`
 -- ----------------------------
-DROP TABLE IF EXISTS `material`;
-CREATE TABLE `material` (
+DROP TABLE IF EXISTS `contacts`;
+CREATE TABLE `contacts` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `type` int(11) DEFAULT NULL,
-  `mat_name` varchar(50) DEFAULT NULL,
-  `mat_no` varchar(50) DEFAULT NULL,
-  `mat_color` varchar(50) DEFAULT NULL,
-  `pro_no` varchar(50) DEFAULT NULL,
-  `pic` varchar(50) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `wechat` varchar(50) DEFAULT NULL,
+  `alipay` varchar(50) DEFAULT NULL,
+  `phone` varchar(50) DEFAULT NULL,
   `remark` varchar(200) DEFAULT NULL,
-  `create_time` timestamp NULL DEFAULT NULL,
-  `state` int(11) DEFAULT NULL,
-  `org_id` bigint(20) DEFAULT NULL,
+  `is_delete` int(11) DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of material
+-- Records of contacts
 -- ----------------------------
+INSERT INTO `contacts` VALUES ('6', '', 'Xiaohua19870805', '', '', '', '0', '2018-08-29 01:59:14');
+INSERT INTO `contacts` VALUES ('7', null, 'Mimei45', null, null, null, '0', '2018-08-29 02:21:53');
+INSERT INTO `contacts` VALUES ('8', null, 'jsj920821', null, null, null, '0', '2018-08-29 02:22:07');
+INSERT INTO `contacts` VALUES ('9', null, 'ttmtxo328', null, null, null, '0', '2018-08-29 02:22:18');
+INSERT INTO `contacts` VALUES ('10', null, 'shehuiyelang', null, null, null, '0', '2018-08-29 02:22:30');
+INSERT INTO `contacts` VALUES ('11', null, 'ZZ1158774090', null, null, null, '0', '2018-08-29 02:22:40');
+INSERT INTO `contacts` VALUES ('12', null, 'xht6959220', null, null, null, '0', '2018-08-29 02:22:50');
+INSERT INTO `contacts` VALUES ('13', null, 'raxdd1314', null, null, null, '0', '2018-08-29 02:22:59');
+INSERT INTO `contacts` VALUES ('14', null, 'ydc177', null, null, null, '0', '2018-08-29 02:23:10');
+INSERT INTO `contacts` VALUES ('15', null, 'mu20120118', null, null, null, '0', '2018-08-29 02:23:19');
+INSERT INTO `contacts` VALUES ('16', null, 'XLJ1143667143', null, null, null, '0', '2018-08-29 02:23:33');
+INSERT INTO `contacts` VALUES ('17', null, 'pjqb4935', null, null, null, '0', '2018-08-29 02:23:42');
+INSERT INTO `contacts` VALUES ('18', null, 'langki7366', null, null, null, '0', '2018-08-29 02:24:03');
+INSERT INTO `contacts` VALUES ('19', null, 'four88888888four', null, null, null, '0', '2018-08-29 02:24:16');
 
 -- ----------------------------
 -- Table structure for `menu`
@@ -275,7 +177,7 @@ CREATE TABLE `menu` (
   `is_parent` enum('N','Y') DEFAULT 'N',
   `alias` varchar(50) DEFAULT NULL COMMENT '别名，必须唯一',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of menu
@@ -341,248 +243,114 @@ CREATE TABLE `operation_log` (
   `type` varchar(100) DEFAULT NULL,
   `operation` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1546 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3603 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of operation_log
 -- ----------------------------
+INSERT INTO `operation_log` VALUES ('3553', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 01:34:20', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"name\\\" : \\\"内测版\\\",\\r\\n  \\\"remark\\\" : \\\"分发量较小 安装量上限：1万,适用于个人测试\\\",\\r\\n  \\\"price\\\" : 300.0,\\r\\n  \\\"duration\\\" : 1,\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"createTime\\\" : 1535477660523\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.Combo\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', '套餐管理', '新建');
+INSERT INTO `operation_log` VALUES ('3554', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 01:34:59', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"name\\\" : \\\"公测版/1个月\\\",\\r\\n  \\\"remark\\\" : \\\"分发量中等  安装量上限：1万-3万,适用于公司内部分发使用\\\",\\r\\n  \\\"price\\\" : 600.0,\\r\\n  \\\"duration\\\" : 1,\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"createTime\\\" : 1535477699545\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.Combo\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', '套餐管理', '新建');
+INSERT INTO `operation_log` VALUES ('3555', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 01:35:50', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"name\\\" : \\\"公测版/3个月\\\",\\r\\n  \\\"remark\\\" : \\\"分发量中等  安装量上限：1万-3万,适用于公司内部分发使用\\\",\\r\\n  \\\"price\\\" : 1500.0,\\r\\n  \\\"duration\\\" : 3,\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"createTime\\\" : 1535477750055\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.Combo\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', '套餐管理', '新建');
+INSERT INTO `operation_log` VALUES ('3556', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 01:44:38', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"name\\\" : \\\"公测版/6个月\\\",\\r\\n  \\\"remark\\\" : \\\"分发量中等  安装量上限：1万-3万,适用于公司内部分发使用\\\",\\r\\n  \\\"price\\\" : 2500.0,\\r\\n  \\\"duration\\\" : 6,\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"createTime\\\" : 1535478278970\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.Combo\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', '套餐管理', '新建');
+INSERT INTO `operation_log` VALUES ('3557', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 01:45:02', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"name\\\" : \\\"分发版/1个月\\\",\\r\\n  \\\"remark\\\" : \\\"分发量较大  无限制安装,适用于对外投放,金融,彩票,直播类建议用该版本\\\",\\r\\n  \\\"price\\\" : 1500.0,\\r\\n  \\\"duration\\\" : 1,\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"createTime\\\" : 1535478302368\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.Combo\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', '套餐管理', '新建');
+INSERT INTO `operation_log` VALUES ('3558', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 01:45:23', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"name\\\" : \\\"分发版/3个月\\\",\\r\\n  \\\"remark\\\" : \\\"分发量较大  无限制安装,适用于对外投放,金融,彩票,直播类建议用该版本\\\",\\r\\n  \\\"price\\\" : 3888.0,\\r\\n  \\\"duration\\\" : 3,\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"createTime\\\" : 1535478323766\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.Combo\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', '套餐管理', '新建');
+INSERT INTO `operation_log` VALUES ('3559', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 01:45:48', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"name\\\" : \\\"分发版/6个月\\\",\\r\\n  \\\"remark\\\" : \\\"分发量较大  无限制安装,适用于对外投放,金融,彩票,直播类建议用该版本\\\",\\r\\n  \\\"price\\\" : 5888.0,\\r\\n  \\\"duration\\\" : 6,\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"createTime\\\" : 1535478348367\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.Combo\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', '套餐管理', '新建');
+INSERT INTO `operation_log` VALUES ('3560', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 01:46:30', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"name\\\" : \\\"尊享版/1个月\\\",\\r\\n  \\\"remark\\\" : \\\"全新账号，签名app不超20个，稳定性极高\\\",\\r\\n  \\\"price\\\" : 2500.0,\\r\\n  \\\"duration\\\" : 1,\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"createTime\\\" : 1535478390382\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.Combo\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', '套餐管理', '新建');
+INSERT INTO `operation_log` VALUES ('3561', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 01:46:56', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"name\\\" : \\\"尊享版/3个月\\\",\\r\\n  \\\"remark\\\" : \\\"全新账号，签名app不超20个，稳定性极高\\\",\\r\\n  \\\"price\\\" : 6888.0,\\r\\n  \\\"duration\\\" : 3,\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"createTime\\\" : 1535478416342\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.Combo\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', '套餐管理', '新建');
+INSERT INTO `operation_log` VALUES ('3562', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 01:51:37', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"id\\\" : 3,\\r\\n  \\\"name\\\" : \\\"SunShine\\\",\\r\\n  \\\"certExpireDate\\\" : 1629129600000,\\r\\n  \\\"descExpireDate\\\" : 1566057600000,\\r\\n  \\\"certFileName\\\" : \\\"\\\",\\r\\n  \\\"descFileName\\\" : \\\"\\\",\\r\\n  \\\"createTime\\\" : 1535478697680,\\r\\n  \\\"remark\\\" : \\\"租4k\\\",\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"primaryKey\\\" : 3\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.Certificate\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', '证书管理', '新建');
+INSERT INTO `operation_log` VALUES ('3563', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 01:51:37', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"id\\\" : 3,\\r\\n  \\\"name\\\" : \\\"SunShine\\\",\\r\\n  \\\"certExpireDate\\\" : 1629129600000,\\r\\n  \\\"descExpireDate\\\" : 1566057600000,\\r\\n  \\\"certFile\\\" : \\\"/certification/3/SunShine Insurance Distribution.p12\\\",\\r\\n  \\\"certFileName\\\" : \\\"SunShine Insurance Distribution.p12\\\",\\r\\n  \\\"descFile\\\" : \\\"/certification/3/SunShine_Insurance_distribution.mobileprovision\\\",\\r\\n  \\\"descFileName\\\" : \\\"SunShine_Insurance_distribution.mobileprovision\\\",\\r\\n  \\\"createTime\\\" : 1535478697680,\\r\\n  \\\"remark\\\" : \\\"租4k\\\",\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"primaryKey\\\" : 3\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.Certificate\",\r\n  \"OLDENTITY\" : \"{\\r\\n  \\\"id\\\" : 3,\\r\\n  \\\"name\\\" : \\\"SunShine\\\",\\r\\n  \\\"certExpireDate\\\" : 1629129600000,\\r\\n  \\\"descExpireDate\\\" : 1566057600000,\\r\\n  \\\"certFileName\\\" : \\\"\\\",\\r\\n  \\\"descFileName\\\" : \\\"\\\",\\r\\n  \\\"createTime\\\" : 1535478697000,\\r\\n  \\\"remark\\\" : \\\"租4k\\\",\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"primaryKey\\\" : 3\\r\\n}\",\r\n  \"OPERATION\" : \"编辑\"\r\n}', '证书管理', '编辑');
+INSERT INTO `operation_log` VALUES ('3564', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 01:52:45', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"id\\\" : 4,\\r\\n  \\\"name\\\" : \\\"yunxun\\\",\\r\\n  \\\"certExpireDate\\\" : 1571328000000,\\r\\n  \\\"descExpireDate\\\" : 1551974400000,\\r\\n  \\\"certFileName\\\" : \\\"\\\",\\r\\n  \\\"descFileName\\\" : \\\"\\\",\\r\\n  \\\"createTime\\\" : 1535478765749,\\r\\n  \\\"remark\\\" : \\\"\\\",\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"primaryKey\\\" : 4\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.Certificate\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', '证书管理', '新建');
+INSERT INTO `operation_log` VALUES ('3565', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 01:52:45', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"id\\\" : 4,\\r\\n  \\\"name\\\" : \\\"yunxun\\\",\\r\\n  \\\"certExpireDate\\\" : 1571328000000,\\r\\n  \\\"descExpireDate\\\" : 1551974400000,\\r\\n  \\\"certFile\\\" : \\\"/certification/4/证书.p12\\\",\\r\\n  \\\"certFileName\\\" : \\\"证书.p12\\\",\\r\\n  \\\"descFile\\\" : \\\"/certification/4/shenzhenyunxun.mobileprovision\\\",\\r\\n  \\\"descFileName\\\" : \\\"shenzhenyunxun.mobileprovision\\\",\\r\\n  \\\"createTime\\\" : 1535478765749,\\r\\n  \\\"remark\\\" : \\\"\\\",\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"primaryKey\\\" : 4\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.Certificate\",\r\n  \"OLDENTITY\" : \"{\\r\\n  \\\"id\\\" : 4,\\r\\n  \\\"name\\\" : \\\"yunxun\\\",\\r\\n  \\\"certExpireDate\\\" : 1571328000000,\\r\\n  \\\"descExpireDate\\\" : 1551974400000,\\r\\n  \\\"certFileName\\\" : \\\"\\\",\\r\\n  \\\"descFileName\\\" : \\\"\\\",\\r\\n  \\\"createTime\\\" : 1535478765000,\\r\\n  \\\"remark\\\" : \\\"\\\",\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"primaryKey\\\" : 4\\r\\n}\",\r\n  \"OPERATION\" : \"编辑\"\r\n}', '证书管理', '编辑');
+INSERT INTO `operation_log` VALUES ('3566', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 01:52:55', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"id\\\" : 4,\\r\\n  \\\"name\\\" : \\\"yunxun\\\",\\r\\n  \\\"certExpireDate\\\" : 1571328000000,\\r\\n  \\\"descExpireDate\\\" : 1551974400000,\\r\\n  \\\"certFile\\\" : \\\"/certification/4/证书.p12\\\",\\r\\n  \\\"certFileName\\\" : \\\"证书.p12\\\",\\r\\n  \\\"descFile\\\" : \\\"/certification/4/shenzhenyunxun.mobileprovision\\\",\\r\\n  \\\"descFileName\\\" : \\\"shenzhenyunxun.mobileprovision\\\",\\r\\n  \\\"createTime\\\" : 1535478765000,\\r\\n  \\\"remark\\\" : \\\"租500\\\",\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"primaryKey\\\" : 4\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.Certificate\",\r\n  \"OLDENTITY\" : \"{\\r\\n  \\\"id\\\" : 4,\\r\\n  \\\"name\\\" : \\\"yunxun\\\",\\r\\n  \\\"certExpireDate\\\" : 1571328000000,\\r\\n  \\\"descExpireDate\\\" : 1551974400000,\\r\\n  \\\"certFile\\\" : \\\"/certification/4/证书.p12\\\",\\r\\n  \\\"certFileName\\\" : \\\"证书.p12\\\",\\r\\n  \\\"descFile\\\" : \\\"/certification/4/shenzhenyunxun.mobileprovision\\\",\\r\\n  \\\"descFileName\\\" : \\\"shenzhenyunxun.mobileprovision\\\",\\r\\n  \\\"createTime\\\" : 1535478765000,\\r\\n  \\\"remark\\\" : \\\"\\\",\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"primaryKey\\\" : 4\\r\\n}\",\r\n  \"OPERATION\" : \"编辑\"\r\n}', '证书管理', '编辑');
+INSERT INTO `operation_log` VALUES ('3567', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 01:55:01', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"id\\\" : 5,\\r\\n  \\\"name\\\" : \\\"digigen\\\",\\r\\n  \\\"certExpireDate\\\" : 1629820800000,\\r\\n  \\\"descExpireDate\\\" : 1566748800000,\\r\\n  \\\"certFileName\\\" : \\\"\\\",\\r\\n  \\\"descFileName\\\" : \\\"\\\",\\r\\n  \\\"createTime\\\" : 1535478901183,\\r\\n  \\\"remark\\\" : \\\"\\\",\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"primaryKey\\\" : 5\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.Certificate\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', '证书管理', '新建');
+INSERT INTO `operation_log` VALUES ('3568', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 01:55:01', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"id\\\" : 5,\\r\\n  \\\"name\\\" : \\\"digigen\\\",\\r\\n  \\\"certExpireDate\\\" : 1629820800000,\\r\\n  \\\"descExpireDate\\\" : 1566748800000,\\r\\n  \\\"certFile\\\" : \\\"/certification/5/DIGIGEN TECHNOLOGY Distribution.p12\\\",\\r\\n  \\\"certFileName\\\" : \\\"DIGIGEN TECHNOLOGY Distribution.p12\\\",\\r\\n  \\\"descFile\\\" : \\\"/certification/5/DigigenTechnology_Distribution.mobileprovision\\\",\\r\\n  \\\"descFileName\\\" : \\\"DigigenTechnology_Distribution.mobileprovision\\\",\\r\\n  \\\"createTime\\\" : 1535478901183,\\r\\n  \\\"remark\\\" : \\\"\\\",\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"primaryKey\\\" : 5\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.Certificate\",\r\n  \"OLDENTITY\" : \"{\\r\\n  \\\"id\\\" : 5,\\r\\n  \\\"name\\\" : \\\"digigen\\\",\\r\\n  \\\"certExpireDate\\\" : 1629820800000,\\r\\n  \\\"descExpireDate\\\" : 1566748800000,\\r\\n  \\\"certFileName\\\" : \\\"\\\",\\r\\n  \\\"descFileName\\\" : \\\"\\\",\\r\\n  \\\"createTime\\\" : 1535478901000,\\r\\n  \\\"remark\\\" : \\\"\\\",\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"primaryKey\\\" : 5\\r\\n}\",\r\n  \"OPERATION\" : \"编辑\"\r\n}', '证书管理', '编辑');
+INSERT INTO `operation_log` VALUES ('3569', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 01:59:14', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"id\\\" : 6,\\r\\n  \\\"name\\\" : \\\"\\\",\\r\\n  \\\"wechat\\\" : \\\"Xiaohua19870805\\\",\\r\\n  \\\"alipay\\\" : \\\"\\\",\\r\\n  \\\"phone\\\" : \\\"\\\",\\r\\n  \\\"remark\\\" : \\\"\\\",\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"createTime\\\" : 1535479154416,\\r\\n  \\\"primaryKey\\\" : 6\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.Contacts\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', '客户管理', '新建');
+INSERT INTO `operation_log` VALUES ('3570', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 01:59:14', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"name\\\" : \\\"速来应急\\\",\\r\\n  \\\"effectiveDate\\\" : 1535479154416,\\r\\n  \\\"expireDate\\\" : 1538157554416,\\r\\n  \\\"remark\\\" : \\\"\\\",\\r\\n  \\\"unsignFile\\\" : \\\"/app/20180829015914/速来应急.ipa\\\",\\r\\n  \\\"unsignFileName\\\" : \\\"速来应急.ipa\\\",\\r\\n  \\\"signFile\\\" : \\\"/app/20180829015914/速来应急_resigned.ipa\\\",\\r\\n  \\\"signFileName\\\" : \\\"速来应急_resigned.ipa\\\",\\r\\n  \\\"createTime\\\" : 1535479154416,\\r\\n  \\\"updateTime\\\" : 1535479154416,\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"certId\\\" : 5\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.App\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', 'APP管理', '新建');
+INSERT INTO `operation_log` VALUES ('3571', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 01:59:14', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"type\\\" : 1,\\r\\n  \\\"comboId\\\" : 9,\\r\\n  \\\"price\\\" : 2500.0,\\r\\n  \\\"effectiveDate\\\" : 1535479154416,\\r\\n  \\\"expireDate\\\" : 1538157554416,\\r\\n  \\\"appId\\\" : 5,\\r\\n  \\\"createTime\\\" : 1535479154416,\\r\\n  \\\"certId\\\" : 5\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.SignRecord\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', '签名记录', '新建');
+INSERT INTO `operation_log` VALUES ('3572', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 02:02:01', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"name\\\" : \\\"秒钱贷\\\",\\r\\n  \\\"effectiveDate\\\" : 1535479321278,\\r\\n  \\\"expireDate\\\" : 1538157721278,\\r\\n  \\\"remark\\\" : \\\"\\\",\\r\\n  \\\"unsignFile\\\" : \\\"/app/20180829020201/人人花.ipa\\\",\\r\\n  \\\"unsignFileName\\\" : \\\"人人花.ipa\\\",\\r\\n  \\\"signFile\\\" : \\\"/app/20180829020201/人人花_resigned.ipa\\\",\\r\\n  \\\"signFileName\\\" : \\\"人人花_resigned.ipa\\\",\\r\\n  \\\"createTime\\\" : 1535479321278,\\r\\n  \\\"updateTime\\\" : 1535479321278,\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"certId\\\" : 3\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.App\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', 'APP管理', '新建');
+INSERT INTO `operation_log` VALUES ('3573', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 02:02:01', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"type\\\" : 1,\\r\\n  \\\"comboId\\\" : 6,\\r\\n  \\\"price\\\" : 1500.0,\\r\\n  \\\"effectiveDate\\\" : 1535479321278,\\r\\n  \\\"expireDate\\\" : 1538157721278,\\r\\n  \\\"appId\\\" : 6,\\r\\n  \\\"createTime\\\" : 1535479321278,\\r\\n  \\\"certId\\\" : 3\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.SignRecord\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', '签名记录', '新建');
+INSERT INTO `operation_log` VALUES ('3574', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 02:02:44', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"name\\\" : \\\"快快钱包\\\",\\r\\n  \\\"effectiveDate\\\" : 1535479364890,\\r\\n  \\\"expireDate\\\" : 1543428164890,\\r\\n  \\\"remark\\\" : \\\"\\\",\\r\\n  \\\"unsignFile\\\" : \\\"/app/20180829020244/快快钱包.ipa\\\",\\r\\n  \\\"unsignFileName\\\" : \\\"快快钱包.ipa\\\",\\r\\n  \\\"signFile\\\" : \\\"/app/20180829020244/快快钱包_resigned.ipa\\\",\\r\\n  \\\"signFileName\\\" : \\\"快快钱包_resigned.ipa\\\",\\r\\n  \\\"createTime\\\" : 1535479364890,\\r\\n  \\\"updateTime\\\" : 1535479364890,\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"certId\\\" : 5\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.App\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', 'APP管理', '新建');
+INSERT INTO `operation_log` VALUES ('3575', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 02:02:44', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"type\\\" : 1,\\r\\n  \\\"comboId\\\" : 10,\\r\\n  \\\"price\\\" : 6888.0,\\r\\n  \\\"effectiveDate\\\" : 1535479364890,\\r\\n  \\\"expireDate\\\" : 1543428164890,\\r\\n  \\\"appId\\\" : 7,\\r\\n  \\\"createTime\\\" : 1535479364890,\\r\\n  \\\"certId\\\" : 5\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.SignRecord\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', '签名记录', '新建');
+INSERT INTO `operation_log` VALUES ('3576', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 02:03:19', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"name\\\" : \\\"安心花\\\",\\r\\n  \\\"effectiveDate\\\" : 1535479399745,\\r\\n  \\\"expireDate\\\" : 1538157799745,\\r\\n  \\\"remark\\\" : \\\"\\\",\\r\\n  \\\"unsignFile\\\" : \\\"/app/20180829020319/安心花.ipa\\\",\\r\\n  \\\"unsignFileName\\\" : \\\"安心花.ipa\\\",\\r\\n  \\\"signFile\\\" : \\\"/app/20180829020319/安心花_resigned.ipa\\\",\\r\\n  \\\"signFileName\\\" : \\\"安心花_resigned.ipa\\\",\\r\\n  \\\"createTime\\\" : 1535479399745,\\r\\n  \\\"updateTime\\\" : 1535479399745,\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"certId\\\" : 3\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.App\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', 'APP管理', '新建');
+INSERT INTO `operation_log` VALUES ('3577', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 02:03:19', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"type\\\" : 1,\\r\\n  \\\"comboId\\\" : 6,\\r\\n  \\\"price\\\" : 1500.0,\\r\\n  \\\"effectiveDate\\\" : 1535479399745,\\r\\n  \\\"expireDate\\\" : 1538157799745,\\r\\n  \\\"appId\\\" : 8,\\r\\n  \\\"createTime\\\" : 1535479399745,\\r\\n  \\\"certId\\\" : 3\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.SignRecord\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', '签名记录', '新建');
+INSERT INTO `operation_log` VALUES ('3578', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 02:04:21', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"name\\\" : \\\"来来宝\\\",\\r\\n  \\\"effectiveDate\\\" : 1535479461638,\\r\\n  \\\"expireDate\\\" : 1538157861638,\\r\\n  \\\"remark\\\" : \\\"\\\",\\r\\n  \\\"unsignFile\\\" : \\\"/app/20180829020421/来来宝.ipa\\\",\\r\\n  \\\"unsignFileName\\\" : \\\"来来宝.ipa\\\",\\r\\n  \\\"signFile\\\" : \\\"/app/20180829020421/来来宝_resigned.ipa\\\",\\r\\n  \\\"signFileName\\\" : \\\"来来宝_resigned.ipa\\\",\\r\\n  \\\"createTime\\\" : 1535479461638,\\r\\n  \\\"updateTime\\\" : 1535479461638,\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"certId\\\" : 3\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.App\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', 'APP管理', '新建');
+INSERT INTO `operation_log` VALUES ('3579', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 02:04:21', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"type\\\" : 1,\\r\\n  \\\"comboId\\\" : 6,\\r\\n  \\\"price\\\" : 1500.0,\\r\\n  \\\"effectiveDate\\\" : 1535479461638,\\r\\n  \\\"expireDate\\\" : 1538157861638,\\r\\n  \\\"appId\\\" : 9,\\r\\n  \\\"createTime\\\" : 1535479461638,\\r\\n  \\\"certId\\\" : 3\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.SignRecord\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', '签名记录', '新建');
+INSERT INTO `operation_log` VALUES ('3580', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 02:05:21', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"name\\\" : \\\"提钱周转\\\",\\r\\n  \\\"effectiveDate\\\" : 1535479521015,\\r\\n  \\\"expireDate\\\" : 1538157921015,\\r\\n  \\\"remark\\\" : \\\"\\\",\\r\\n  \\\"unsignFile\\\" : \\\"/app/20180829020521/提钱周转.ipa\\\",\\r\\n  \\\"unsignFileName\\\" : \\\"提钱周转.ipa\\\",\\r\\n  \\\"signFile\\\" : \\\"/app/20180829020521/提钱周转_resigned.ipa\\\",\\r\\n  \\\"signFileName\\\" : \\\"提钱周转_resigned.ipa\\\",\\r\\n  \\\"createTime\\\" : 1535479521015,\\r\\n  \\\"updateTime\\\" : 1535479521015,\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"certId\\\" : 5\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.App\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', 'APP管理', '新建');
+INSERT INTO `operation_log` VALUES ('3581', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 02:05:21', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"type\\\" : 1,\\r\\n  \\\"comboId\\\" : 9,\\r\\n  \\\"price\\\" : 2500.0,\\r\\n  \\\"effectiveDate\\\" : 1535479521015,\\r\\n  \\\"expireDate\\\" : 1538157921015,\\r\\n  \\\"appId\\\" : 10,\\r\\n  \\\"createTime\\\" : 1535479521015,\\r\\n  \\\"certId\\\" : 5\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.SignRecord\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', '签名记录', '新建');
+INSERT INTO `operation_log` VALUES ('3582', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 02:05:56', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"name\\\" : \\\"菠萝钱包\\\",\\r\\n  \\\"effectiveDate\\\" : 1535479556560,\\r\\n  \\\"expireDate\\\" : 1538157956560,\\r\\n  \\\"remark\\\" : \\\"\\\",\\r\\n  \\\"unsignFile\\\" : \\\"/app/20180829020556/菠萝钱包.ipa\\\",\\r\\n  \\\"unsignFileName\\\" : \\\"菠萝钱包.ipa\\\",\\r\\n  \\\"signFile\\\" : \\\"/app/20180829020556/菠萝钱包_resigned.ipa\\\",\\r\\n  \\\"signFileName\\\" : \\\"菠萝钱包_resigned.ipa\\\",\\r\\n  \\\"createTime\\\" : 1535479556560,\\r\\n  \\\"updateTime\\\" : 1535479556560,\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"certId\\\" : 5\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.App\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', 'APP管理', '新建');
+INSERT INTO `operation_log` VALUES ('3583', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 02:05:56', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"type\\\" : 1,\\r\\n  \\\"comboId\\\" : 9,\\r\\n  \\\"price\\\" : 2500.0,\\r\\n  \\\"effectiveDate\\\" : 1535479556560,\\r\\n  \\\"expireDate\\\" : 1538157956560,\\r\\n  \\\"appId\\\" : 11,\\r\\n  \\\"createTime\\\" : 1535479556560,\\r\\n  \\\"certId\\\" : 5\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.SignRecord\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', '签名记录', '新建');
+INSERT INTO `operation_log` VALUES ('3584', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 02:06:46', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"name\\\" : \\\"曙光贷\\\",\\r\\n  \\\"effectiveDate\\\" : 1535479606422,\\r\\n  \\\"expireDate\\\" : 1538158006422,\\r\\n  \\\"remark\\\" : \\\"\\\",\\r\\n  \\\"unsignFile\\\" : \\\"/app/20180829020646/曙光贷.ipa\\\",\\r\\n  \\\"unsignFileName\\\" : \\\"曙光贷.ipa\\\",\\r\\n  \\\"signFile\\\" : \\\"/app/20180829020646/曙光贷_resigned.ipa\\\",\\r\\n  \\\"signFileName\\\" : \\\"曙光贷_resigned.ipa\\\",\\r\\n  \\\"createTime\\\" : 1535479606422,\\r\\n  \\\"updateTime\\\" : 1535479606422,\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"certId\\\" : 5\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.App\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', 'APP管理', '新建');
+INSERT INTO `operation_log` VALUES ('3585', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 02:06:46', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"type\\\" : 1,\\r\\n  \\\"comboId\\\" : 9,\\r\\n  \\\"price\\\" : 2500.0,\\r\\n  \\\"effectiveDate\\\" : 1535479606422,\\r\\n  \\\"expireDate\\\" : 1538158006422,\\r\\n  \\\"appId\\\" : 12,\\r\\n  \\\"createTime\\\" : 1535479606422,\\r\\n  \\\"certId\\\" : 5\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.SignRecord\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', '签名记录', '新建');
+INSERT INTO `operation_log` VALUES ('3586', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 02:07:24', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"name\\\" : \\\"我养你\\\",\\r\\n  \\\"effectiveDate\\\" : 1535479644572,\\r\\n  \\\"expireDate\\\" : 1543428444572,\\r\\n  \\\"remark\\\" : \\\"\\\",\\r\\n  \\\"unsignFile\\\" : \\\"/app/20180829020724/我养你.ipa\\\",\\r\\n  \\\"unsignFileName\\\" : \\\"我养你.ipa\\\",\\r\\n  \\\"signFile\\\" : \\\"/app/20180829020724/我养你_resigned.ipa\\\",\\r\\n  \\\"signFileName\\\" : \\\"我养你_resigned.ipa\\\",\\r\\n  \\\"createTime\\\" : 1535479644572,\\r\\n  \\\"updateTime\\\" : 1535479644572,\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"certId\\\" : 5\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.App\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', 'APP管理', '新建');
+INSERT INTO `operation_log` VALUES ('3587', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 02:07:24', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"type\\\" : 1,\\r\\n  \\\"comboId\\\" : 10,\\r\\n  \\\"price\\\" : 6888.0,\\r\\n  \\\"effectiveDate\\\" : 1535479644572,\\r\\n  \\\"expireDate\\\" : 1543428444572,\\r\\n  \\\"appId\\\" : 13,\\r\\n  \\\"createTime\\\" : 1535479644572,\\r\\n  \\\"certId\\\" : 5\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.SignRecord\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', '签名记录', '新建');
+INSERT INTO `operation_log` VALUES ('3588', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 02:07:52', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"name\\\" : \\\"芝麻花\\\",\\r\\n  \\\"effectiveDate\\\" : 1535479672119,\\r\\n  \\\"expireDate\\\" : 1538158072119,\\r\\n  \\\"remark\\\" : \\\"\\\",\\r\\n  \\\"unsignFile\\\" : \\\"/app/20180829020752/芝麻花.ipa\\\",\\r\\n  \\\"unsignFileName\\\" : \\\"芝麻花.ipa\\\",\\r\\n  \\\"signFile\\\" : \\\"/app/20180829020752/芝麻花_resigned.ipa\\\",\\r\\n  \\\"signFileName\\\" : \\\"芝麻花_resigned.ipa\\\",\\r\\n  \\\"createTime\\\" : 1535479672119,\\r\\n  \\\"updateTime\\\" : 1535479672119,\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"certId\\\" : 5\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.App\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', 'APP管理', '新建');
+INSERT INTO `operation_log` VALUES ('3589', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 02:07:52', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"type\\\" : 1,\\r\\n  \\\"comboId\\\" : 9,\\r\\n  \\\"price\\\" : 2500.0,\\r\\n  \\\"effectiveDate\\\" : 1535479672119,\\r\\n  \\\"expireDate\\\" : 1538158072119,\\r\\n  \\\"appId\\\" : 14,\\r\\n  \\\"createTime\\\" : 1535479672119,\\r\\n  \\\"certId\\\" : 5\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.SignRecord\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', '签名记录', '新建');
+INSERT INTO `operation_log` VALUES ('3590', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 02:08:43', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"name\\\" : \\\"人人花\\\",\\r\\n  \\\"effectiveDate\\\" : 1535479723524,\\r\\n  \\\"expireDate\\\" : 1538158123524,\\r\\n  \\\"remark\\\" : \\\"\\\",\\r\\n  \\\"unsignFile\\\" : \\\"/app/20180829020843/人人花.ipa\\\",\\r\\n  \\\"unsignFileName\\\" : \\\"人人花.ipa\\\",\\r\\n  \\\"signFile\\\" : \\\"/app/20180829020843/人人花_resigned.ipa\\\",\\r\\n  \\\"signFileName\\\" : \\\"人人花_resigned.ipa\\\",\\r\\n  \\\"createTime\\\" : 1535479723524,\\r\\n  \\\"updateTime\\\" : 1535479723524,\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"certId\\\" : 3\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.App\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', 'APP管理', '新建');
+INSERT INTO `operation_log` VALUES ('3591', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 02:08:43', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"type\\\" : 1,\\r\\n  \\\"comboId\\\" : 6,\\r\\n  \\\"price\\\" : 1500.0,\\r\\n  \\\"effectiveDate\\\" : 1535479723524,\\r\\n  \\\"expireDate\\\" : 1538158123524,\\r\\n  \\\"appId\\\" : 15,\\r\\n  \\\"createTime\\\" : 1535479723524,\\r\\n  \\\"certId\\\" : 3\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.SignRecord\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', '签名记录', '新建');
+INSERT INTO `operation_log` VALUES ('3592', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 02:09:16', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"name\\\" : \\\"溜溜花\\\",\\r\\n  \\\"effectiveDate\\\" : 1535479756956,\\r\\n  \\\"expireDate\\\" : 1538158156956,\\r\\n  \\\"remark\\\" : \\\"\\\",\\r\\n  \\\"unsignFile\\\" : \\\"/app/20180829020916/溜溜花.ipa\\\",\\r\\n  \\\"unsignFileName\\\" : \\\"溜溜花.ipa\\\",\\r\\n  \\\"signFile\\\" : \\\"/app/20180829020916/溜溜花_resigned.ipa\\\",\\r\\n  \\\"signFileName\\\" : \\\"溜溜花_resigned.ipa\\\",\\r\\n  \\\"createTime\\\" : 1535479756956,\\r\\n  \\\"updateTime\\\" : 1535479756956,\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"certId\\\" : 3\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.App\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', 'APP管理', '新建');
+INSERT INTO `operation_log` VALUES ('3593', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 02:09:16', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"type\\\" : 1,\\r\\n  \\\"comboId\\\" : 6,\\r\\n  \\\"price\\\" : 1500.0,\\r\\n  \\\"effectiveDate\\\" : 1535479756956,\\r\\n  \\\"expireDate\\\" : 1538158156956,\\r\\n  \\\"appId\\\" : 16,\\r\\n  \\\"createTime\\\" : 1535479756956,\\r\\n  \\\"certId\\\" : 3\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.SignRecord\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', '签名记录', '新建');
+INSERT INTO `operation_log` VALUES ('3594', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 02:09:46', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"name\\\" : \\\"58钱站\\\",\\r\\n  \\\"effectiveDate\\\" : 1535479786884,\\r\\n  \\\"expireDate\\\" : 1543428586884,\\r\\n  \\\"remark\\\" : \\\"\\\",\\r\\n  \\\"unsignFile\\\" : \\\"/app/20180829020946/58钱站.ipa\\\",\\r\\n  \\\"unsignFileName\\\" : \\\"58钱站.ipa\\\",\\r\\n  \\\"signFile\\\" : \\\"/app/20180829020946/58钱站_resigned.ipa\\\",\\r\\n  \\\"signFileName\\\" : \\\"58钱站_resigned.ipa\\\",\\r\\n  \\\"createTime\\\" : 1535479786884,\\r\\n  \\\"updateTime\\\" : 1535479786884,\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"certId\\\" : 3\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.App\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', 'APP管理', '新建');
+INSERT INTO `operation_log` VALUES ('3595', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 02:09:46', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"type\\\" : 1,\\r\\n  \\\"comboId\\\" : 7,\\r\\n  \\\"price\\\" : 3888.0,\\r\\n  \\\"effectiveDate\\\" : 1535479786884,\\r\\n  \\\"expireDate\\\" : 1543428586884,\\r\\n  \\\"appId\\\" : 17,\\r\\n  \\\"createTime\\\" : 1535479786884,\\r\\n  \\\"certId\\\" : 3\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.SignRecord\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', '签名记录', '新建');
+INSERT INTO `operation_log` VALUES ('3596', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 02:10:14', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"name\\\" : \\\"喜贷钱包\\\",\\r\\n  \\\"effectiveDate\\\" : 1535479814171,\\r\\n  \\\"expireDate\\\" : 1543428614171,\\r\\n  \\\"remark\\\" : \\\"\\\",\\r\\n  \\\"unsignFile\\\" : \\\"/app/20180829021014/58钱站.ipa\\\",\\r\\n  \\\"unsignFileName\\\" : \\\"58钱站.ipa\\\",\\r\\n  \\\"signFile\\\" : \\\"/app/20180829021014/58钱站_resigned.ipa\\\",\\r\\n  \\\"signFileName\\\" : \\\"58钱站_resigned.ipa\\\",\\r\\n  \\\"createTime\\\" : 1535479814171,\\r\\n  \\\"updateTime\\\" : 1535479814171,\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"certId\\\" : 3\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.App\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', 'APP管理', '新建');
+INSERT INTO `operation_log` VALUES ('3597', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 02:10:14', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"type\\\" : 1,\\r\\n  \\\"comboId\\\" : 7,\\r\\n  \\\"price\\\" : 3888.0,\\r\\n  \\\"effectiveDate\\\" : 1535479814171,\\r\\n  \\\"expireDate\\\" : 1543428614171,\\r\\n  \\\"appId\\\" : 18,\\r\\n  \\\"createTime\\\" : 1535479814171,\\r\\n  \\\"certId\\\" : 3\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.SignRecord\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', '签名记录', '新建');
+INSERT INTO `operation_log` VALUES ('3598', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 02:10:38', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"name\\\" : \\\"蚂蚁口袋\\\",\\r\\n  \\\"effectiveDate\\\" : 1535479838169,\\r\\n  \\\"expireDate\\\" : 1538158238169,\\r\\n  \\\"remark\\\" : \\\"\\\",\\r\\n  \\\"unsignFile\\\" : \\\"/app/20180829021038/蚂蚁口袋.ipa\\\",\\r\\n  \\\"unsignFileName\\\" : \\\"蚂蚁口袋.ipa\\\",\\r\\n  \\\"signFile\\\" : \\\"/app/20180829021038/蚂蚁口袋_resigned.ipa\\\",\\r\\n  \\\"signFileName\\\" : \\\"蚂蚁口袋_resigned.ipa\\\",\\r\\n  \\\"createTime\\\" : 1535479838169,\\r\\n  \\\"updateTime\\\" : 1535479838169,\\r\\n  \\\"isDelete\\\" : 0,\\r\\n  \\\"certId\\\" : 3\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.App\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', 'APP管理', '新建');
+INSERT INTO `operation_log` VALUES ('3599', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 02:10:38', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"type\\\" : 1,\\r\\n  \\\"comboId\\\" : 6,\\r\\n  \\\"price\\\" : 1500.0,\\r\\n  \\\"effectiveDate\\\" : 1535479838169,\\r\\n  \\\"expireDate\\\" : 1538158238169,\\r\\n  \\\"appId\\\" : 19,\\r\\n  \\\"createTime\\\" : 1535479838169,\\r\\n  \\\"certId\\\" : 3\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.SignRecord\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', '签名记录', '新建');
+INSERT INTO `operation_log` VALUES ('3600', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 02:18:22', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"remark\\\" : \\\"购买digigen 账号\\\",\\r\\n  \\\"price\\\" : 90000.0,\\r\\n  \\\"createTime\\\" : 1535480302793,\\r\\n  \\\"isDelete\\\" : 0\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.Pay\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', '支出记录', '新建');
+INSERT INTO `operation_log` VALUES ('3601', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 02:18:36', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"remark\\\" : \\\"租 sunshine 证书\\\",\\r\\n  \\\"price\\\" : 4000.0,\\r\\n  \\\"createTime\\\" : 1535480316178,\\r\\n  \\\"isDelete\\\" : 0\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.Pay\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', '支出记录', '新建');
+INSERT INTO `operation_log` VALUES ('3602', 'admin', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36', '0:0:0:0:0:0:0:1', '2018-08-29 02:18:51', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"remark\\\" : \\\"租 yunxun 证书\\\",\\r\\n  \\\"price\\\" : 500.0,\\r\\n  \\\"createTime\\\" : 1535480331468,\\r\\n  \\\"isDelete\\\" : 0\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.Pay\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', '支出记录', '新建');
 
 -- ----------------------------
--- Table structure for `org`
+-- Table structure for `pay`
 -- ----------------------------
-DROP TABLE IF EXISTS `org`;
-CREATE TABLE `org` (
+DROP TABLE IF EXISTS `pay`;
+CREATE TABLE `pay` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) DEFAULT NULL,
-  `code` varchar(50) DEFAULT NULL,
-  `areaid` bigint(20) DEFAULT NULL,
-  `desc` varchar(200) DEFAULT NULL,
-  `parentid` bigint(20) DEFAULT NULL,
+  `remark` varchar(200) DEFAULT NULL,
+  `price` double DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
+  `is_delete` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of pay
+-- ----------------------------
+INSERT INTO `pay` VALUES ('2', '购买digigen 账号', '90000', '2018-08-29 02:18:22', '0');
+INSERT INTO `pay` VALUES ('3', '租 sunshine 证书', '4000', '2018-08-29 02:18:36', '0');
+INSERT INTO `pay` VALUES ('4', '租 yunxun 证书', '500', '2018-08-29 02:18:51', '0');
+
+-- ----------------------------
+-- Table structure for `sign_record`
+-- ----------------------------
+DROP TABLE IF EXISTS `sign_record`;
+CREATE TABLE `sign_record` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `type` int(11) DEFAULT NULL,
-  `addr` varchar(200) DEFAULT NULL,
+  `cert_id` bigint(20) DEFAULT NULL,
+  `combo_id` bigint(20) DEFAULT NULL,
+  `price` double DEFAULT NULL,
+  `effective_date` date DEFAULT NULL,
+  `expire_date` date DEFAULT NULL,
+  `app_id` bigint(20) DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of org
+-- Records of sign_record
 -- ----------------------------
-INSERT INTO `org` VALUES ('1', '机构', '001', null, null, null, null, null);
-INSERT INTO `org` VALUES ('13', '通用五菱', 'sgmw', '2', '', '1', '1', null);
-INSERT INTO `org` VALUES ('14', '上汽通用五菱SQE', 'SQE', '111', '', '13', '1', null);
-INSERT INTO `org` VALUES ('15', '上汽通用五菱 PE', 'PE', '111', '', '13', '1', null);
-INSERT INTO `org` VALUES ('16', '上汽通用五菱材料研究所', 'cl', '111', '', '13', '1', null);
-INSERT INTO `org` VALUES ('17', '供应商', 'gy', '106', '', '1', '2', null);
-INSERT INTO `org` VALUES ('18', '供应商1', 'g1', '111', '', '17', '2', '广州市天河区');
-INSERT INTO `org` VALUES ('19', '实验室', 'sy', '111', '', '1', '3', null);
-INSERT INTO `org` VALUES ('20', 'CQC华南实验室', 'cqc', '111', '', '19', '3', null);
-INSERT INTO `org` VALUES ('21', '供应商2', 'g2', '111', '', '17', '2', '广州市海珠区');
-INSERT INTO `org` VALUES ('22', '供应商3', 'g3', '111', '', '17', '2', '广州市白云区');
-INSERT INTO `org` VALUES ('23', '其它实验室', 'qt', '2', '', '19', '3', '');
-
--- ----------------------------
--- Table structure for `parts`
--- ----------------------------
-DROP TABLE IF EXISTS `parts`;
-CREATE TABLE `parts` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `type` int(11) DEFAULT NULL,
-  `code` varchar(50) DEFAULT NULL,
-  `name` varchar(50) DEFAULT NULL,
-  `pro_time` date DEFAULT NULL,
-  `place` varchar(100) DEFAULT NULL,
-  `pro_no` varchar(50) DEFAULT NULL,
-  `remark` varchar(200) DEFAULT NULL,
-  `create_time` timestamp NULL DEFAULT NULL,
-  `state` int(11) DEFAULT NULL,
-  `org_id` bigint(20) DEFAULT NULL,
-  `is_key` int(11) DEFAULT NULL,
-  `key_code` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of parts
--- ----------------------------
-
--- ----------------------------
--- Table structure for `pf_result`
--- ----------------------------
-DROP TABLE IF EXISTS `pf_result`;
-CREATE TABLE `pf_result` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `t_id` bigint(20) DEFAULT NULL,
-  `project` varchar(100) DEFAULT NULL,
-  `standard` varchar(500) DEFAULT NULL,
-  `require` varchar(500) DEFAULT NULL,
-  `result` varchar(500) DEFAULT NULL,
-  `evaluate` varchar(500) DEFAULT NULL,
-  `remark` varchar(200) DEFAULT NULL,
-  `create_time` timestamp NULL DEFAULT NULL,
-  `catagory` int(11) DEFAULT NULL,
-  `exp_no` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of pf_result
--- ----------------------------
-
--- ----------------------------
--- Table structure for `role`
--- ----------------------------
-DROP TABLE IF EXISTS `role`;
-CREATE TABLE `role` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL,
-  `code` varchar(50) DEFAULT NULL,
-  `grid` bigint(20) DEFAULT NULL,
-  `desc` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of role
--- ----------------------------
-INSERT INTO `role` VALUES ('1', 'admin', 'admin', '22', '超级管理员');
-INSERT INTO `role` VALUES ('14', 'PE_文员', 'pe_wy', '18', '上汽通用五菱PE-文员');
-INSERT INTO `role` VALUES ('15', 'PE_工程师', 'pe_eng', '18', '上汽通用五菱PE-工程师');
-INSERT INTO `role` VALUES ('16', 'PE_负责人', 'pe_leader', '18', '上汽通用五菱PE-负责人');
-INSERT INTO `role` VALUES ('17', 'SQE_工程师', 'sqe_eng', '17', '');
-INSERT INTO `role` VALUES ('18', 'SQE_负责人', 'sqe_leader', '17', '');
-INSERT INTO `role` VALUES ('19', 'SQE_文员', 'sqe_wy', '17', '');
-INSERT INTO `role` VALUES ('20', 'cqc实验室', 'cqc', '21', '');
-
--- ----------------------------
--- Table structure for `role_group`
--- ----------------------------
-DROP TABLE IF EXISTS `role_group`;
-CREATE TABLE `role_group` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) DEFAULT NULL,
-  `parentid` bigint(20) DEFAULT NULL,
-  `desc` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of role_group
--- ----------------------------
-INSERT INTO `role_group` VALUES ('1', '角色', null, '根节点');
-INSERT INTO `role_group` VALUES ('17', '上汽通用五菱SQE', '1', '上汽通用五菱SQE');
-INSERT INTO `role_group` VALUES ('18', '上汽通用五菱PE', '1', '上汽通用五菱PE');
-INSERT INTO `role_group` VALUES ('19', '上汽通用五菱TDC', '1', '上汽通用五菱TDC');
-INSERT INTO `role_group` VALUES ('20', '上汽通用五菱供应商', '1', '上汽通用五菱供应商');
-INSERT INTO `role_group` VALUES ('21', '实验室用户', '1', '实验室用户');
-INSERT INTO `role_group` VALUES ('22', '系统维护人员', '1', '系统维护人员');
-
--- ----------------------------
--- Table structure for `role_permission`
--- ----------------------------
-DROP TABLE IF EXISTS `role_permission`;
-CREATE TABLE `role_permission` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `role_id` bigint(20) NOT NULL,
-  `permission` varchar(1000) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of role_permission
--- ----------------------------
-INSERT INTO `role_permission` VALUES ('5', '1', 'account-1,role-2,log-2,home-2,area-2,org-2,menu-2,dictionary-2');
-INSERT INTO `role_permission` VALUES ('11', '33', 'home-1,user-1,role-1');
-INSERT INTO `role_permission` VALUES ('24', '14', '');
-INSERT INTO `role_permission` VALUES ('26', '16', '17,18');
-INSERT INTO `role_permission` VALUES ('27', '15', '17,18,19,20,42,43,45,46,48,49,51,52,2,3,12,13,11,14,10');
-
--- ----------------------------
--- Table structure for `task`
--- ----------------------------
-DROP TABLE IF EXISTS `task`;
-CREATE TABLE `task` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `code` varchar(50) DEFAULT NULL,
-  `i_id` bigint(20) DEFAULT NULL,
-  `org_id` bigint(20) DEFAULT NULL,
-  `type` int(11) DEFAULT NULL,
-  `state` int(11) DEFAULT NULL,
-  `parts_atl_id` bigint(20) DEFAULT NULL,
-  `mat_atl_id` bigint(20) DEFAULT NULL,
-  `parts_pat_id` bigint(20) DEFAULT NULL,
-  `mat_pat_id` bigint(20) DEFAULT NULL,
-  `remark` varchar(200) DEFAULT NULL,
-  `create_time` timestamp NULL DEFAULT NULL,
-  `fail_num` int(11) DEFAULT NULL,
-  `a_id` bigint(20) DEFAULT NULL,
-  `parts_atl_result` int(11) DEFAULT NULL,
-  `mat_atl_result` int(11) DEFAULT NULL,
-  `parts_pat_result` int(11) DEFAULT NULL,
-  `mat_pat_result` int(11) DEFAULT NULL,
-  `parts_atl_times` int(11) unsigned DEFAULT '0',
-  `mat_atl_times` int(11) unsigned DEFAULT '0',
-  `parts_pat_times` int(11) unsigned DEFAULT '0',
-  `mat_pat_times` int(11) unsigned DEFAULT '0',
-  `confirm_time` timestamp NULL DEFAULT NULL,
-  `info_apply` int(11) DEFAULT NULL,
-  `result_apply` int(11) DEFAULT NULL,
-  `t_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=97 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of task
--- ----------------------------
-
--- ----------------------------
--- Table structure for `task_record`
--- ----------------------------
-DROP TABLE IF EXISTS `task_record`;
-CREATE TABLE `task_record` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `code` varchar(50) DEFAULT NULL,
-  `a_id` bigint(20) DEFAULT NULL,
-  `state` int(11) DEFAULT NULL,
-  `remark` varchar(200) DEFAULT NULL,
-  `create_time` timestamp NULL DEFAULT NULL,
-  `task_type` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=536 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of task_record
--- ----------------------------
-INSERT INTO `task_record` VALUES ('521', '20171117001505', '1', '1', '填写信息', '2017-11-17 00:15:05', '1');
-INSERT INTO `task_record` VALUES ('522', '20171117001505', '1', '2', '信息审核通过', '2017-11-17 00:15:09', '1');
-INSERT INTO `task_record` VALUES ('523', '20171117001505', '1', '4', '分配任务到实验室', '2017-11-17 00:15:16', '1');
-INSERT INTO `task_record` VALUES ('524', '20171117001505', '1', '5', '图谱和型式试验全部审批通过', '2017-11-17 00:15:21', '1');
-INSERT INTO `task_record` VALUES ('525', '20171117001505', '1', '7', '上传零部件型式试验和原材料型式试验结果', '2017-11-17 00:15:32', '1');
-INSERT INTO `task_record` VALUES ('526', '20171117001505', '1', '7', '上传零部件和原材料图谱试验结果', '2017-11-17 00:15:57', '1');
-INSERT INTO `task_record` VALUES ('527', '20171117001505', '1', '8', '发送零部件图谱试验、零部件型式试验、原材料图谱试验、原材料型式试验结果', '2017-11-17 00:16:15', '1');
-INSERT INTO `task_record` VALUES ('528', '20171117001505', '1', '10', '基准信息已保存', '2017-11-17 00:16:27', '1');
-INSERT INTO `task_record` VALUES ('529', '20171117001505', '1', '9', '原材料图谱试验、原材料型式试验、零部件图谱试验、零部件型式试验结果确认合格', '2017-11-17 00:16:27', '1');
-INSERT INTO `task_record` VALUES ('530', '20171117001722', '1', '1', '下达试验任务', '2017-11-17 00:17:22', '2');
-INSERT INTO `task_record` VALUES ('531', '20171117001722', '1', '2', '审批通过', '2017-11-17 00:17:29', '2');
-INSERT INTO `task_record` VALUES ('532', '20171117001722', '1', '4', '上传零部件和原材料图谱试验结果', '2017-11-17 00:17:51', '2');
-INSERT INTO `task_record` VALUES ('533', '20171117001722', '1', '5', '提交对比结果', '2017-11-17 00:17:59', '2');
-INSERT INTO `task_record` VALUES ('534', '20171117001722', '1', '8', '发送零部件图谱试验、原材料图谱试验结果', '2017-11-17 00:18:15', '2');
-INSERT INTO `task_record` VALUES ('535', '20171117001722', '1', '9', '结果留存', '2017-11-17 00:18:24', '2');
-
--- ----------------------------
--- Table structure for `vehicle`
--- ----------------------------
-DROP TABLE IF EXISTS `vehicle`;
-CREATE TABLE `vehicle` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `code` varchar(50) DEFAULT NULL,
-  `type` varchar(50) DEFAULT NULL,
-  `pro_time` date DEFAULT NULL,
-  `pro_addr` varchar(100) DEFAULT NULL,
-  `remark` varchar(200) DEFAULT NULL,
-  `create_time` timestamp NULL DEFAULT NULL,
-  `state` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of vehicle
--- ----------------------------
+INSERT INTO `sign_record` VALUES ('10', '1', '5', '9', '2500', '2018-08-24', '2018-09-24', '5', '2018-08-24 01:59:14');
+INSERT INTO `sign_record` VALUES ('11', '1', '3', '6', '1500', '2018-08-24', '2018-09-24', '6', '2018-08-24 02:02:01');
+INSERT INTO `sign_record` VALUES ('12', '1', '5', '10', '6888', '2018-08-27', '2018-11-27', '7', '2018-08-27 02:02:44');
+INSERT INTO `sign_record` VALUES ('13', '1', '3', '6', '1500', '2018-08-27', '2018-09-27', '8', '2018-08-27 02:03:19');
+INSERT INTO `sign_record` VALUES ('14', '1', '3', '6', '1500', '2018-08-27', '2018-09-27', '9', '2018-08-27 02:04:21');
+INSERT INTO `sign_record` VALUES ('15', '1', '5', '9', '2500', '2018-08-28', '2018-09-28', '10', '2018-08-28 02:05:21');
+INSERT INTO `sign_record` VALUES ('16', '1', '5', '9', '2500', '2018-08-28', '2018-09-28', '11', '2018-08-28 02:05:56');
+INSERT INTO `sign_record` VALUES ('17', '1', '5', '9', '2500', '2018-08-28', '2018-09-28', '12', '2018-08-28 02:06:46');
+INSERT INTO `sign_record` VALUES ('18', '1', '5', '10', '6888', '2018-08-28', '2018-11-28', '13', '2018-08-28 02:07:24');
+INSERT INTO `sign_record` VALUES ('19', '1', '5', '9', '2500', '2018-08-28', '2018-09-28', '14', '2018-08-28 02:07:52');
+INSERT INTO `sign_record` VALUES ('20', '1', '3', '6', '1500', '2018-08-28', '2018-09-28', '15', '2018-08-28 02:08:43');
+INSERT INTO `sign_record` VALUES ('21', '1', '3', '6', '1500', '2018-08-28', '2018-09-28', '16', '2018-08-28 02:09:16');
+INSERT INTO `sign_record` VALUES ('22', '1', '3', '7', '3888', '2018-08-28', '2018-11-28', '17', '2018-08-28 02:09:46');
+INSERT INTO `sign_record` VALUES ('23', '1', '3', '7', '3888', '2018-08-28', '2018-11-28', '18', '2018-08-28 02:10:14');
+INSERT INTO `sign_record` VALUES ('24', '1', '3', '6', '1500', '2018-08-28', '2018-09-28', '19', '2018-08-28 02:10:38');
