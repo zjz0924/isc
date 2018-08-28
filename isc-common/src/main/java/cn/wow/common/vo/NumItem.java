@@ -21,6 +21,10 @@ public class NumItem implements Serializable{
 	private Double addSum;
 	// 续费总金额
 	private Double renewSum;
+	// 补签数量
+	private Integer sumplement;
+	// 补签金额
+	private Double sumplementSum;
 	
 	public String getName() {
 		return name;
@@ -60,6 +64,22 @@ public class NumItem implements Serializable{
 
 	public void setRenewSum(Double renewSum) {
 		this.renewSum = renewSum;
+	}
+
+	public Integer getSumplement() {
+		return sumplement;
+	}
+
+	public void setSumplement(Integer sumplement) {
+		this.sumplement = sumplement;
+	}
+
+	public Double getSumplementSum() {
+		return sumplementSum;
+	}
+
+	public void setSumplementSum(Double sumplementSum) {
+		this.sumplementSum = sumplementSum;
 	}
 	
 }

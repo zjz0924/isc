@@ -29,9 +29,10 @@
 					<tr class="text-c">
 						<th>统计</th>
 						<th>新增/个</th>
-						<th>金额/元</th>
+						<th>新增金额/元</th>
 						<th>续费/个</th>
-						<th>金额/元</th>
+						<th>续费金额/元</th>
+						<th>补签/个</th>
 						<th>总金额/元</th>
 					</tr>
 				</thead>
@@ -43,6 +44,7 @@
 							<td>${vo.addSum}</td>
 							<td>${vo.renew}</td>
 							<td>${vo.renewSum}</td>
+							<td>${vo.sumplement}</td>
 							<td style="color:red;font-weight:bold;">${vo.addSum + vo.renewSum}</td>
 						</tr>
 					</c:forEach>

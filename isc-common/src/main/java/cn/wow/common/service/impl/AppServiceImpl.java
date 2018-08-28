@@ -76,7 +76,7 @@ public class AppServiceImpl implements AppService {
 	public void addApp(String userName, App app, SignRecord signRecord, Contacts contacts, MultipartFile signFile,
 			MultipartFile unsignFile) {
 		Map<String, Object> rMap = new HashMap<String, Object>();
-		rMap.put("name", contacts.getName());
+		rMap.put("mwechat", contacts.getWechat());
 		List<Contacts> contactsList = contactsService.selectAllList(rMap);
 
 		if (contactsList == null || contactsList.size() < 1) {

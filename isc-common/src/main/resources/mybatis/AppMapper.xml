@@ -13,12 +13,14 @@
 		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
 		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
 		<result column="is_delete" jdbcType="INTEGER" property="isDelete" />
+		<result column="cert_id" jdbcType="BIGINT" property="certId" />
 		
+		<association property="certificate" javaType="cn.wow.common.domain.Certificate" column="cert_id" select="cn.wow.common.dao.CertificateDao.selectOne"/> 
 		<association property="contacts" javaType="cn.wow.common.domain.Contacts" column="contacts_id" select="cn.wow.common.dao.ContactsDao.selectOne"/> 
 	</resultMap>
 	
 	<sql id="base_columns">
-		id, name, contacts_id, effective_date, expire_date, remark, unsign_file, sign_file, create_time, update_time, is_delete
+		id, name, contacts_id, effective_date, expire_date, remark, unsign_file, sign_file, create_time, update_time, is_delete, cert_id
 	</sql>
 	
 	<select id="selectOne" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -34,10 +36,10 @@
 		    SELECT @@IDENTITY
 		</selectKey>
 		
-		insert into app (name, contacts_id, effective_date, expire_date, remark, unsign_file, sign_file, create_time, update_time, is_delete)
+		insert into app (name, contacts_id, effective_date, expire_date, remark, unsign_file, sign_file, create_time, update_time, is_delete, cert_id)
 		values (#{name,jdbcType=VARCHAR}, #{contactsId, jdbcType=BIGINT}, #{effectiveDate,jdbcType=DATE},
 		#{expireDate,jdbcType=DATE}, #{remark,jdbcType=VARCHAR},  #{unsignFile,jdbcType=VARCHAR}, #{signFile,jdbcType=VARCHAR},
-		#{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{isDelete,jdbcType=INTEGER}
+		#{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{isDelete,jdbcType=INTEGER}, #{certId,jdbcType=BIGINT}
 		)
 	</insert>
 	
@@ -65,6 +67,10 @@
 			<if test="isDelete != null">
 				is_delete = #{isDelete,jdbcType=INTEGER},
 			</if>
+			<if test="certId != null">
+				cert_id = #{certId,jdbcType=BIGINT},
+			</if>
+			
 			remark = #{remark,jdbcType=VARCHAR}
 		</set>
 		where id = #{id,jdbcType=BIGINT}
@@ -110,6 +116,9 @@
 			  <if test="id != null">
 				and id &lt;&gt; #{id,jdbcType=BIGINT}
 			  </if>
+			  <if test="certId != null">
+				and cert_id = #{certId,jdbcType=BIGINT}
+			 </if>
 	      </where>
 	      
 		  <choose>

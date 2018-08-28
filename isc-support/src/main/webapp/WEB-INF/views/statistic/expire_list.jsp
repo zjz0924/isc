@@ -15,40 +15,36 @@
     <link rel="stylesheet" type="text/css" href="${ctx}/resources/css/iconfont.css" />
     <link rel="stylesheet" type="text/css" href="${ctx}/resources/css/skin/default/skin.css" id="skin" />
     <link rel="stylesheet" type="text/css" href="${ctx}/resources/css/style.css" />
-	<title>证书列表</title>
+	<title>APP列表</title>
 </head>
 
 <body>
-	<form id="queryForm" name="queryForm" action="${ctx}/combo/list" method="post">
+	<form id="queryForm" name="queryForm" action="${ctx}/statistic/expire" method="post">
 		<div class="page-container">
-			<div class="text-c"> 
-				 名称：<input type="text" class="input-text" style="width:150px" placeholder="名称" id="name" name="name" value="${name}">&nbsp;&nbsp;&nbsp;&nbsp;
-			          
-			            创建时间：
-				<input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'endCreateTime\')||\'%y-%M-%d\'}' })" id="startCreateTime" name="startCreateTime" class="input-text Wdate" style="width:120px;" value="${startCreateTime}">
-				-
-				<input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'startCreateTime\')}',maxDate:'%y-%M-%d' })" id="endCreateTime" name="endCreateTime" class="input-text Wdate" style="width:120px;" value="${endCreateTime}">&nbsp;&nbsp;&nbsp;&nbsp;
+			<div class="text-c">
+				类型：<select class="select input-text" id="type" name="type" style="width: 120px;">
+						<option value="1" <c:if test="${type == 1}">selected="selected"</c:if>>5天后</option>
+						<option value="2" <c:if test="${type == 2}">selected="selected"</c:if>>3天后</option>
+						<option value="3" <c:if test="${type == 3}">selected="selected"</c:if>>1天后</option>
+					</select>&nbsp;&nbsp;&nbsp;&nbsp;
 				
 				<button type="button" class="btn btn-success" onclick="searchData();"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
 				<button type="button" class="btn btn-danger" onclick="resetData();"><i class="Hui-iconfont">&#xe665;</i> 重置</button>
 			</div>
 			
-			<div class="cl pd-5 bg-1 bk-gray mt-20"> 
-				<span class="l" style="float: right !important;margin-right: 10px;">
-					<a href="javascript:void(0);" onclick="addOrUpdate()" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加套餐</a>
-				</span> 
-			</div>
-			
-			<table class="table table-border table-bordered table-bg">
+			<table class="table table-border table-bordered table-bg" style="margin-top: 20px;">
 				<thead>
 					<tr class="text-c">
-						<th width="40">序号</th>
+						<th width="30">序号</th>
 						<th width="100">名称</th>
-						<th width="120">描述</th>
-						<th width="80">有效期/月</th>
-						<th width="100">价格/元</th>
-						<th width="60">创建时间</th>
-						<th width="50">操作</th>
+						<th width="70">生效时间</th>
+						<th width="75">过期时间</th>
+						<th width="100">证书</th>
+						<th width="100">备注</th>
+						<th width="130">未签名文件</th>
+						<th width="130">已签名文件</th>
+						<th width="50">创建时间</th>
+						<th width="50">更新时间</th>
 					</tr> 
 				</thead>
 				
@@ -57,14 +53,17 @@
 						<tr class="text-c">
 							<td>${var.index + 1}</td>
 							<td title="${vo.name}">${vo.name}</td>
+							<td><fmt:formatDate value='${vo.effectiveDate }' type="date" pattern="yyyy-MM-dd"/></td>
+							<td style="color:red; font-weight: bold;"><fmt:formatDate value='${vo.expireDate }' type="date" pattern="yyyy-MM-dd" /></td>
+							<td title="${vo.certificate.name}">${vo.certificate.name}</td>
 							<td title="${vo.remark}">${vo.remark}</td>
-							<td title="${vo.duration}">${vo.duration}</td>
-							<td title="${vo.price}">${vo.price}</td>
-							<td><fmt:formatDate value='${vo.createTime }' type="date" pattern="yyyy-MM-dd HH:mm:ss"/></td>
-							<td class="td-manage">
-								<a title="编辑" href="javascript:void(0)" onclick="addOrUpdate(${vo.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> &nbsp;
-								<a title="删除" href="javascript:void(0)" onclick="deleteCert(${vo.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>
+							<td>
+								<a style="text-decoration:none" href="${resUrl}${vo.unsignFile}" title="下载">${vo.unsignFileName}</a> 
 							</td>
+							<td><a style="text-decoration:none" href="${resUrl}${vo.signFile}" title="下 载">${vo.signFileName}</a> </td>
+							
+							<td><fmt:formatDate value='${vo.createTime }' type="date" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+							<td><fmt:formatDate value='${vo.updateTime }' type="date" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 						</tr>
 					</c:forEach>
 				</tbody>
@@ -88,39 +87,22 @@
 		} 
 		
 		function resetData(){
-			$("#name").val("");
-			$("#startCreateTime").val("");
-			$("#endCreateTime").val("");
+			$("#type").val("");
 			document.getElementById("queryForm").submit();
 		}
 		
 		function addOrUpdate(id){
-			var url = "${ctx}/combo/detail";
+			var url = "${ctx}/app/detail";
 			if(id != null){
 				url += "?id=" + id
 			}
-			layer_show("添加证书", url, '700', '500');
+			
+			layer_show("APP信息", url, '700', '500');
 		}
 		
-		
-		function deleteCert(id){
-			layer.confirm("此操作将删除该套餐，您确定要继续吗？", function(index){
-				 $.ajax({
-                 	url: "${ctx}/combo/delete",
-                 	data: {
-                 		id: id,
-                 	},
-                 	success: function(data){
-                 		if(data.success){
-                 			layer.msg(data.msg, {icon: 6,time:1000}, function(){
-                 				window.location.reload();
-                 			});
-         				}else{
-         					layer.msg(data.msg, {icon: 5,time:1000});
-         				}
-                 	}
-                 });
-			});
+		function recordList(appId){
+			var url = "${ctx}/signRecord/list?appId=" + appId
+			layer_show("签名记录", url, '800', '500');
 		}
 		
 	</script>

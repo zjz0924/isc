@@ -15,10 +15,23 @@
 				and sr.create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
 			</if>
 		</where>
-		UNION
+		UNION ALL
 		select 2 type, count(*) num, case when sum(price) is null then 0 else sum(price) end price from sign_record sr left join app a on sr.app_id = a.id
 		<where>
 			a.is_delete = 0 and type =2 
+
+			<if test="startCreateTime != null and startCreateTime != ''">
+				and sr.create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
+			</if>
+
+			<if test="endCreateTime != null and endCreateTime != ''">
+				and sr.create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
+			</if>
+		</where>
+		UNION ALL
+		select 3 type, count(*) num, case when sum(price) is null then 0 else sum(price) end price from sign_record sr left join app a on sr.app_id = a.id
+		<where>
+			a.is_delete = 0 and type = 3 
 
 			<if test="startCreateTime != null and startCreateTime != ''">
 				and sr.create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
@@ -32,11 +45,39 @@
 
 	<!-- 证书统计 -->
 	<select id="statisticsCertificate" resultType="java.util.Map">
-		SELECT c.name, count(*) num FROM sign_record sr LEFT JOIN certificate c ON
-		c.id = sr.cert_id WHERE c.is_delete = 0 GROUP BY cert_id UNION ALL
-		SELECT name, 0 FROM certificate WHERE id NOT IN (SELECT DISTINCT
-		cert_id FROM sign_record sr left join app a on sr.app_id = a.id where
-		a.is_delete = 0 ) order by num desc
+		SELECT c. name, count(*) num FROM sign_record sr LEFT JOIN certificate c ON
+		c.id = sr.cert_id WHERE c.is_delete = 0 AND sr.type != 2 GROUP BY
+		cert_id UNION ALL SELECT name, 0 FROM certificate WHERE id NOT IN (
+		SELECT DISTINCT sr.cert_id FROM sign_record sr LEFT JOIN app a ON
+		sr.app_id = a.id WHERE a.is_delete = 0 ) AND is_delete = 0 ORDER BY num DESC
+	</select>
+	
+	<select id="statisticsPay" resultType="java.util.Map">
+		select 1 name, case when sum(price) is null then 0 else sum(price) end price from sign_record sr LEFT JOIN app a on a.id = sr.app_id 
+		<where>
+			a.is_delete = 0 and type != 3
+
+			<if test="startCreateTime != null and startCreateTime != ''">
+				and sr.create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
+			</if>
+
+			<if test="endCreateTime != null and endCreateTime != ''">
+				and sr.create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
+			</if>
+		</where>
+		union all 
+		select 2 name, case when sum(price) is null then 0 else sum(price) end price  from pay
+		<where>
+			is_delete = 0	
+
+			<if test="startCreateTime != null and startCreateTime != ''">
+				and create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
+			</if>
+
+			<if test="endCreateTime != null and endCreateTime != ''">
+				and create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
+			</if>
+		</where>
 	</select>
 
 </mapper>

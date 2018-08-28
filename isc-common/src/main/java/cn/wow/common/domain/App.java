@@ -41,6 +41,10 @@ public class App extends JpaEntity{
 	private Date updateTime;
 	// 是否删除，0：否，1：是
 	private Integer isDelete;
+	// 证书ID
+	private Long certId;
+	
+	private Certificate certificate;
 
 	public Long getId() {
 		return id;
@@ -162,6 +166,22 @@ public class App extends JpaEntity{
 
 	public void setContacts(Contacts contacts) {
 		this.contacts = contacts;
+	}
+
+	public Long getCertId() {
+		return certId;
+	}
+
+	public void setCertId(Long certId) {
+		this.certId = certId;
+	}
+
+	public Certificate getCertificate() {
+		return certificate;
+	}
+
+	public void setCertificate(Certificate certificate) {
+		this.certificate = certificate;
 	}
 
 	@JsonIgnore

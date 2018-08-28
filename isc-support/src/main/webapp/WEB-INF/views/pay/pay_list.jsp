@@ -19,15 +19,13 @@
 </head>
 
 <body>
-	<form id="queryForm" name="queryForm" action="${ctx}/combo/list" method="post">
+	<form id="queryForm" name="queryForm" action="${ctx}/pay/list" method="post">
 		<div class="page-container">
 			<div class="text-c"> 
-				 名称：<input type="text" class="input-text" style="width:150px" placeholder="名称" id="name" name="name" value="${name}">&nbsp;&nbsp;&nbsp;&nbsp;
-			          
 			            创建时间：
-				<input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'endCreateTime\')||\'%y-%M-%d\'}' })" id="startCreateTime" name="startCreateTime" class="input-text Wdate" style="width:120px;" value="${startCreateTime}">
+				<input type="text" onfocus="WdatePicker()" id="startCreateTime" name="startCreateTime" class="input-text Wdate" style="width:120px;" value="${startCreateTime}">
 				-
-				<input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'startCreateTime\')}',maxDate:'%y-%M-%d' })" id="endCreateTime" name="endCreateTime" class="input-text Wdate" style="width:120px;" value="${endCreateTime}">&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="text" onfocus="WdatePicker()" id="endCreateTime" name="endCreateTime" class="input-text Wdate" style="width:120px;" value="${endCreateTime}">&nbsp;&nbsp;&nbsp;&nbsp;
 				
 				<button type="button" class="btn btn-success" onclick="searchData();"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
 				<button type="button" class="btn btn-danger" onclick="resetData();"><i class="Hui-iconfont">&#xe665;</i> 重置</button>
@@ -35,7 +33,7 @@
 			
 			<div class="cl pd-5 bg-1 bk-gray mt-20"> 
 				<span class="l" style="float: right !important;margin-right: 10px;">
-					<a href="javascript:void(0);" onclick="addOrUpdate()" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加套餐</a>
+					<a href="javascript:void(0);" onclick="addOrUpdate()" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加支出</a>
 				</span> 
 			</div>
 			
@@ -43,12 +41,10 @@
 				<thead>
 					<tr class="text-c">
 						<th width="40">序号</th>
-						<th width="100">名称</th>
-						<th width="120">描述</th>
-						<th width="80">有效期/月</th>
-						<th width="100">价格/元</th>
+						<th width="500">备注</th>
+						<th width="100">金额/元</th>
 						<th width="60">创建时间</th>
-						<th width="50">操作</th>
+						<th width="40">操作</th>
 					</tr> 
 				</thead>
 				
@@ -56,9 +52,7 @@
 					<c:forEach items="${dataList}" var="vo" varStatus="var">
 						<tr class="text-c">
 							<td>${var.index + 1}</td>
-							<td title="${vo.name}">${vo.name}</td>
 							<td title="${vo.remark}">${vo.remark}</td>
-							<td title="${vo.duration}">${vo.duration}</td>
 							<td title="${vo.price}">${vo.price}</td>
 							<td><fmt:formatDate value='${vo.createTime }' type="date" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 							<td class="td-manage">
@@ -88,25 +82,24 @@
 		} 
 		
 		function resetData(){
-			$("#name").val("");
 			$("#startCreateTime").val("");
 			$("#endCreateTime").val("");
 			document.getElementById("queryForm").submit();
 		}
 		
 		function addOrUpdate(id){
-			var url = "${ctx}/combo/detail";
+			var url = "${ctx}/pay/detail";
 			if(id != null){
 				url += "?id=" + id
 			}
-			layer_show("添加证书", url, '700', '500');
+			layer_show("添加支出", url, '500', '300');
 		}
 		
 		
 		function deleteCert(id){
-			layer.confirm("此操作将删除该套餐，您确定要继续吗？", function(index){
+			layer.confirm("此操作将删除该支出，您确定要继续吗？", function(index){
 				 $.ajax({
-                 	url: "${ctx}/combo/delete",
+                 	url: "${ctx}/pay/delete",
                  	data: {
                  		id: id,
                  	},

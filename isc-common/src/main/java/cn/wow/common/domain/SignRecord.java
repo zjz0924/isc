@@ -13,7 +13,7 @@ public class SignRecord extends JpaEntity{
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;
-    // 类型： 1-新增，2-续费
+    // 类型： 1-新增，2-续费，3-补签
     private Integer type;
     // 套餐ID
     private Long comboId;

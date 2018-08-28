@@ -46,6 +46,12 @@
 				-
 				<input type="text" onfocus="WdatePicker()" id="endUpdateTime" name="endUpdateTime" class="input-text Wdate" style="width:120px;" value="${endUpdateTime}">&nbsp;&nbsp;&nbsp;&nbsp;
 				
+				证书：<select class="select input-text" id="certId" name="certId" style="width: 120px;">
+						<option value="">全部</option>
+						<c:forEach items="${certificateList}" var="vo">
+							<option value="${vo.id}" <c:if test="${vo.id == certId}">selected="selected"</c:if>>${vo.name}</option>
+						</c:forEach>
+					</select>&nbsp;&nbsp;&nbsp;&nbsp;
 				
 				<button type="button" class="btn btn-success" onclick="searchData();"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
 				<button type="button" class="btn btn-danger" onclick="resetData();"><i class="Hui-iconfont">&#xe665;</i> 重置</button>
@@ -61,15 +67,16 @@
 				<thead>
 					<tr class="text-c">
 						<th width="30">序号</th>
-						<th width="100">名称</th>
+						<th width="80">名称</th>
 						<th width="70">生效时间</th>
-						<th width="80">过期时间</th>
-						<th width="120">备注</th>
+						<th width="75">过期时间</th>
+						<th width="80">证书</th>
+						<th width="80">备注</th>
 						<th width="120">未签名文件</th>
 						<th width="130">已签名文件</th>
 						<th width="40">创建时间</th>
 						<th width="30">更新时间</th>
-						<th width="80">操作</th>
+						<th width="70">操作</th>
 					</tr> 
 				</thead>
 				
@@ -80,6 +87,7 @@
 							<td title="${vo.name}">${vo.name}</td>
 							<td><fmt:formatDate value='${vo.effectiveDate }' type="date" pattern="yyyy-MM-dd"/></td>
 							<td style="color:red; font-weight: bold;"><fmt:formatDate value='${vo.expireDate }' type="date" pattern="yyyy-MM-dd" /></td>
+							<td title="${vo.certificate.name}">${vo.certificate.name}</td>
 							<td title="${vo.remark}">${vo.remark}</td>
 							<td>
 								<a style="text-decoration:none" href="${resUrl}${vo.unsignFile}" title="下载">${vo.unsignFileName}</a> 
@@ -90,7 +98,8 @@
 							<td><fmt:formatDate value='${vo.updateTime }' type="date" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 							<td class="td-manage">
 								<a title="续费" href="javascript:void(0)" onclick="renew(${vo.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe600;</i></a>
-								<a title="签名记录" href="javascript:void(0)" onclick="recordList(${vo.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe665;</i></a>
+								<a title="补签" href="javascript:void(0)" onclick="supplement(${vo.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe615;</i></a>
+								<a title="签名记录" href="javascript:void(0)" onclick="recordList(${vo.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe616;</i></a>
 								<a title="编辑" href="javascript:void(0)" onclick="addOrUpdate(${vo.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
 								<a title="删除" href="javascript:void(0)" onclick="deleteCert(${vo.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>
 							</td>
@@ -126,6 +135,7 @@
 			$("#endCreateTime").val("");
 			$("#startUpdateTime").val("");
 			$("#endUpdateTime").val("");
+			$("#certId").val("");
 			document.getElementById("queryForm").submit();
 		}
 		
@@ -148,6 +158,10 @@
 			layer_show("续费", url, '500', '300');
 		}
 		
+		function supplement(appId){
+			var url = "${ctx}/app/supplementDetail?appId=" + appId
+			layer_show("补签", url, '500', '300');
+		}
 		
 		function deleteCert(id){
 			layer.confirm("此操作将删除该APP，您确定要继续吗？", function(index){

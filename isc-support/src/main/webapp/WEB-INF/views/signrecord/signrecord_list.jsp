@@ -37,7 +37,7 @@
 				<c:forEach items="${dataList}" var="vo" varStatus="var">
 					<tr class="text-c">
 						<td>${var.index + 1}</td>
-						<td><c:if test="${vo.type == 1}">新增</c:if><c:if test="${vo.type == 2}">续费</c:if></td>
+						<td><c:if test="${vo.type == 1}">新增</c:if><c:if test="${vo.type == 2}">续费</c:if><c:if test="${vo.type == 3}">补签</c:if></td>
 						<td><fmt:formatDate value='${vo.effectiveDate }' type="date" pattern="yyyy-MM-dd"/></td>
 						<td style="color:red; font-weight: bold;"><fmt:formatDate value='${vo.expireDate }' type="date" pattern="yyyy-MM-dd" /></td>
 						<td title="${vo.combo.name}">${vo.combo.name}</td>

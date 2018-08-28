@@ -9,6 +9,7 @@ import cn.wow.common.domain.Certificate;
 import cn.wow.common.domain.Combo;
 import cn.wow.common.domain.Contacts;
 import cn.wow.common.domain.Menu;
+import cn.wow.common.domain.Pay;
 import cn.wow.common.domain.SignRecord;
 import cn.wow.common.domain.App;
 import cn.wow.common.utils.operationlog.ServiceType;
@@ -34,6 +35,7 @@ public final class EntityServiceTypeMap {
 		typeMap.put(Contacts.class.getName(), ServiceType.CONTACTS);
 		typeMap.put(Combo.class.getName(), ServiceType.COMBO);
 		typeMap.put(SignRecord.class.getName(), ServiceType.SIGNRECORD);
+		typeMap.put(Pay.class.getName(), ServiceType.PAY);
 		
 		//DAO 类型
 		daoMap.clear();
@@ -43,6 +45,7 @@ public final class EntityServiceTypeMap {
 		daoMap.put(Contacts.class.getName(), "cn.wow.common.dao.ContactsDao.selectOne");
 		daoMap.put(Combo.class.getName(), "cn.wow.common.dao.ComboDao.selectOne");
 		daoMap.put(SignRecord.class.getName(), "cn.wow.common.dao.SignRecordDao.selectOne");
+		daoMap.put(Pay.class.getName(), "cn.wow.common.dao.PayDao.selectOne");
 	}
 
 	public static ServiceType getServiceType(Class<?> clazz) {

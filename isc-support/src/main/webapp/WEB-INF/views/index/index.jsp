@@ -78,8 +78,10 @@
 				</dt>
 				<dd>
 					<ul>
-						<li><a data-href="charts-1.html" data-title="支出统计" href="javascript:void(0)">支出统计</a></li>
-						<li><a data-href="charts-2.html" data-title="收入统计" href="javascript:void(0)">收入统计</a></li>
+						<li><a data-href="${ctx}/statistic/statistic" data-title="收支统计" href="javascript:void(0)">收支统计</a></li>
+						<li><a data-href="${ctx}/pay/list" data-title="支出记录" href="javascript:void(0)">支出记录</a></li>
+						<li><a data-href="${ctx}/statistic/income" data-title="收入记录" href="javascript:void(0)">收入记录</a></li>
+						<li><a data-href="${ctx}/statistic/expire" data-title="即将到期APP" href="javascript:void(0)">即将到期APP</a></li>
 					</ul>
 				</dd>
 			</dl>

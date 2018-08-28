@@ -78,7 +78,7 @@
 									<select class="select input-text" id="comboId" name="comboId">
 										<option value="">请选择</option>
 										<c:forEach items="${comboList}" var="vo">
-											<option value="${vo.id}">${vo.name}</option>
+											<option value="${vo.id}">${vo.name} -- ${vo.price}</option>
 										</c:forEach>
 									</select>
 								</div>

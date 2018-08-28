@@ -60,7 +60,7 @@ public class AppController extends AbstractController {
 	@RequestMapping(value = "/list")
 	public String list(HttpServletRequest request, Model model, String name, String startEffectiveDate,
 			String endEffectiveDate, String startExpireDate, String endExpireDate, String startCreateTime,
-			String endCreateTime, String startUpdateTime, String endUpdateTime) {
+			String endCreateTime, String startUpdateTime, String endUpdateTime, String certId) {
 
 		queryMap.clear();
 		Map<String, Object> map = new PageMap(request);
@@ -118,11 +118,24 @@ public class AppController extends AbstractController {
 			queryMap.put("endUpdateTime", endUpdateTime + " 23:59:59");
 			model.addAttribute("endUpdateTime", endUpdateTime);
 		}
+		if (StringUtils.isNotBlank(certId)) {
+			map.put("certId", certId);
+			queryMap.put("certId", certId);
+			model.addAttribute("certId", certId);
+		}
 
 		List<App> dataList = appService.selectAllList(map);
 		model.addAttribute("dataList", dataList);
 		model.addAttribute("resUrl", resUrl);
-
+		
+		// 证书信息
+		Map<String, Object> certificateMap = new PageMap(false);
+		certificateMap.put("custom_order_sql", "name asc");
+		certificateMap.put("isDelete", "0");
+		List<Certificate> certificateList = certificateService.selectAllList(certificateMap);
+		
+		model.addAttribute("certificateList", certificateList);
+		
 		return "app/app_list";
 	}
 
@@ -229,6 +242,7 @@ public class AppController extends AbstractController {
 					app.setIsDelete(0);
 					app.setEffectiveDate(signRecord.getEffectiveDate());
 					app.setExpireDate(signRecord.getExpireDate());
+					app.setCertId(certId);
 
 					if (unsignFile != null) {
 						String unsignFileName = uploadImg(unsignFile, appUrl + "/" + timeStr + "/", false, null);
@@ -321,37 +335,21 @@ public class AppController extends AbstractController {
 
 			SignRecord signRecord = new SignRecord();
 			Combo combo = comboService.selectOne(comboId);
-
-			// 获取新增的记录
-			Map<String, Object> map = new PageMap(false);
-			map.put("type", 1);
-			map.put("appId", appId);
+			App app = appService.selectOne(appId);
 			
-			SignRecord addRecord = null;
-			List<SignRecord> signRecordList = signRecordService.selectAllList(map);
-			if (signRecordList != null && signRecordList.size() > 0) {
-				addRecord = signRecordList.get(0);
-			}
-
-			signRecord.setAppId(appId);
-			if(addRecord != null) {
-				signRecord.setCertId(addRecord.getCertId());
-			}else {
-				signRecord.setCertId(null);
-			}
-			
+			signRecord.setCertId(app.getCertId());
 			signRecord.setComboId(comboId);
 			signRecord.setCreateTime(date);
 			signRecord.setEffectiveDate(date);
 			signRecord.setExpireDate(ToolUtils.addMonth(date, combo.getDuration()));
 			signRecord.setType(2);
 			signRecord.setPrice(combo.getPrice());
-
-			App app = appService.selectOne(appId);
+			signRecord.setAppId(appId);
+			
 			app.setUpdateTime(date);
 			app.setEffectiveDate(signRecord.getEffectiveDate());
 			app.setExpireDate(signRecord.getExpireDate());
-
+			
 			appService.renewApp(getCurrentUserName(), app, signRecord);
 
 		} catch (Exception ex) {
@@ -366,4 +364,73 @@ public class AppController extends AbstractController {
 		return vo;
 	}
 
+	
+	/**
+	 * 补签
+	 */
+	@RequestMapping(value = "/supplementDetail")
+	public String supplementDetail(HttpServletRequest request, Model model, Long appId) {
+		model.addAttribute("appId", appId);
+		
+		// 证书信息
+		Map<String, Object> certificateMap = new PageMap(false);
+		certificateMap.put("custom_order_sql", "name asc");
+		certificateMap.put("isDelete", "0");
+		List<Certificate> certificateList = certificateService.selectAllList(certificateMap);
+
+		model.addAttribute("certificateList", certificateList);
+		return "app/app_supplement";
+	}
+
+	
+	@ResponseBody
+	@RequestMapping(value = "/supplement")
+	public AjaxVO Supplement(HttpServletRequest request, Model model, Long appId, Long certId) {
+		AjaxVO vo = new AjaxVO();
+		vo.setMsg("补签成功");
+
+		try {
+			Date date = new Date();
+
+			// 获取所有的记录
+			Map<String, Object> map = new PageMap(false);
+			map.put("appId", appId);
+			map.put("custom_order_sql", "create_time desc");
+			
+			SignRecord addRecord = null;
+			List<SignRecord> signRecordList = signRecordService.selectAllList(map);
+			if (signRecordList != null && signRecordList.size() > 0) {
+				addRecord = signRecordList.get(0);
+			}
+
+			SignRecord signRecord = new SignRecord();
+			App app = appService.selectOne(appId);
+			
+			signRecord.setCertId(certId);
+			signRecord.setComboId(addRecord.getComboId());
+			signRecord.setCreateTime(date);
+			signRecord.setEffectiveDate(app.getExpireDate());
+			signRecord.setExpireDate(app.getExpireDate());
+			signRecord.setType(3);
+			signRecord.setPrice(0d);
+			signRecord.setAppId(appId);
+			
+			app.setUpdateTime(date);
+			app.setCertId(certId);
+			
+			appService.renewApp(getCurrentUserName(), app, signRecord);
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			logger.error("补签失败", ex);
+
+			vo.setMsg("删除失败，系统异常");
+			vo.setSuccess(false);
+			return vo;
+		}
+
+		return vo;
+	}
+
+	
 }

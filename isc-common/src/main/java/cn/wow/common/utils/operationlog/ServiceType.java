@@ -17,6 +17,7 @@ public enum ServiceType implements Serializable {
 	SIGN("签名管理"),
 	COMBO("套餐管理"),
 	SIGNRECORD("签名记录"),
+	PAY("支出记录"),
 	CONTACTS("客户管理");
 
 	private String displayName;

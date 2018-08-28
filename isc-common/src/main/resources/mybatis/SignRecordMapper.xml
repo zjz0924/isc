@@ -73,6 +73,9 @@
 	      <if test="type != null">
 		    and type = #{type,jdbcType=INTEGER}
 	      </if>
+	      <if test="nottype != null">
+		    and type != #{nottype,jdbcType=INTEGER}
+	      </if>
 	      <if test="comboId != null">
 			and combo_id = #{comboId,jdbcType=BIGINT}
 	      </if>

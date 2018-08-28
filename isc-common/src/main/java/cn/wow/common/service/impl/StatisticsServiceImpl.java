@@ -73,6 +73,39 @@ public class StatisticsServiceImpl implements StatisticsService {
 		return dataList;
 	}
 
+	// 数量统计
+	public NumItem statisticsNum(Map<String, Object> queryMap) {
+		List<Map<Integer, Object>> data = statisticsDao.statisticsNum(queryMap);
+
+		List<NumItem> dataList = new ArrayList<NumItem>();
+		this.assembleData(dataList, data, "统计");
+
+		return dataList.get(0);
+	}
+
+	public NumItem statisticsPay(Map<String, Object> queryMap) {
+		List<Map<Integer, Object>> data = statisticsDao.statisticsPay(queryMap);
+		NumItem item = new NumItem();
+
+		if (data != null && data.size() > 0) {
+			for (Map<Integer, Object> map : data) {
+				Long type = (Long) map.get("name");
+				double sum = (double) map.get("price");
+
+				if (type == 1) {
+					item.setAddSum(sum);
+				} else {
+					item.setRenewSum(sum);
+				}
+			}
+		} else {
+			item.setRenewSum(0d);
+			item.setAddSum(0d);
+		}
+		
+		return item;
+	}
+
 	private String resetDate(int type, String str) {
 		if (type == 1) {
 			return str + " 00:00:00";
@@ -90,13 +123,16 @@ public class StatisticsServiceImpl implements StatisticsService {
 				Long type = (Long) map.get("type");
 				Long num = (Long) map.get("num");
 				double sum = (double) map.get("price");
-				
+
 				if (type == 1) {
 					item.setAdd(num.intValue());
 					item.setAddSum(sum);
-				} else {
+				} else if (type == 2) {
 					item.setRenew(num.intValue());
 					item.setRenewSum(sum);
+				} else {
+					item.setSumplement(num.intValue());
+					item.setSumplementSum(sum);
 				}
 			}
 		}
