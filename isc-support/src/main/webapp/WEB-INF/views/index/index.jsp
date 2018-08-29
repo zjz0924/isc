@@ -31,12 +31,9 @@
 							<a href="#" class="dropDown_A">${currentAccount.userName} <i class="Hui-iconfont">&#xe6d5;</i></a>
 							<ul class="dropDown-menu menu radius box-shadow">
 								<li><a href="javascript:;" onClick="myselfinfo()">个人信息</a></li>
+								<li><a href="javascript:;" onClick="changePwd()">修改密码</a></li>
 								<li><a href="${ctx}/loginout">退出</a></li>
 							</ul>
-						</li>
-						
-						<li id="Hui-msg">
-							<a href="#" title="消息"><span class="badge badge-danger">1</span><i class="Hui-iconfont" style="font-size: 18px">&#xe68a;</i></a>
 						</li>
 						
 						<li id="Hui-skin" class="dropDown right dropDown_hover">
@@ -148,32 +145,13 @@
 	<!--请在下方写此页面业务相关的脚本-->
 	<script type="text/javascript" src="${ctx}/resources/js/jquery.contextmenu/jquery.contextmenu.r2.js"></script>
 	<script type="text/javascript">
-		$(function() {
-			/*$("#min_title_list li").contextMenu('Huiadminmenu', {
-				bindings: {
-					'closethis': function(t) {
-						console.log(t);
-						if(t.find("i")){
-							t.find("i").trigger("click");
-						}		
-					},
-					'closeall': function(t) {
-						alert('Trigger was '+t.id+'\nAction was Email');
-					},
-				}
-			});*/
-		});
 		/*个人信息*/
 		function myselfinfo() {
-			layer.open({
-				type : 1,
-				area : [ '300px', '200px' ],
-				fix : false, //不固定
-				maxmin : true,
-				shade : 0.4,
-				title : '查看信息',
-				content : '<div>管理员信息</div>'
-			});
+			layer_show("个人信息", "${account}/account/info", '600', '400');
+		}
+		
+		function changePwd(){
+			layer_show("修改密码", "${account}/account/changePwd", '500', '300');
 		}
 	</script>
 

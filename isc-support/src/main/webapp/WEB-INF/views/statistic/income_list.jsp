@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=utf-8" pageEncoding="utf-8"%>
 <%@include file="/page/taglibs.jsp"%>
+<%@include file="/page/NavPageBar.jsp" %>
 
 <!DOCTYPE HTML>
 <html>
@@ -68,6 +69,7 @@
 					</c:forEach>
 				</tbody>
 			</table>
+			<pagination:pagebar startRow="${dataList.getStartRow()}" id="queryForm" pageSize="${dataList.getPageSize()}"  totalSize="${dataList.getTotal()}"   showbar="true"  showdetail="true"/>
 		</div>
 	</form>
 	

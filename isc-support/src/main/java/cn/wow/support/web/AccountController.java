@@ -199,6 +199,9 @@ public class AccountController extends AbstractController {
 					vo.setMsg("新增成功");
 				}
 			}
+			
+			request.getSession().setAttribute(Contants.CURRENT_ACCOUNT, account);
+			
 		} catch (Exception ex) {
 			ex.printStackTrace();
 
@@ -306,7 +309,11 @@ public class AccountController extends AbstractController {
 		}
 		return vo;
 	}
-
+	
+	@RequestMapping(value = "/changePwd")
+	public String changePwd(HttpServletRequest httpServletRequest, Model model) {
+		return "sys/account/account_changepwd";
+	}
 
 	@ResponseBody
 	@RequestMapping(value = "/updatePwd")

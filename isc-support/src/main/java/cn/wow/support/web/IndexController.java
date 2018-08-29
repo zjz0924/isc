@@ -1,5 +1,8 @@
 package cn.wow.support.web;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import cn.wow.common.domain.Account;
 import cn.wow.common.service.AccountService;
 import cn.wow.common.service.StatisticsService;
-import cn.wow.common.utils.Contants;
 import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.common.vo.NumItem;
 
@@ -53,7 +55,13 @@ public class IndexController {
 		model.addAttribute("numDataList", numDataList);
 		
 		// 证书统计
-		List<NumItem> certDataList = statisticsService.statisticsCertificate();
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("startCreateTime", sdf.format(date) + " 00:00:00");
+		map.put("endCreateTime", sdf.format(date) + " 23:59:59");
+		
+		List<NumItem> certDataList = statisticsService.statisticsCertificate(map);
 		model.addAttribute("certDataList", certDataList);
 		
 		return "index/home";

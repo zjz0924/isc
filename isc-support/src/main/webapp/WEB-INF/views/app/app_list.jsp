@@ -22,7 +22,6 @@
 	<form id="queryForm" name="queryForm" action="${ctx}/app/list" method="post">
 		<div class="page-container">
 			<div class="text-c" style="text-align: left;"> 
-				名称：<input type="text" class="input-text" style="width:150px;margin-left: 33px;margin-right: 105px;" placeholder="名称" id="name" name="name" value="${name}">&nbsp;&nbsp;&nbsp;&nbsp;
 			          
 			            生效时间：
 				<input type="text" onfocus="WdatePicker()" id="startEffectiveDate" name="startEffectiveDate" class="input-text Wdate" style="width:120px;" value="${startEffectiveDate}">
@@ -32,7 +31,14 @@
 				过期时间：
 				<input type="text" onfocus="WdatePicker()" id="startExpireDate" name="startExpireDate" class="input-text Wdate" style="width:120px;" value="${startExpireDate}">
 				-
-				<input type="text" onfocus="WdatePicker()" id="endExpireDate" name="endExpireDate" class="input-text Wdate" style="width:120px;" value="${endExpireDate}">
+				<input type="text" onfocus="WdatePicker()" id="endExpireDate" name="endExpireDate" class="input-text Wdate" style="width:120px;" value="${endExpireDate}">&nbsp;&nbsp;&nbsp;&nbsp;
+			
+				证书：<select class="select input-text" id="certId" name="certId" style="width: 200px;">
+						<option value="">全部</option>
+						<c:forEach items="${certificateList}" var="vo">
+							<option value="${vo.id}" <c:if test="${vo.id == certId}">selected="selected"</c:if>>${vo.name}</option>
+						</c:forEach>
+					</select>
 			</div>
 			
 			<div class="text-c" style="text-align: left; margin-top: 10px">
@@ -46,12 +52,7 @@
 				-
 				<input type="text" onfocus="WdatePicker()" id="endUpdateTime" name="endUpdateTime" class="input-text Wdate" style="width:120px;" value="${endUpdateTime}">&nbsp;&nbsp;&nbsp;&nbsp;
 				
-				证书：<select class="select input-text" id="certId" name="certId" style="width: 120px;">
-						<option value="">全部</option>
-						<c:forEach items="${certificateList}" var="vo">
-							<option value="${vo.id}" <c:if test="${vo.id == certId}">selected="selected"</c:if>>${vo.name}</option>
-						</c:forEach>
-					</select>&nbsp;&nbsp;&nbsp;&nbsp;
+				名称：<input type="text" class="input-text" style="width:130px;" placeholder="名称" id="name" name="name" value="${name}">
 				
 				<button type="button" class="btn btn-success" onclick="searchData();"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
 				<button type="button" class="btn btn-danger" onclick="resetData();"><i class="Hui-iconfont">&#xe665;</i> 重置</button>
@@ -59,7 +60,7 @@
 			
 			<div class="cl pd-5 bg-1 bk-gray mt-20"> 
 				<span class="l" style="float: right !important;margin-right: 10px;">
-					<a href="javascript:void(0);" onclick="addOrUpdate()" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加APP</a>
+					<a href="javascript:void(0);" onclick="addOrUpdate()" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加APP</a>&nbsp;&nbsp;<a href="${ctx}/app/exportApp" class="btn btn-success radius"><i class="Hui-iconfont">&#xe641;</i> 导出</a>
 				</span> 
 			</div>
 			
@@ -97,7 +98,7 @@
 							<td><fmt:formatDate value='${vo.createTime }' type="date" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 							<td><fmt:formatDate value='${vo.updateTime }' type="date" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 							<td class="td-manage">
-								<a title="续费" href="javascript:void(0)" onclick="renew(${vo.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe600;</i></a>
+								<a title="续费" href="javascript:void(0)" onclick="renew(${vo.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe60c;</i></a>
 								<a title="补签" href="javascript:void(0)" onclick="supplement(${vo.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe615;</i></a>
 								<a title="签名记录" href="javascript:void(0)" onclick="recordList(${vo.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe616;</i></a>
 								<a title="编辑" href="javascript:void(0)" onclick="addOrUpdate(${vo.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>

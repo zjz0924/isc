@@ -19,6 +19,7 @@
 </head>
 
 <body>
+	<nav class="breadcrumb"><a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 	<div class="page-container">
 		<div>
 			<table class="table table-border table-bordered table-bg">
@@ -60,7 +61,8 @@
 					</tr>
 					<tr class="text-c">
 						<th>证书名</th>
-						<th>数量</th>
+						<th>总数量/个</th>
+						<th>今天数量/个</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -68,6 +70,7 @@
 						<tr class="text-c">
 							<td>${vo.name}</td>
 							<td>${vo.add}</td>
+							<td style="color:red;font-weight:bold;">${vo.renew}</td>
 						</tr>
 					</c:forEach>
 				</tbody>

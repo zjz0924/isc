@@ -22,6 +22,11 @@
 	<form id="queryForm" name="queryForm" action="${ctx}/pay/list" method="post">
 		<div class="page-container">
 			<div class="text-c"> 
+				  支出时间：
+				<input type="text" onfocus="WdatePicker()" id="startPayDate" name="startPayDate" class="input-text Wdate" style="width:120px;" value="${startPayDate}">
+				-
+				<input type="text" onfocus="WdatePicker()" id="endPayDate" name="endPayDate" class="input-text Wdate" style="width:120px;" value="${endPayDate}">&nbsp;&nbsp;&nbsp;&nbsp;
+			
 			            创建时间：
 				<input type="text" onfocus="WdatePicker()" id="startCreateTime" name="startCreateTime" class="input-text Wdate" style="width:120px;" value="${startCreateTime}">
 				-
@@ -41,7 +46,8 @@
 				<thead>
 					<tr class="text-c">
 						<th width="40">序号</th>
-						<th width="500">备注</th>
+						<th width="150">支付时间</th>
+						<th width="400">备注</th>
 						<th width="100">金额/元</th>
 						<th width="60">创建时间</th>
 						<th width="40">操作</th>
@@ -52,6 +58,7 @@
 					<c:forEach items="${dataList}" var="vo" varStatus="var">
 						<tr class="text-c">
 							<td>${var.index + 1}</td>
+							<td><fmt:formatDate value='${vo.payDate }' type="date" pattern="yyyy-MM-dd"/></td>
 							<td title="${vo.remark}">${vo.remark}</td>
 							<td title="${vo.price}">${vo.price}</td>
 							<td><fmt:formatDate value='${vo.createTime }' type="date" pattern="yyyy-MM-dd HH:mm:ss"/></td>
@@ -82,6 +89,8 @@
 		} 
 		
 		function resetData(){
+			$("#startPayDate").val("");
+			$("#endPayDate").val("");
 			$("#startCreateTime").val("");
 			$("#endCreateTime").val("");
 			document.getElementById("queryForm").submit();

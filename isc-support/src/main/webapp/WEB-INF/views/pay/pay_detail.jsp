@@ -23,6 +23,13 @@
 			<input type="hidden" id="id" name="id" value="${facadeBean.id}"/>
 			
 			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3">支付：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" onfocus="WdatePicker()" id="payDate" name="payDate" class="input-text Wdate"  readonly value="${facadeBean.payDate}">
+				</div>
+			</div>
+			
+			<div class="row cl">
 				<label class="form-label col-xs-4 col-sm-3">备注：</label>
 				<div class="formControls col-xs-8 col-sm-9">
 					<input type="text" class="input-text" value="${facadeBean.remark}" id="remark" name="remark">
@@ -59,6 +66,9 @@
 		$(function(){
 			$("#form-admin-add").validate({
 				rules:{
+					payDate: {
+						required:true
+					},
 					price: {
 						required:true,
 						number:true

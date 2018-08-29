@@ -1,12 +1,21 @@
 package cn.wow.support.web;
 
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +36,14 @@ import cn.wow.common.domain.SignRecord;
 import cn.wow.common.service.AppService;
 import cn.wow.common.service.CertificateService;
 import cn.wow.common.service.ComboService;
+import cn.wow.common.service.OperationLogService;
 import cn.wow.common.service.SignRecordService;
 import cn.wow.common.utils.AjaxVO;
 import cn.wow.common.utils.Contants;
+import cn.wow.common.utils.ImportExcelUtil;
 import cn.wow.common.utils.ToolUtils;
+import cn.wow.common.utils.operationlog.OperationType;
+import cn.wow.common.utils.operationlog.ServiceType;
 import cn.wow.common.utils.pagination.PageMap;
 
 @Controller
@@ -53,6 +66,9 @@ public class AppController extends AbstractController {
 
 	@Value("${app.url}")
 	protected String appUrl;
+	
+	@Autowired
+	private OperationLogService operationLogService;
 
 	// 查询的条件，用于导出
 	private Map<String, Object> queryMap = new PageMap(false);
@@ -432,5 +448,123 @@ public class AppController extends AbstractController {
 		return vo;
 	}
 
+	
+	/**
+	 * 导出用户
+	 */
+	@RequestMapping(value = "/exportApp")
+	public void exportApp(HttpServletRequest request, HttpServletResponse response) {
+		Account currentAccount = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMMdd");
+		String filename = "APP清单-" + sdf2.format(new Date());
+		
+		try {
+			// 设置头
+			ImportExcelUtil.setResponseHeader(response, filename + ".xlsx");
+
+			Workbook wb = new SXSSFWorkbook(100); // 保持100条在内存中，其它保存到磁盘中
+			// 工作簿
+			Sheet sh = wb.createSheet("APP清单");
+			sh.setColumnWidth(0, (short) 4000);
+			sh.setColumnWidth(1, (short) 4000);
+			sh.setColumnWidth(2, (short) 4000);
+			sh.setColumnWidth(3, (short) 9000);
+			sh.setColumnWidth(4, (short) 6000);
+			sh.setColumnWidth(5, (short) 6000);
+			sh.setColumnWidth(6, (short) 6000);
+			sh.setColumnWidth(7, (short) 6000);
+			sh.setColumnWidth(8, (short) 6000);
+			sh.setColumnWidth(9, (short) 6000);
+			
+			Map<String, CellStyle> styles = ImportExcelUtil.createStyles(wb);
+
+			String[] titles = {"APP名称", "生效日期", "过期日期", "证书名称", "备注", "未签名文件", "已签名文件", "创建时间", "更新时间", "微信号"};
+			int r = 0;
+			
+			Row titleRow = sh.createRow(0);
+			titleRow.setHeight((short) 450);
+			for(int k = 0; k < titles.length; k++){
+				Cell cell = titleRow.createCell(k);
+				cell.setCellStyle(styles.get("header"));
+				cell.setCellValue(titles[k]);
+			}
+			
+			++r;
+			
+			List<App> dataList = appService.selectAllList(queryMap);
+			for (int j = 0; j < dataList.size(); j++) {// 添加数据
+				Row contentRow = sh.createRow(r);
+				contentRow.setHeight((short) 400);
+				App app = dataList.get(j);
+
+				Cell cell1 = contentRow.createCell(0);
+				cell1.setCellStyle(styles.get("cell"));
+				cell1.setCellValue(app.getName());
+
+				Cell cell2 = contentRow.createCell(1);
+				cell2.setCellStyle(styles.get("cell"));
+				cell2.setCellValue(sdf1.format(app.getEffectiveDate()));
+
+				Cell cell3 = contentRow.createCell(2);
+				cell3.setCellStyle(styles.get("cell"));
+				cell3.setCellValue(sdf1.format(app.getExpireDate()));
+
+				Cell cell6 = contentRow.createCell(3);
+				cell6.setCellStyle(styles.get("cell"));
+				if(app.getCertificate() != null) {
+					cell6.setCellValue(app.getCertificate().getName());
+				}
+
+				Cell cell7 = contentRow.createCell(4);
+				cell7.setCellStyle(styles.get("cell"));
+				if (StringUtils.isNotBlank(app.getRemark())) {
+					cell7.setCellValue(app.getRemark());
+				}
+
+				Cell cell8 = contentRow.createCell(5);
+				cell8.setCellStyle(styles.get("cell"));
+				if (StringUtils.isNotBlank(app.getUnsignFileName())) {
+					cell8.setCellValue(app.getUnsignFileName());
+				}
+				
+				Cell cell9 = contentRow.createCell(6);
+				cell9.setCellStyle(styles.get("cell"));
+				if (StringUtils.isNotBlank(app.getSignFileName())) {
+					cell9.setCellValue(app.getSignFileName());
+				}
+				
+				Cell cell10 = contentRow.createCell(7);
+				cell10.setCellStyle(styles.get("cell"));
+				cell10.setCellValue(sdf.format(app.getCreateTime()));
+				
+				Cell cell11 = contentRow.createCell(8);
+				cell11.setCellStyle(styles.get("cell"));
+				cell11.setCellValue(sdf.format(app.getUpdateTime()));
+				
+				Cell cell12 = contentRow.createCell(9);
+				cell12.setCellStyle(styles.get("cell"));
+				if(app.getContacts() != null) {
+					cell12.setCellValue(app.getContacts().getWechat());
+				}
+				
+				r++;
+			}
+
+			OutputStream os = response.getOutputStream();
+			wb.write(os);
+			os.flush();
+			os.close();
+			
+			String logDetail =  "导出APP清单";
+			operationLogService.save(currentAccount.getUserName(), OperationType.EXPORT, ServiceType.APP, logDetail);
+			
+		} catch (Exception e) {
+			logger.error("App清单导出失败");
+			
+			e.printStackTrace();
+		}
+	}
 	
 }

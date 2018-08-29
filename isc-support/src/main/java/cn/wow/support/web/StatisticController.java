@@ -128,10 +128,12 @@ public class StatisticController extends AbstractController {
 
 		if (StringUtils.isNotBlank(startCreateTime)) {
 			map.put("startCreateTime", startCreateTime + " 00:00:00");
+			map.put("startPayDate", startCreateTime);
 			model.addAttribute("startCreateTime", startCreateTime);
 		}
 		if (StringUtils.isNotBlank(endCreateTime)) {
 			map.put("endCreateTime", endCreateTime + " 23:59:59");
+			map.put("endPayDate", endCreateTime);
 			model.addAttribute("endCreateTime", endCreateTime);
 		}
 

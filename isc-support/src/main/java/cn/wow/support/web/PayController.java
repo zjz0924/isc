@@ -1,5 +1,6 @@
 package cn.wow.support.web;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -28,10 +29,26 @@ public class PayController extends AbstractController {
 
 	@RequestMapping(value = "/list")
 	public String list(HttpServletRequest httpServletRequest, Model model, String startCreateTime,
-			String endCreateTime) {
+			String endCreateTime, String startPayDate, String endPayDate) {
 		Map<String, Object> map = new PageMap(httpServletRequest);
 		map.put("custom_order_sql", "create_time desc");
 		map.put("isDelete", "0");
+		
+		
+		if (StringUtils.isNotBlank(startPayDate)) {
+			map.put("startPayDate", startPayDate);
+			model.addAttribute("startPayDate", startPayDate);
+		}
+		
+		if (StringUtils.isNotBlank(endPayDate)) {
+			map.put("endPayDate", endPayDate);
+			model.addAttribute("endPayDate", endPayDate);
+		}
+		
+		if (StringUtils.isNotBlank(endCreateTime)) {
+			map.put("endCreateTime", endCreateTime + " 23:59:59");
+			model.addAttribute("endCreateTime", endCreateTime);
+		}
 
 		if (StringUtils.isNotBlank(startCreateTime)) {
 			map.put("startCreateTime", startCreateTime + " 00:00:00");
@@ -60,10 +77,11 @@ public class PayController extends AbstractController {
 
 	@ResponseBody
 	@RequestMapping(value = "/save")
-	public AjaxVO save(HttpServletRequest request, Model model, String id, String remark, Double price) {
+	public AjaxVO save(HttpServletRequest request, Model model, String id, String remark, Double price, String payDate) {
 		Pay pay = null;
 		AjaxVO vo = new AjaxVO();
 		vo.setMsg("编辑成功");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 		try {
 			if (StringUtils.isNotBlank(id)) {
@@ -72,6 +90,7 @@ public class PayController extends AbstractController {
 				if (pay != null) {
 					pay.setRemark(remark);
 					pay.setPrice(price);
+					pay.setPayDate(sdf.parse(payDate));
 					payService.update(getCurrentUserName(), pay);
 				}
 			} else {
@@ -80,6 +99,7 @@ public class PayController extends AbstractController {
 				pay.setPrice(price);
 				pay.setCreateTime(new Date());
 				pay.setIsDelete(0);
+				pay.setPayDate(sdf.parse(payDate));
 				payService.save(getCurrentUserName(), pay);
 
 				vo.setMsg("添加成功");
