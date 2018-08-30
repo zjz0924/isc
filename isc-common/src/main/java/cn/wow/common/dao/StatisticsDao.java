@@ -7,7 +7,7 @@ public interface StatisticsDao {
 
 	public List<Map<Integer, Object>> statisticsNum(Object params);
 	
-	public List<Map<String, Object>> statisticsCertificate();
+	public List<Map<String, Object>> statisticsCertificate(Object params);
 	
 	public List<Map<Integer, Object>> statisticsPay(Object params);
 }

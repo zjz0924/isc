@@ -11,7 +11,7 @@ public interface StatisticsService {
 	public List<NumItem> statisticsNum();
 	
 	// 统计证书
-	public List<NumItem> statisticsCertificate();
+	public List<NumItem> statisticsCertificate(Map<String, Object> queryMap);
 	
 	// 数量统计
 	public NumItem statisticsNum(Map<String, Object> queryMap);

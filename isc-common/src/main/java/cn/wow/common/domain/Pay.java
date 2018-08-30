@@ -13,6 +13,8 @@ public class Pay extends JpaEntity{
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;
+	// 支付日期
+	private Date payDate;
     // 备注
     private String remark;
     // 金额
@@ -61,6 +63,14 @@ public class Pay extends JpaEntity{
     public void setIsDelete(Integer isDelete) {
         this.isDelete = isDelete;
     }
+
+	public Date getPayDate() {
+		return payDate;
+	}
+
+	public void setPayDate(Date payDate) {
+		this.payDate = payDate;
+	}
 
 	@Override
 	public Serializable getPrimaryKey() {

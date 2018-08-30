@@ -11,7 +11,7 @@
 		<result column="expire_date" property="expireDate" jdbcType="DATE" />
 		<result column="app_id" property="appId" jdbcType="BIGINT" />
 		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
-		<association property="certificate" javaType="cn.wow.common.domain.Certificate" column="combo_id" select="cn.wow.common.dao.CertificateDao.selectOne"/> 
+		<association property="certificate" javaType="cn.wow.common.domain.Certificate" column="cert_id" select="cn.wow.common.dao.CertificateDao.selectOne"/> 
 		<association property="combo" javaType="cn.wow.common.domain.Combo" column="combo_id" select="cn.wow.common.dao.ComboDao.selectOne"/> 
 		<association property="app" javaType="cn.wow.common.domain.App" column="app_id" select="cn.wow.common.dao.AppDao.selectOne"/> 
 	</resultMap>

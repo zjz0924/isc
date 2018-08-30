@@ -7,10 +7,11 @@
 		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
 		<result column="is_delete" jdbcType="INTEGER" property="isDelete" />
 		<result column="price" property="price" jdbcType="DOUBLE" />
+		<result column="pay_date" property="payDate" jdbcType="DATE" />
 	</resultMap>
 
 	<sql id="base_columns">
-		id, remark, create_time, is_delete, price
+		id, remark, create_time, is_delete, price, pay_date
 	</sql>
 
 	<select id="selectOne" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -25,14 +26,17 @@
 	</delete>
 
 	<insert id="insert" parameterType="cn.wow.common.domain.Pay">
-		insert into pay (remark, create_time, is_delete, price) values
+		insert into pay (remark, create_time, is_delete, price, pay_date) values
 		(#{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
-		#{isDelete,jdbcType=INTEGER}, #{price,jdbcType=DOUBLE} )
+		#{isDelete,jdbcType=INTEGER}, #{price,jdbcType=DOUBLE}, #{payDate,jdbcType=DATE} )
 	</insert>
 
 	<update id="update" parameterType="cn.wow.common.domain.Pay">
 		update pay
 		<set>
+			<if test="payDate != null">
+				pay_date = #{payDate,jdbcType=DATE},
+			</if>
 			<if test="isDelete != null">
 				is_delete = #{isDelete,jdbcType=INTEGER},
 			</if>
@@ -51,6 +55,15 @@
 		<include refid="base_columns" />
 		from pay
 		<where>
+		
+			<if test="startPayDate != null">
+				and pay_date &gt;=  #{startPayDate,jdbcType=DATE}
+			</if>
+			
+			<if test="endPayDate != null and endPayDate != ''">
+				and pay_date &lt;= #{endPayDate, jdbcType=DATE}
+			</if>
+		
 			<if test="startCreateTime != null and startCreateTime != ''">
 				and create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
 			</if>

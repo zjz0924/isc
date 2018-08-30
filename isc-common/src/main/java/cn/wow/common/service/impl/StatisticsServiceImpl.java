@@ -54,19 +54,20 @@ public class StatisticsServiceImpl implements StatisticsService {
 	}
 
 	// 统计证书
-	public List<NumItem> statisticsCertificate() {
+	public List<NumItem> statisticsCertificate(Map<String, Object> queryMap) {
 		List<NumItem> dataList = new ArrayList<NumItem>();
 
-		List<Map<String, Object>> data = statisticsDao.statisticsCertificate();
+		List<Map<String, Object>> data = statisticsDao.statisticsCertificate(queryMap);
 		if (data != null && data.size() > 0) {
 			for (Map<String, Object> map : data) {
 				String name = map.get("name").toString();
-				Long num = (long) map.get("num");
+				Long total = (long) map.get("total");
+				Long today = (long) map.get("today");
 
 				NumItem item = new NumItem();
 				item.setName(name);
-				item.setAdd(num.intValue());
-
+				item.setAdd(total.intValue());
+				item.setRenew(today.intValue());
 				dataList.add(item);
 			}
 		}
@@ -83,6 +84,7 @@ public class StatisticsServiceImpl implements StatisticsService {
 		return dataList.get(0);
 	}
 
+	// 收支统支 
 	public NumItem statisticsPay(Map<String, Object> queryMap) {
 		List<Map<Integer, Object>> data = statisticsDao.statisticsPay(queryMap);
 		NumItem item = new NumItem();

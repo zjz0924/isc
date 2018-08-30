@@ -44,15 +44,12 @@
 	</select>
 
 	<!-- 证书统计 -->
-	<select id="statisticsCertificate" resultType="java.util.Map">
-		SELECT c. name, count(*) num FROM sign_record sr LEFT JOIN certificate c ON
-		c.id = sr.cert_id WHERE c.is_delete = 0 AND sr.type != 2 GROUP BY
-		cert_id UNION ALL SELECT name, 0 FROM certificate WHERE id NOT IN (
-		SELECT DISTINCT sr.cert_id FROM sign_record sr LEFT JOIN app a ON
-		sr.app_id = a.id WHERE a.is_delete = 0 ) AND is_delete = 0 ORDER BY num DESC
+	<select id="statisticsCertificate" resultType="java.util.Map" parameterType="java.util.Map">
+		SELECT a. name, case when a.num is null then 0 else a.num end total, case when b.num is null then 0 else b.num end today FROM ( SELECT c. name, count(*) num FROM sign_record sr LEFT JOIN certificate c ON c.id = sr.cert_id WHERE c.is_delete = 0 AND sr.type != 2 GROUP BY cert_id UNION ALL SELECT name, 0 FROM certificate WHERE id NOT IN ( SELECT DISTINCT sr.cert_id FROM sign_record sr LEFT JOIN app a ON sr.app_id = a.id WHERE a.is_delete = 0 ) AND is_delete = 0 ORDER BY num DESC ) a LEFT JOIN ( SELECT c. name, count(*) num FROM sign_record sr LEFT JOIN certificate c ON c.id = sr.cert_id WHERE c.is_delete = 0 AND sr.type != 2 and sr.create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP} and sr.create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP} GROUP BY cert_id UNION ALL SELECT NAME, 0 FROM certificate WHERE id NOT IN ( SELECT DISTINCT sr.cert_id FROM sign_record sr LEFT JOIN app a ON sr.app_id = a.id WHERE a.is_delete = 0 ) AND is_delete = 0 ORDER BY num DESC ) b ON a. name = b. name
 	</select>
 	
-	<select id="statisticsPay" resultType="java.util.Map">
+	<!-- 支出统计 -->
+	<select id="statisticsPay" resultType="java.util.Map" parameterType="java.util.Map">
 		select 1 name, case when sum(price) is null then 0 else sum(price) end price from sign_record sr LEFT JOIN app a on a.id = sr.app_id 
 		<where>
 			a.is_delete = 0 and type != 3
@@ -70,12 +67,12 @@
 		<where>
 			is_delete = 0	
 
-			<if test="startCreateTime != null and startCreateTime != ''">
-				and create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
+			<if test="startPayDate != null and startPayDate != ''">
+				and pay_date &gt;= #{startPayDate, jdbcType=DATE}
 			</if>
 
-			<if test="endCreateTime != null and endCreateTime != ''">
-				and create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
+			<if test="endPayDate != null and endPayDate != ''">
+				and pay_date &lt;= #{endPayDate, jdbcType=DATE}
 			</if>
 		</where>
 	</select>
