@@ -1,5 +1,6 @@
 package cn.wow.support.web;
 
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -7,8 +8,15 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +24,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import cn.wow.common.domain.Account;
 import cn.wow.common.domain.App;
 import cn.wow.common.domain.Certificate;
+import cn.wow.common.domain.Pay;
 import cn.wow.common.domain.SignRecord;
 import cn.wow.common.service.AppService;
+import cn.wow.common.service.OperationLogService;
 import cn.wow.common.service.SignRecordService;
 import cn.wow.common.service.StatisticsService;
+import cn.wow.common.utils.Contants;
+import cn.wow.common.utils.ImportExcelUtil;
+import cn.wow.common.utils.operationlog.OperationType;
+import cn.wow.common.utils.operationlog.ServiceType;
 import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.common.vo.NumItem;
 
@@ -39,30 +54,51 @@ public class StatisticController extends AbstractController {
 
 	@Autowired
 	private StatisticsService statisticsService;
+	
+	@Autowired
+	private OperationLogService operationLogService;
 
+	
+	// 查询的条件，用于导出
+	private Map<String, Object> queryMap = new PageMap(false);
+		
 	/**
 	 * 收入记录
 	 */
 	@RequestMapping(value = "/income")
 	public String income(HttpServletRequest httpServletRequest, Model model, String name, String startCreateTime,
-			String endCreateTime, String type) {
+			String endCreateTime, String type, String payType) {
 
 		Map<String, Object> map = new PageMap(httpServletRequest);
 		map.put("custom_order_sql", "create_time desc");
 		map.put("isDelete", "0");
 		map.put("nottype", 3);
+		
+		queryMap.clear();
+		queryMap.put("custom_order_sql", "create_time desc");
+		queryMap.put("isDelete", "0");
+		queryMap.put("nottype", 3);
 
 		if (StringUtils.isNotBlank(type)) {
 			map.put("type", type);
+			queryMap.put("type", type);
 			model.addAttribute("type", type);
 		}
 
+		if (StringUtils.isNotBlank(payType)) {
+			map.put("payType",payType);
+			queryMap.put("payType",payType);
+			model.addAttribute("payType", payType);
+		}
+		
 		if (StringUtils.isNotBlank(startCreateTime)) {
 			map.put("startCreateTime", startCreateTime + " 00:00:00");
+			queryMap.put("startCreateTime", startCreateTime + " 00:00:00");
 			model.addAttribute("startCreateTime", startCreateTime);
 		}
 		if (StringUtils.isNotBlank(endCreateTime)) {
 			map.put("endCreateTime", endCreateTime + " 23:59:59");
+			queryMap.put("endCreateTime", endCreateTime + " 23:59:59");
 			model.addAttribute("endCreateTime", endCreateTime);
 		}
 		List<SignRecord> dataList = signRecordService.selectAllList(map);
@@ -146,5 +182,122 @@ public class StatisticController extends AbstractController {
 		model.addAttribute("payData", payData);
 		
 		return "statistic/statistic";
+	}
+	
+	
+
+	/**
+	 * 导出清单
+	 */
+	@RequestMapping(value = "/exportList")
+	public void exportList(HttpServletRequest request, HttpServletResponse response) {
+		Account currentAccount = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMMdd");
+		String filename = "收入清单-" + sdf2.format(new Date());
+		
+		try {
+			// 设置头
+			ImportExcelUtil.setResponseHeader(response, filename + ".xlsx");
+
+			Workbook wb = new SXSSFWorkbook(100); // 保持100条在内存中，其它保存到磁盘中
+			// 工作簿
+			Sheet sh = wb.createSheet("收入清单");
+			sh.setColumnWidth(0, (short) 4000);
+			sh.setColumnWidth(1, (short) 2000);
+			sh.setColumnWidth(2, (short) 4000);
+			sh.setColumnWidth(3, (short) 4000);
+			sh.setColumnWidth(4, (short) 6000);
+			sh.setColumnWidth(5, (short) 6000);
+			sh.setColumnWidth(6, (short) 3000);
+			sh.setColumnWidth(7, (short) 3000);
+			sh.setColumnWidth(8, (short) 6000);
+			
+			Map<String, CellStyle> styles = ImportExcelUtil.createStyles(wb);
+
+			String[] titles = {"APP", "类型", "生效时间", "过期时间", "套餐", "证书", "支付方式", "金额/元", "创建时间"};
+			int r = 0;
+			
+			Row titleRow = sh.createRow(0);
+			titleRow.setHeight((short) 450);
+			for(int k = 0; k < titles.length; k++){
+				Cell cell = titleRow.createCell(k);
+				cell.setCellStyle(styles.get("header"));
+				cell.setCellValue(titles[k]);
+			}
+			
+			++r;
+			
+			List<SignRecord> dataList = signRecordService.selectAllList(queryMap);
+			for (int j = 0; j < dataList.size(); j++) {// 添加数据
+				Row contentRow = sh.createRow(r);
+				contentRow.setHeight((short) 400);
+				SignRecord signRecord = dataList.get(j);
+
+				Cell cell1 = contentRow.createCell(0);
+				cell1.setCellStyle(styles.get("cell"));
+				if (signRecord.getApp() != null) {
+					cell1.setCellValue(signRecord.getApp().getName());
+				}
+
+				Cell cell2 = contentRow.createCell(1);
+				cell2.setCellStyle(styles.get("cell"));
+				if (signRecord.getType() == 1) {
+					cell2.setCellValue("新增");
+				} else if (signRecord.getType() == 2) {
+					cell2.setCellValue("续费");
+				}
+
+				Cell cell3 = contentRow.createCell(2);
+				cell3.setCellStyle(styles.get("cell"));
+				cell3.setCellValue(sdf1.format(signRecord.getEffectiveDate()));
+				
+				Cell cell4 = contentRow.createCell(3);
+				cell4.setCellStyle(styles.get("cell"));
+				cell4.setCellValue(sdf1.format(signRecord.getExpireDate()));
+				
+				Cell cell5 = contentRow.createCell(4);
+				cell5.setCellStyle(styles.get("cell"));
+				if(signRecord.getCombo() != null) {
+					cell5.setCellValue(signRecord.getCombo().getName());
+				}
+				
+				Cell cell6 = contentRow.createCell(5);
+				cell6.setCellStyle(styles.get("cell"));
+				if(signRecord.getCertificate() != null) {
+					cell6.setCellValue(signRecord.getCertificate().getName());
+				}
+				
+				Cell cell7 = contentRow.createCell(6);
+				cell7.setCellStyle(styles.get("cell"));
+				if(signRecord.getCombo() != null) {
+					cell7.setCellValue(signRecord.getPayType());
+				}
+				
+				Cell cell8 = contentRow.createCell(7);
+				cell8.setCellStyle(styles.get("cell"));
+				cell8.setCellValue(signRecord.getPrice());
+				
+				Cell cell9 = contentRow.createCell(8);
+				cell9.setCellStyle(styles.get("cell"));
+				cell9.setCellValue(sdf.format(signRecord.getCreateTime()));
+
+				r++;
+			}
+
+			OutputStream os = response.getOutputStream();
+			wb.write(os);
+			os.flush();
+			os.close();
+			
+			String logDetail =  "导出支出清单";
+			operationLogService.save(currentAccount.getUserName(), OperationType.EXPORT, ServiceType.PAY, logDetail);
+			
+		} catch (Exception e) {
+			logger.error("App清单导出失败");
+			
+			e.printStackTrace();
+		}
 	}
 }

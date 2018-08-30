@@ -78,10 +78,13 @@ public class AppController extends AbstractController {
 			String endEffectiveDate, String startExpireDate, String endExpireDate, String startCreateTime,
 			String endCreateTime, String startUpdateTime, String endUpdateTime, String certId) {
 
-		queryMap.clear();
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "expire_date asc, name asc");
 		map.put("isDelete", "0");
+		
+		queryMap.clear();
+		queryMap.put("custom_order_sql", "expire_date asc, name asc");
+		queryMap.put("isDelete", "0");
 
 		if (StringUtils.isNotBlank(name)) {
 			map.put("qname", name);
@@ -182,7 +185,7 @@ public class AppController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/save")
 	public AjaxVO save(HttpServletRequest request, Model model, String id, String appName, String appRemark,
-			String contactsName, String wechat, String alipay, String phone, String contactsRemark, Long certId,
+			String contactsName, String wechat, String alipay, String phone, String contactsRemark, Long certId, String payType,
 			Long comboId, @RequestParam(value = "unsignFile", required = false) MultipartFile unsignFile,
 			@RequestParam(value = "signFile", required = false) MultipartFile signFile) {
 		AjaxVO vo = new AjaxVO();
@@ -244,6 +247,7 @@ public class AppController extends AbstractController {
 					signRecord.setEffectiveDate(date);
 					signRecord.setType(1);
 					signRecord.setCreateTime(date);
+					signRecord.setPayType(payType);
 
 					Combo combo = comboService.selectOne(comboId);
 					signRecord.setPrice(combo.getPrice());
@@ -342,7 +346,7 @@ public class AppController extends AbstractController {
 
 	@ResponseBody
 	@RequestMapping(value = "/renew")
-	public AjaxVO renew(HttpServletRequest request, Model model, Long appId, Long comboId) {
+	public AjaxVO renew(HttpServletRequest request, Model model, Long appId, Long comboId, String payType) {
 		AjaxVO vo = new AjaxVO();
 		vo.setMsg("续费成功");
 
@@ -361,6 +365,7 @@ public class AppController extends AbstractController {
 			signRecord.setType(2);
 			signRecord.setPrice(combo.getPrice());
 			signRecord.setAppId(appId);
+			signRecord.setPayType(payType);
 			
 			app.setUpdateTime(date);
 			app.setEffectiveDate(signRecord.getEffectiveDate());

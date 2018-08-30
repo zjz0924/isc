@@ -38,7 +38,7 @@
 			
 			<div class="cl pd-5 bg-1 bk-gray mt-20"> 
 				<span class="l" style="float: right !important;margin-right: 10px;">
-					<a href="javascript:void(0);" onclick="addOrUpdate()" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加支出</a>
+					<a href="javascript:void(0);" onclick="addOrUpdate()" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加支出</a>&nbsp;&nbsp;<a href="${ctx}/pay/exportList" class="btn btn-success radius"><i class="Hui-iconfont">&#xe641;</i> 导出</a>
 				</span> 
 			</div>
 			

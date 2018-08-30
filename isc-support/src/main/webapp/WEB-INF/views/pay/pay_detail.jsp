@@ -23,9 +23,9 @@
 			<input type="hidden" id="id" name="id" value="${facadeBean.id}"/>
 			
 			<div class="row cl">
-				<label class="form-label col-xs-4 col-sm-3">支付：</label>
+				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>支付时间：</label>
 				<div class="formControls col-xs-8 col-sm-9">
-					<input type="text" onfocus="WdatePicker()" id="payDate" name="payDate" class="input-text Wdate"  readonly value="${facadeBean.payDate}">
+					<input type="text" onfocus="WdatePicker()" id="payDate" name="payDate" class="input-text Wdate"  readonly value="<fmt:formatDate value='${facadeBean.payDate}' type="date" pattern="yyyy-MM-dd"/>">
 				</div>
 			</div>
 			

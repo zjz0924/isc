@@ -11,13 +11,14 @@
 		<result column="expire_date" property="expireDate" jdbcType="DATE" />
 		<result column="app_id" property="appId" jdbcType="BIGINT" />
 		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="pay_type" property="payType" jdbcType="VARCHAR" />
 		<association property="certificate" javaType="cn.wow.common.domain.Certificate" column="cert_id" select="cn.wow.common.dao.CertificateDao.selectOne"/> 
 		<association property="combo" javaType="cn.wow.common.domain.Combo" column="combo_id" select="cn.wow.common.dao.ComboDao.selectOne"/> 
 		<association property="app" javaType="cn.wow.common.domain.App" column="app_id" select="cn.wow.common.dao.AppDao.selectOne"/> 
 	</resultMap>
 	
 	<sql id="base_columns">
-		id, type, combo_id, price, effective_date, expire_date, app_id, create_time, cert_id
+		id, type, combo_id, price, effective_date, expire_date, app_id, create_time, cert_id, pay_type
 	</sql>
 	
 	<select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long">
@@ -29,9 +30,9 @@
 	</delete>
 	
 	<insert id="insert" parameterType="cn.wow.common.domain.SignRecord">
-		insert into sign_record (type, combo_id, price, effective_date, expire_date, app_id, create_time, cert_id)
+		insert into sign_record (type, combo_id, price, effective_date, expire_date, app_id, create_time, cert_id, pay_type)
 		values (#{type,jdbcType=INTEGER}, #{comboId,jdbcType=BIGINT}, #{price,jdbcType=DOUBLE}, #{effectiveDate,jdbcType=DATE}, #{expireDate,jdbcType=DATE},
-		#{appId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{certId,jdbcType=BIGINT})
+		#{appId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{certId,jdbcType=BIGINT}, #{payType,jdbcType=VARCHAR})
 	</insert>
 	
 	<update id="update" parameterType="cn.wow.common.domain.SignRecord">
@@ -60,6 +61,9 @@
 			</if>
 			<if test="createTime != null">
 				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="payType != null">
+				pay_type = #{payType,jdbcType=VARCHAR},
 			</if>
 		</set>
 		where id = #{id,jdbcType=BIGINT}
@@ -103,6 +107,9 @@
 	      <if test="endCreateTime != null and endCreateTime != ''">  
 	    	and create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
 	      </if>
+	      <if test="payType != null">
+			and	pay_type = #{payType,jdbcType=VARCHAR}
+		  </if>
       </where>
       
 	  <choose>

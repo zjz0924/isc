@@ -38,6 +38,8 @@ public class SignRecord extends JpaEntity{
     
     private Certificate certificate;
     
+    // 支付类型（微信、支付宝、银行卡）
+    private String payType;
 
     public Long getId() {
         return id;
@@ -133,6 +135,14 @@ public class SignRecord extends JpaEntity{
 
 	public void setCertificate(Certificate certificate) {
 		this.certificate = certificate;
+	}
+
+	public String getPayType() {
+		return payType;
+	}
+
+	public void setPayType(String payType) {
+		this.payType = payType;
 	}
 
 	@Override

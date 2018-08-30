@@ -95,6 +95,17 @@
 									</select>
 								</div>
 							</div>
+							
+							<div class="row cl">
+								<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>支付方式：</label>
+								<div class="formControls col-xs-8 col-sm-9">
+									<select class="select input-text" id="payType" name="payType" style="width: 150px;">
+										<option value="支付宝" <c:if test="${vo.payType == '支付宝' }">selected="selected"</c:if>>支付宝</option>
+										<option value="微信" <c:if test="${vo.payType == '微信' }">selected="selected"</c:if>>微信</option>
+										<option value="银行卡" <c:if test="${vo.payType == '银行卡' }">selected="selected"</c:if>>银行卡</option>
+									</select>
+								</div>
+							</div>
 						</dd>
 					</dl>
 				</div>

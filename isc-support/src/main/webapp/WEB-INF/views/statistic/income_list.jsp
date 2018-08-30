@@ -28,27 +28,41 @@
 					<option value="1" <c:if test="${1 == type}">selected="selected"</c:if>>新增</option>
 					<option value="2" <c:if test="${2 == type}">selected="selected"</c:if>>续费</option>
 				</select>&nbsp;&nbsp;
+				
+				支付方式：<select class="select input-text" id="payType" name="payType" style="width: 150px;">
+					<option value="">全部</option>
+					<option value="支付宝" <c:if test="${payType == '支付宝' }">selected="selected"</c:if>>支付宝</option>
+					<option value="微信" <c:if test="${payType == '微信' }">selected="selected"</c:if>>微信</option>
+					<option value="银行卡" <c:if test="${payType == '银行卡' }">selected="selected"</c:if>>银行卡</option>
+				</select>&nbsp;&nbsp;
 			
 			            创建时间：
-				<input type="text" onfocus="WdatePicker()" id="startCreateTime" name="startCreateTime" class="input-text Wdate" style="width:120px;" value="${startCreateTime}">
+				<input type="text" onfocus="WdatePicker({})" id="startCreateTime" name="startCreateTime" class="input-text Wdate" style="width:120px;" value="${startCreateTime}">
 				-
-				<input type="text" onfocus="WdatePicker()" id="endCreateTime" name="endCreateTime" class="input-text Wdate" style="width:120px;" value="${endCreateTime}">&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="text" onfocus="WdatePicker({})" id="endCreateTime" name="endCreateTime" class="input-text Wdate" style="width:120px;" value="${endCreateTime}">&nbsp;&nbsp;&nbsp;&nbsp;
 				
 				<button type="button" class="btn btn-success" onclick="searchData();"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
 				<button type="button" class="btn btn-danger" onclick="resetData();"><i class="Hui-iconfont">&#xe665;</i> 重置</button>
 			</div>
 		
-			<table class="table table-border table-bordered table-bg" style="margin-top: 20px;">
+			<div class="cl pd-5 bg-1 bk-gray mt-20"> 
+				<span class="l" style="float: right !important;margin-right: 10px;">
+					<a href="${ctx}/statistic/exportList" class="btn btn-success radius"><i class="Hui-iconfont">&#xe641;</i> 导出</a>
+				</span> 
+			</div>
+		
+			<table class="table table-border table-bordered table-bg">
 				<thead>
 					<tr class="text-c">
 						<th width="30">序号</th>
-						<th width="60">APP</th>
-						<th width="30">类型</th>
+						<th width="100">APP</th>
+						<th width="40">类型</th>
 						<th width="50">生效时间</th>
 						<th width="50">过期时间</th>
-						<th width="120">套餐</th>
+						<th width="140">套餐</th>
 						<th width="120">证书</th>
-						<th width="50">金额/元</th>
+						<th width="80">支付方式</th>
+						<th width="70">金额/元</th>
 						<th width="70">创建时间</th>
 					</tr> 
 				</thead>
@@ -63,6 +77,7 @@
 							<td><fmt:formatDate value='${vo.expireDate }' type="date" pattern="yyyy-MM-dd" /></td>
 							<td title="${vo.combo.name}">${vo.combo.name}</td>
 							<td title="${vo.certificate.name}">${vo.certificate.name}</td>
+							<td title="${vo.payType}">${vo.payType}</td>
 							<td title="${vo.price}">${vo.price}</td>
 							<td><fmt:formatDate value='${vo.createTime }' type="date" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 						</tr>
@@ -74,6 +89,7 @@
 	</form>
 	
 	<script type="text/javascript" src="${ctx}/resources/js/jquery.min.js"></script>
+	<script type="text/javascript" src="${ctx}/resources/js/My97DatePicker/4.8/WdatePicker.js"></script> 
 	
 	<script type="text/javascript">
 		function searchData(){
@@ -82,6 +98,7 @@
 		
 		function resetData(){
 			$("#type").val("");
+			$("#payType").val("");
 			$("#startCreateTime").val("");
 			$("#endCreateTime").val("");
 			document.getElementById("queryForm").submit();
