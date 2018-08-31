@@ -159,7 +159,7 @@
 			
 			<div class="row cl">
 				<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
-					<input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+					<input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;" id="submitBtn">
 				</div>
 			</div>
 		</form>
@@ -211,6 +211,7 @@
 									return false;
 								}
 							}
+							$("#submitBtn").attr('disabled',true);
 						},
 						success: function(data){
 							if(data.success){
@@ -219,10 +220,12 @@
 								});
 							}else{
 								layer.msg(data.msg, {icon:5, time:1000});
+								$("#submitBtn").attr('disabled', false);
 							}
 						},
 		                error: function(XmlHttpRequest, textStatus, errorThrown){
 							layer.msg('error!',{icon:5,time:1000});
+							$("#submitBtn").attr('disabled', false);
 						}
 					});
 				}

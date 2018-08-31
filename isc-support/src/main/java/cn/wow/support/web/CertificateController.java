@@ -48,7 +48,7 @@ public class CertificateController extends AbstractController {
 
 		if (StringUtils.isNotBlank(name)) {
 			map.put("qname", name);
-			model.addAttribute("qname", name);
+			model.addAttribute("name", name);
 		}
 
 		if (StringUtils.isNotBlank(startCertExpireDate)) {

@@ -67,7 +67,7 @@
 	        and duration = #{duration,jdbcType=INTEGER}
 	      </if>
 	      <if test="isDelete != null" >
-	        is_delete = #{isDelete,jdbcType=INTEGER}
+	        and is_delete = #{isDelete,jdbcType=INTEGER}
 	      </if>
 	      <if test="startCreateTime != null and startCreateTime != ''">  
 	    	and create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}

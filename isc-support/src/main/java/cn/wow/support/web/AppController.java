@@ -79,7 +79,7 @@ public class AppController extends AbstractController {
 			String endCreateTime, String startUpdateTime, String endUpdateTime, String certId) {
 
 		Map<String, Object> map = new PageMap(request);
-		map.put("custom_order_sql", "expire_date asc, name asc");
+		map.put("custom_order_sql", "update_time desc, name asc");
 		map.put("isDelete", "0");
 		
 		queryMap.clear();

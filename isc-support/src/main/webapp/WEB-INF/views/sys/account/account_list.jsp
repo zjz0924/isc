@@ -115,6 +115,15 @@
 	<script type="text/javascript" src="${ctx}/resources/js/My97DatePicker/4.8/WdatePicker.js"></script> 
 	<script type="text/javascript" src="${ctx}/resources/js/laypage/1.2/laypage.js"></script>
 	<script type="text/javascript">
+		$(function(){
+			 document.onkeydown = function (event) {
+		        var e = event || window.event;
+		        if (e && e.keyCode == 13) { //回车键的键值为13
+		        	searchData();
+		        }
+		     }; 
+		});
+	
 		function searchData(){
 			document.getElementById("queryForm").submit();
 		} 
