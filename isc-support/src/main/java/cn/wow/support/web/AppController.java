@@ -76,11 +76,20 @@ public class AppController extends AbstractController {
 	@RequestMapping(value = "/list")
 	public String list(HttpServletRequest request, Model model, String name, String startEffectiveDate,
 			String endEffectiveDate, String startExpireDate, String endExpireDate, String startCreateTime,
-			String endCreateTime, String startUpdateTime, String endUpdateTime, String certId) {
+			String endCreateTime, String startUpdateTime, String endUpdateTime, String certId, String sort, String order) {
 
 		Map<String, Object> map = new PageMap(request);
-		map.put("custom_order_sql", "update_time desc, name asc");
 		map.put("isDelete", "0");
+		
+		if(StringUtils.isBlank(sort)) {
+			sort = "update_time";
+		}
+		if(StringUtils.isBlank(order)) {
+			order = "desc";
+		}
+		
+		String orderSql = sort + " " + order + ", name asc";
+		map.put("custom_order_sql", orderSql);
 		
 		queryMap.clear();
 		queryMap.put("custom_order_sql", "expire_date asc, name asc");
@@ -154,6 +163,8 @@ public class AppController extends AbstractController {
 		List<Certificate> certificateList = certificateService.selectAllList(certificateMap);
 		
 		model.addAttribute("certificateList", certificateList);
+		model.addAttribute("sort", sort);
+		model.addAttribute("order", order);
 		
 		return "app/app_list";
 	}
@@ -201,6 +212,17 @@ public class AppController extends AbstractController {
 				app = appService.selectOne(Long.parseLong(id));
 
 				if (app != null) {
+					if(StringUtils.isBlank(appName) && unsignFile == null) {
+						vo.setMsg("app名称和未签名文件不能同时为空");
+						vo.setSuccess(false);
+						return vo;
+					}
+					
+					if(StringUtils.isBlank(appName) && unsignFile != null) {
+						String sourceName = unsignFile.getOriginalFilename();
+						appName = sourceName.substring(0, sourceName.indexOf("."));
+					}
+					
 					Map<String, Object> rMap = new HashMap<String, Object>();
 					rMap.put("name", appName);
 					rMap.put("isDelete", 0);
@@ -229,6 +251,17 @@ public class AppController extends AbstractController {
 					}
 				}
 			} else {
+				if(StringUtils.isBlank(appName) && unsignFile == null) {
+					vo.setMsg("app名称和未签名文件不能同时为空");
+					vo.setSuccess(false);
+					return vo;
+				}
+				
+				if(StringUtils.isBlank(appName) && unsignFile != null) {
+					String sourceName = unsignFile.getOriginalFilename();
+					appName = sourceName.substring(0, sourceName.indexOf("."));
+				}
+				
 				Map<String, Object> rMap = new HashMap<String, Object>();
 				rMap.put("name", appName);
 				rMap.put("isDelete", 0);

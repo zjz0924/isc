@@ -29,7 +29,7 @@
 					</dt>
 					<dd>
 						<div class="row cl">
-							<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>名称：</label>
+							<label class="form-label col-xs-4 col-sm-3">名称：</label>
 							<div class="formControls col-xs-8 col-sm-9">
 								<input type="text" class="input-text" value="${facadeBean.name}" id="appName" name="appName">
 							</div>
@@ -99,7 +99,7 @@
 							<div class="row cl">
 								<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>支付方式：</label>
 								<div class="formControls col-xs-8 col-sm-9">
-									<select class="select input-text" id="payType" name="payType" style="width: 150px;">
+									<select class="select input-text" id="payType" name="payType">
 										<option value="支付宝" <c:if test="${vo.payType == '支付宝' }">selected="selected"</c:if>>支付宝</option>
 										<option value="微信" <c:if test="${vo.payType == '微信' }">selected="selected"</c:if>>微信</option>
 										<option value="银行卡" <c:if test="${vo.payType == '银行卡' }">selected="selected"</c:if>>银行卡</option>
@@ -180,9 +180,6 @@
 		$(function(){
 			$("#form-admin-add").validate({
 				rules:{
-					appName:{
-						required:true
-					},
 					wechat:{
 						required:true
 					}
@@ -197,6 +194,12 @@
 						url: "${ctx}/app/save?time=" + new Date() ,
 						beforeSubmit: function(){
 							var appId = "${facadeBean.id}"; 
+							
+							var appName = $("#appName").val();
+							if((appName == null || appName == "" || appName == undefined) && document.getElementById("unsignFile").files.length == 0){
+								layer.msg("请填写名称或上传未签名文件", {icon:5, time:1000});
+								return false;
+							}
 							
 							if(appId == null || appId == "" || appId == undefined){
 								var comboId = $("#comboId").val();
