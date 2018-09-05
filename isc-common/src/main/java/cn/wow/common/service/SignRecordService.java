@@ -14,5 +14,8 @@ public interface SignRecordService {
     public int deleteByPrimaryKey(String userName, SignRecord signRecord);
 
     public List<SignRecord> selectAllList(Map<String, Object> map);
+    
+    // 统计总额
+ 	public double statisticTotal(Map<String, Object> map);
 
 }

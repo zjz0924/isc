@@ -93,7 +93,11 @@ public class PayController extends AbstractController {
 
 		List<Pay> dataList = payService.selectAllList(map);
 
+		// 总金额
+		double total = payService.statisticTotal(queryMap);
+		
 		model.addAttribute("dataList", dataList);
+		model.addAttribute("total", total);
 		return "pay/pay_list";
 	}
 

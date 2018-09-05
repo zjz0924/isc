@@ -85,4 +85,29 @@
 		</choose>
 	</select>
 
+	<select id="statisticTotal" resultType="java.lang.Double" parameterType="java.util.Map" >
+		select case when sum(price)  is null then 0 else sum(price)  end price from pay
+		
+		<where>
+		
+			<if test="startPayDate != null">
+				and pay_date &gt;=  #{startPayDate,jdbcType=DATE}
+			</if>
+			
+			<if test="endPayDate != null and endPayDate != ''">
+				and pay_date &lt;= #{endPayDate, jdbcType=DATE}
+			</if>
+		
+			<if test="startCreateTime != null and startCreateTime != ''">
+				and create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
+			</if>
+			<if test="endCreateTime != null and endCreateTime != ''">
+				and create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
+			</if>
+			<if test="isDelete != null">
+				and is_delete = #{isDelete,jdbcType=INTEGER}
+			</if>
+		</where>
+	</select>
+
 </mapper>

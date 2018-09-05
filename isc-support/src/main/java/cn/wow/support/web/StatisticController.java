@@ -54,26 +54,26 @@ public class StatisticController extends AbstractController {
 
 	@Autowired
 	private StatisticsService statisticsService;
-	
+
 	@Autowired
 	private OperationLogService operationLogService;
 
-	
 	// 查询的条件，用于导出
 	private Map<String, Object> queryMap = new PageMap(false);
-		
+
 	/**
 	 * 收入记录
 	 */
 	@RequestMapping(value = "/income")
 	public String income(HttpServletRequest httpServletRequest, Model model, String name, String startCreateTime,
-			String endCreateTime, String type, String payType) {
+			String endCreateTime, String type, String payType, String startEffectiveDate, String endEffectiveDate,
+			String startExpireDate, String endExpireDate) {
 
 		Map<String, Object> map = new PageMap(httpServletRequest);
 		map.put("custom_order_sql", "create_time desc");
 		map.put("isDelete", "0");
 		map.put("nottype", 3);
-		
+
 		queryMap.clear();
 		queryMap.put("custom_order_sql", "create_time desc");
 		queryMap.put("isDelete", "0");
@@ -86,24 +86,54 @@ public class StatisticController extends AbstractController {
 		}
 
 		if (StringUtils.isNotBlank(payType)) {
-			map.put("payType",payType);
-			queryMap.put("payType",payType);
+			map.put("payType", payType);
+			queryMap.put("payType", payType);
 			model.addAttribute("payType", payType);
 		}
-		
+
 		if (StringUtils.isNotBlank(startCreateTime)) {
 			map.put("startCreateTime", startCreateTime + " 00:00:00");
 			queryMap.put("startCreateTime", startCreateTime + " 00:00:00");
 			model.addAttribute("startCreateTime", startCreateTime);
 		}
+
 		if (StringUtils.isNotBlank(endCreateTime)) {
 			map.put("endCreateTime", endCreateTime + " 23:59:59");
 			queryMap.put("endCreateTime", endCreateTime + " 23:59:59");
 			model.addAttribute("endCreateTime", endCreateTime);
 		}
+
+		if (StringUtils.isNotBlank(startEffectiveDate)) {
+			map.put("startEffectiveDate", startEffectiveDate);
+			queryMap.put("startEffectiveDate", startEffectiveDate);
+			model.addAttribute("startEffectiveDate", startEffectiveDate);
+		}
+
+		if (StringUtils.isNotBlank(endEffectiveDate)) {
+			map.put("endEffectiveDate", endEffectiveDate);
+			queryMap.put("endEffectiveDate", endEffectiveDate);
+			model.addAttribute("endEffectiveDate", endEffectiveDate);
+		}
+
+		if (StringUtils.isNotBlank(startExpireDate)) {
+			map.put("startExpireDate", startExpireDate);
+			queryMap.put("startExpireDate", startExpireDate);
+			model.addAttribute("startExpireDate", startExpireDate);
+		}
+
+		if (StringUtils.isNotBlank(endExpireDate)) {
+			map.put("endExpireDate", endExpireDate);
+			queryMap.put("endExpireDate", endExpireDate);
+			model.addAttribute("endExpireDate", endExpireDate);
+		}
+
 		List<SignRecord> dataList = signRecordService.selectAllList(map);
 
+		// 总金额
+		double total = signRecordService.statisticTotal(queryMap);
+
 		model.addAttribute("dataList", dataList);
+		model.addAttribute("total", total);
 		return "statistic/income_list";
 	}
 
@@ -174,17 +204,15 @@ public class StatisticController extends AbstractController {
 		}
 
 		// 数量统计
-		NumItem numData= statisticsService.statisticsNum(map);
+		NumItem numData = statisticsService.statisticsNum(map);
 		model.addAttribute("numData", numData);
-		
+
 		// 收支统计
-		NumItem payData= statisticsService.statisticsPay(map);
+		NumItem payData = statisticsService.statisticsPay(map);
 		model.addAttribute("payData", payData);
-		
+
 		return "statistic/statistic";
 	}
-	
-	
 
 	/**
 	 * 导出清单
@@ -196,7 +224,7 @@ public class StatisticController extends AbstractController {
 		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
 		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMMdd");
 		String filename = "收入清单-" + sdf2.format(new Date());
-		
+
 		try {
 			// 设置头
 			ImportExcelUtil.setResponseHeader(response, filename + ".xlsx");
@@ -213,22 +241,22 @@ public class StatisticController extends AbstractController {
 			sh.setColumnWidth(6, (short) 3000);
 			sh.setColumnWidth(7, (short) 3000);
 			sh.setColumnWidth(8, (short) 6000);
-			
+
 			Map<String, CellStyle> styles = ImportExcelUtil.createStyles(wb);
 
-			String[] titles = {"APP", "类型", "生效时间", "过期时间", "套餐", "证书", "支付方式", "金额/元", "创建时间"};
+			String[] titles = { "APP", "类型", "生效时间", "过期时间", "套餐", "证书", "支付方式", "金额/元", "创建时间" };
 			int r = 0;
-			
+
 			Row titleRow = sh.createRow(0);
 			titleRow.setHeight((short) 450);
-			for(int k = 0; k < titles.length; k++){
+			for (int k = 0; k < titles.length; k++) {
 				Cell cell = titleRow.createCell(k);
 				cell.setCellStyle(styles.get("header"));
 				cell.setCellValue(titles[k]);
 			}
-			
+
 			++r;
-			
+
 			List<SignRecord> dataList = signRecordService.selectAllList(queryMap);
 			for (int j = 0; j < dataList.size(); j++) {// 添加数据
 				Row contentRow = sh.createRow(r);
@@ -252,33 +280,33 @@ public class StatisticController extends AbstractController {
 				Cell cell3 = contentRow.createCell(2);
 				cell3.setCellStyle(styles.get("cell"));
 				cell3.setCellValue(sdf1.format(signRecord.getEffectiveDate()));
-				
+
 				Cell cell4 = contentRow.createCell(3);
 				cell4.setCellStyle(styles.get("cell"));
 				cell4.setCellValue(sdf1.format(signRecord.getExpireDate()));
-				
+
 				Cell cell5 = contentRow.createCell(4);
 				cell5.setCellStyle(styles.get("cell"));
-				if(signRecord.getCombo() != null) {
+				if (signRecord.getCombo() != null) {
 					cell5.setCellValue(signRecord.getCombo().getName());
 				}
-				
+
 				Cell cell6 = contentRow.createCell(5);
 				cell6.setCellStyle(styles.get("cell"));
-				if(signRecord.getCertificate() != null) {
+				if (signRecord.getCertificate() != null) {
 					cell6.setCellValue(signRecord.getCertificate().getName());
 				}
-				
+
 				Cell cell7 = contentRow.createCell(6);
 				cell7.setCellStyle(styles.get("cell"));
-				if(signRecord.getCombo() != null) {
+				if (signRecord.getCombo() != null) {
 					cell7.setCellValue(signRecord.getPayType());
 				}
-				
+
 				Cell cell8 = contentRow.createCell(7);
 				cell8.setCellStyle(styles.get("cell"));
 				cell8.setCellValue(signRecord.getPrice());
-				
+
 				Cell cell9 = contentRow.createCell(8);
 				cell9.setCellStyle(styles.get("cell"));
 				cell9.setCellValue(sdf.format(signRecord.getCreateTime()));
@@ -290,13 +318,13 @@ public class StatisticController extends AbstractController {
 			wb.write(os);
 			os.flush();
 			os.close();
-			
-			String logDetail =  "导出支出清单";
+
+			String logDetail = "导出支出清单";
 			operationLogService.save(currentAccount.getUserName(), OperationType.EXPORT, ServiceType.PAY, logDetail);
-			
+
 		} catch (Exception e) {
 			logger.error("App清单导出失败");
-			
+
 			e.printStackTrace();
 		}
 	}

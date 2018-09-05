@@ -16,32 +16,36 @@ import cn.wow.common.utils.pagination.PageHelperExt;
 
 @Service
 @Transactional
-public class PayServiceImpl implements PayService{
+public class PayServiceImpl implements PayService {
 
-    private static Logger logger = LoggerFactory.getLogger(PayServiceImpl.class);
+	private static Logger logger = LoggerFactory.getLogger(PayServiceImpl.class);
 
-    @Autowired
-    private PayDao payDao;
+	@Autowired
+	private PayDao payDao;
 
-    public Pay selectOne(Long id){
-    	return payDao.selectOne(id);
-    }
+	public Pay selectOne(Long id) {
+		return payDao.selectOne(id);
+	}
 
-    public int save(String userName, Pay pay){
-    	return payDao.insert(pay);
-    }
+	public int save(String userName, Pay pay) {
+		return payDao.insert(pay);
+	}
 
-    public int update(String userName, Pay pay){
-    	return payDao.update(pay);
-    }
+	public int update(String userName, Pay pay) {
+		return payDao.update(pay);
+	}
 
-    public int deleteByPrimaryKey(String userName, Pay pay){
-    	return payDao.deleteByPrimaryKey(pay.getId());
-    }
+	public int deleteByPrimaryKey(String userName, Pay pay) {
+		return payDao.deleteByPrimaryKey(pay.getId());
+	}
 
-    public List<Pay> selectAllList(Map<String, Object> map){
-    	PageHelperExt.startPage(map);
-    	return payDao.selectAllList(map);
-    }
+	public List<Pay> selectAllList(Map<String, Object> map) {
+		PageHelperExt.startPage(map);
+		return payDao.selectAllList(map);
+	}
 
+	// 统计总额
+	public double statisticTotal(Map<String, Object> map) {
+		return payDao.statisticTotal(map);
+	}
 }

@@ -1,5 +1,9 @@
 package cn.wow.common.dao;
 
-public interface PayDao extends SqlDao{
+import java.util.Map;
 
+public interface PayDao extends SqlDao{
+	
+	// 统计总额
+	public double statisticTotal(Map<String, Object> map);
 }
