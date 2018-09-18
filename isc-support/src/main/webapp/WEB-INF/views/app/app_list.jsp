@@ -52,25 +52,28 @@
 				-
 				<input type="text" onfocus="WdatePicker()" id="endUpdateTime" name="endUpdateTime" class="input-text Wdate" style="width:120px;" value="${endUpdateTime}">&nbsp;&nbsp;&nbsp;&nbsp;
 				
-				名称：<input type="text" class="input-text" style="width:130px;" placeholder="名称" id="name" name="name" value="${name}">
+				名称：<input type="text" class="input-text" style="width:200px;" id="name" name="name" value="${name}">
 				
+			</div>
+			
+			<div class="text-c" style="text-align: left; margin-top: 10px">
+				排序：<select class="select input-text" id="sort" name="sort" style="width: 120px;margin-left: 31px;">
+			          	<option value="update_time" <c:if test="${sort == 'update_time'}">selected="selected"</c:if>>更新时间</option>
+			          	<option value="create_time" <c:if test="${sort == 'create_time'}">selected="selected"</c:if>>创建时间</option>
+						<option value="effective_date" <c:if test="${sort == 'effective_date'}">selected="selected"</c:if>>生效日期</option>
+						<option value="expire_date" <c:if test="${sort == 'expire_date'}">selected="selected"</c:if>>过期日期</option>
+					</select>&nbsp;&nbsp;&nbsp;
+					
+					<select class="select input-text" id="order" name="order" style="width: 120px;">
+			          	<option value="desc" <c:if test="${order == 'desc'}">selected="selected"</c:if>>降序</option>
+			          	<option value="asc" <c:if test="${order == 'asc'}">selected="selected"</c:if>>升序</option>
+					</select>&nbsp;&nbsp;&nbsp;&nbsp;
+					
 				<button type="button" class="btn btn-success" onclick="searchData();"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
-				<button type="button" class="btn btn-danger" onclick="resetData();"><i class="Hui-iconfont">&#xe665;</i> 重置</button>
+				<button type="button" class="btn btn-danger" onclick="resetData();"><i class="Hui-iconfont">&#xe665;</i> 重置</button>	
 			</div>
 			
 			<div class="cl pd-5 bg-1 bk-gray mt-20"> 
-				          排序：<select class="select input-text" id="sort" name="sort" style="width: 200px;">
-				          	<option value="update_time" <c:if test="${sort == 'update_time'}">selected="selected"</c:if>>更新时间</option>
-				          	<option value="create_time" <c:if test="${sort == 'create_time'}">selected="selected"</c:if>>创建时间</option>
-							<option value="effective_date" <c:if test="${sort == 'effective_date'}">selected="selected"</c:if>>生效日期</option>
-							<option value="expire_date" <c:if test="${sort == 'expire_date'}">selected="selected"</c:if>>过期日期</option>
-						</select>
-						
-						<select class="select input-text" id="order" name="order" style="width: 200px;">
-				          	<option value="desc" <c:if test="${order == 'desc'}">selected="selected"</c:if>>降序</option>
-				          	<option value="asc" <c:if test="${order == 'asc'}">selected="selected"</c:if>>升序</option>
-						</select>
-			
 				<span class="l" style="float: right !important;margin-right: 10px;">
 					<a href="javascript:void(0);" onclick="addOrUpdate()" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加APP</a>&nbsp;&nbsp;<a href="${ctx}/app/exportApp" class="btn btn-success radius"><i class="Hui-iconfont">&#xe641;</i> 导出</a>
 				</span> 

@@ -84,7 +84,7 @@ public class StatisticsServiceImpl implements StatisticsService {
 		return dataList.get(0);
 	}
 
-	// 收支统支 
+	// 收支统支
 	public NumItem statisticsPay(Map<String, Object> queryMap) {
 		List<Map<Integer, Object>> data = statisticsDao.statisticsPay(queryMap);
 		NumItem item = new NumItem();
@@ -104,8 +104,12 @@ public class StatisticsServiceImpl implements StatisticsService {
 			item.setRenewSum(0d);
 			item.setAddSum(0d);
 		}
-		
+
 		return item;
+	}
+
+	public List<Map<String, Object>> monthStatistic(Map<String, Object> queryMap) {
+		return statisticsDao.monthStatistic(queryMap);
 	}
 
 	private String resetDate(int type, String str) {

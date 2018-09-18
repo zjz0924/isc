@@ -21,9 +21,8 @@
 <body>
 	<form id="queryForm" name="queryForm" action="${ctx}/certificate/list" method="post">
 		<div class="page-container">
-			<div class="text-c"> 
-				用户名：<input type="text" class="input-text" style="width:150px" placeholder="名称" id="name" name="name" value="${name}">&nbsp;&nbsp;&nbsp;&nbsp;
-			          
+		
+			<div class="text-c" style="text-align: left;"> 
 			            证书过期时间：
 				<input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'endCertExpireDate\')||\'%y-%M-%d\'}' })" id="startCertExpireDate" name="startCertExpireDate" class="input-text Wdate" style="width:120px;" value="${startCertExpireDate}">
 				-
@@ -33,14 +32,27 @@
 				<input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'endDescExpireDate\')||\'%y-%M-%d\'}' })" id="startDescExpireDate" name="startDescExpireDate" class="input-text Wdate" style="width:120px;" value="${startDescExpireDate}">
 				-
 				<input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'startDescExpireDate\')}',maxDate:'%y-%M-%d' })" id="endDescExpireDate" name="endDescExpireDate" class="input-text Wdate" style="width:120px;" value="${endDescExpireDate}">&nbsp;&nbsp;&nbsp;&nbsp;
+			
+				名称：<input type="text" class="input-text" style="width:180px"  id="name" name="name" value="${name}">
 			</div>
 			
 			<div class="text-c" style="text-align: left; margin-top: 10px">
-				 创建时间：
-				<input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'endCreateTime\')||\'%y-%M-%d\'}' })" id="startCreateTime" name="startCreateTime" class="input-text Wdate" style="width:120px;" value="${startCreateTime}">
+			           创建时间：
+				<input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'endCreateTime\')||\'%y-%M-%d\'}' })" id="startCreateTime" name="startCreateTime" class="input-text Wdate" style="width:120px;margin-left: 27px;" value="${startCreateTime}">
 				-
 				<input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'startCreateTime\')}',maxDate:'%y-%M-%d' })" id="endCreateTime" name="endCreateTime" class="input-text Wdate" style="width:120px;" value="${endCreateTime}">&nbsp;&nbsp;&nbsp;&nbsp;
+				 
+				排序：<select class="select input-text" id="sort" name="sort" style="width: 150px;margin-left: 90px;">
+		          	<option value="cert_expire_date" <c:if test="${sort == 'cert_expire_date'}">selected="selected"</c:if>>证书过期时间</option>
+		          	<option value="desc_expire_date" <c:if test="${sort == 'desc_expire_date'}">selected="selected"</c:if>>描述文件过期时间</option>
+					<option value="create_time" <c:if test="${sort == 'create_time'}">selected="selected"</c:if>>创建时间</option>
+				</select>
 				
+				<select class="select input-text" id="order" name="order" style="width: 100px;">
+					<option value="asc" <c:if test="${order == 'asc'}">selected="selected"</c:if>>升序</option>
+		          	<option value="desc" <c:if test="${order == 'desc'}">selected="selected"</c:if>>降序</option>
+				</select>&nbsp;&nbsp;&nbsp;&nbsp; 
+				 
 				<button type="button" class="btn btn-success" onclick="searchData();"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
 				<button type="button" class="btn btn-danger" onclick="resetData();"><i class="Hui-iconfont">&#xe665;</i> 重置</button>
 			</div>
@@ -71,8 +83,8 @@
 						<tr class="text-c">
 							<td>${var.index + 1}</td>
 							<td title="${vo.name}">${vo.name}</td>
-							<td><fmt:formatDate value='${vo.certExpireDate }' type="date" pattern="yyyy-MM-dd"/></td>
-							<td><fmt:formatDate value='${vo.descExpireDate }' type="date" pattern="yyyy-MM-dd"/></td>
+							<td style="color:red; font-weight: bold;"><fmt:formatDate value='${vo.certExpireDate }' type="date" pattern="yyyy-MM-dd"/></td>
+							<td style="color:red; font-weight: bold;"><fmt:formatDate value='${vo.descExpireDate }' type="date" pattern="yyyy-MM-dd"/></td>
 							<td>
 								<a style="text-decoration:none" href="${resUrl}${vo.certFile}" title="下载">${vo.certFileName}</a> 
 							</td>

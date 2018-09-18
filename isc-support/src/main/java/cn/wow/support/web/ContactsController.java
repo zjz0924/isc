@@ -30,7 +30,7 @@ public class ContactsController extends AbstractController {
 	public String list(HttpServletRequest httpServletRequest, Model model, String name, String wechat, String alipay,
 			String phone, String startCreateTime, String endCreateTime) {
 		Map<String, Object> map = new PageMap(httpServletRequest);
-		map.put("custom_order_sql", "name asc");
+		map.put("custom_order_sql", "wechat asc");
 		map.put("isDelete", "0");
 
 		if (StringUtils.isNotBlank(name)) {

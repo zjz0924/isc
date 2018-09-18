@@ -22,17 +22,17 @@
 	<form id="queryForm" name="queryForm" action="${ctx}/contacts/list" method="post">
 		<div class="page-container">
 			<div class="text-c" style="text-align: left;"> 
-				姓名：<input type="text" class="input-text" style="width:180px;margin-left: 32px;" id="name" name="name" value="${name}">&nbsp;&nbsp;&nbsp;&nbsp;
+				姓名：<input type="text" class="input-text" style="width:180px;margin-left: 15px;" id="name" name="name" value="${name}">&nbsp;&nbsp;&nbsp;&nbsp;
 			          微信：<input type="text" class="input-text" style="width:180px" id="wechat" name="wechat" value="${wechat}">&nbsp;&nbsp;&nbsp;&nbsp;
-			          支付宝：<input type="text" class="input-text" style="width:180px" id="alipay" name="alipay" value="${alipay}">&nbsp;&nbsp;&nbsp;&nbsp;
-				电话：<input type="text" class="input-text" style="width:180px" id="phone" name="phone" value="${phone}">&nbsp;&nbsp;&nbsp;&nbsp;
+			          创建时间：
+				<input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'endCreateTime\')||\'%y-%M-%d\'}' })" id="startCreateTime" name="startCreateTime" class="input-text Wdate" style="width:120px;" value="${startCreateTime}">
+				-
+				<input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'startCreateTime\')}',maxDate:'%y-%M-%d' })" id="endCreateTime" name="endCreateTime" class="input-text Wdate" style="width:120px;" value="${endCreateTime}">  
 			</div>
 			
 			<div class="text-c" style="text-align: left; margin-top: 10px">
-				 创建时间：
-				<input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'endCreateTime\')||\'%y-%M-%d\'}' })" id="startCreateTime" name="startCreateTime" class="input-text Wdate" style="width:120px;" value="${startCreateTime}">
-				-
-				<input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'startCreateTime\')}',maxDate:'%y-%M-%d' })" id="endCreateTime" name="endCreateTime" class="input-text Wdate" style="width:120px;" value="${endCreateTime}">&nbsp;&nbsp;&nbsp;&nbsp;
+				支付宝：<input type="text" class="input-text" style="width:180px" id="alipay" name="alipay" value="${alipay}">&nbsp;&nbsp;&nbsp;&nbsp;
+				电话：<input type="text" class="input-text" style="width:180px" id="phone" name="phone" value="${phone}">&nbsp;&nbsp;&nbsp;&nbsp;
 				
 				<button type="button" class="btn btn-success" onclick="searchData();"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
 				<button type="button" class="btn btn-danger" onclick="resetData();"><i class="Hui-iconfont">&#xe665;</i> 重置</button>

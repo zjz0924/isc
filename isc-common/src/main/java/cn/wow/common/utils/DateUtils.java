@@ -99,4 +99,23 @@ public class DateUtils {
 		Date currYearLast = calendar.getTime();
 		return new SimpleDateFormat("yyyy-MM-dd").format(currYearLast);
 	}
+	
+	
+	public static String getMonthStart(Date date) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.add(Calendar.MONTH, 0);
+		cal.set(Calendar.DAY_OF_MONTH, 1);
+		Date time = cal.getTime();
+		return new SimpleDateFormat("yyyy-MM-dd").format(time);
+	}
+	
+	public static String getMonthEnd(Date date) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+		Date time = cal.getTime();
+		return new SimpleDateFormat("yyyy-MM-dd").format(time);
+	}
+	
 }

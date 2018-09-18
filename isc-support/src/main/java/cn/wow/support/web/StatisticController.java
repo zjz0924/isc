@@ -1,11 +1,16 @@
 package cn.wow.support.web;
 
 import java.io.OutputStream;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,15 +31,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import cn.wow.common.domain.Account;
 import cn.wow.common.domain.App;
-import cn.wow.common.domain.Certificate;
-import cn.wow.common.domain.Pay;
 import cn.wow.common.domain.SignRecord;
 import cn.wow.common.service.AppService;
 import cn.wow.common.service.OperationLogService;
 import cn.wow.common.service.SignRecordService;
 import cn.wow.common.service.StatisticsService;
 import cn.wow.common.utils.Contants;
+import cn.wow.common.utils.DateUtils;
 import cn.wow.common.utils.ImportExcelUtil;
+import cn.wow.common.utils.JsonUtil;
 import cn.wow.common.utils.operationlog.OperationType;
 import cn.wow.common.utils.operationlog.ServiceType;
 import cn.wow.common.utils.pagination.PageMap;
@@ -215,6 +220,52 @@ public class StatisticController extends AbstractController {
 	}
 
 	/**
+	 * 每月详情统计
+	 */
+	@RequestMapping(value = "/monthStatistic")
+	public String monthStatistic(HttpServletRequest request, Model model, String month) {
+
+		Map<String, Object> queryMap = new PageMap(false);
+		SimpleDateFormat sdf = new SimpleDateFormat("dd");
+		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM");
+		
+		Date date = null;
+		try {
+			if (StringUtils.isBlank(month)) {
+				date = new Date();
+			} else {
+				date = sdf1.parse(month + "-01");
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		queryMap.put("startCreateTime", DateUtils.getMonthStart(date));
+		queryMap.put("endCreateTime", DateUtils.getMonthEnd(date));
+
+		List<Map<String, Object>> dataList = statisticsService.monthStatistic(queryMap);
+		model.addAttribute("dataList", dataList);
+		
+		// 时间列表
+		List<String> dateList = new ArrayList<String>();
+		// 值列表
+		List<Double> valueList = new ArrayList<Double>();
+		
+		for (Map<String, Object> map : dataList) {
+			Date dateVal = (Date) map.get("datelist");
+			dateList.add(sdf.format(dateVal));
+			
+			valueList.add((Double) map.get("price"));
+		}
+		
+		model.addAttribute("month", date);
+		model.addAttribute("monthTitle", sdf1.format(date));
+		model.addAttribute("date", JsonUtil.toJson(dateList));
+		model.addAttribute("val", JsonUtil.toJson(valueList));
+		return "statistic/month_statistic";
+	}
+
+	/**
 	 * 导出清单
 	 */
 	@RequestMapping(value = "/exportList")
@@ -328,4 +379,5 @@ public class StatisticController extends AbstractController {
 			e.printStackTrace();
 		}
 	}
+
 }

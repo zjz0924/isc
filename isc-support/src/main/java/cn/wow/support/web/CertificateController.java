@@ -40,12 +40,20 @@ public class CertificateController extends AbstractController {
 	@RequestMapping(value = "/list")
 	public String list(HttpServletRequest httpServletRequest, Model model, String name, String startCreateTime,
 			String endCreateTime, String startCertExpireDate, String endCertExpireDate, String startDescExpireDate,
-			String endDescExpireDate) {
+			String endDescExpireDate, String sort, String order) {
 
+		if(StringUtils.isBlank(sort)) {
+			sort = "cert_expire_date";
+		}
+		if(StringUtils.isBlank(order)) {
+			order = "asc";
+		}
+		
 		Map<String, Object> map = new PageMap(httpServletRequest);
-		map.put("custom_order_sql", "name asc");
+		String orderSql = sort + " " + order + ", name asc";
+		map.put("custom_order_sql", orderSql);
 		map.put("isDelete", "0");
-
+		
 		if (StringUtils.isNotBlank(name)) {
 			map.put("qname", name);
 			model.addAttribute("name", name);
@@ -84,6 +92,8 @@ public class CertificateController extends AbstractController {
 
 		model.addAttribute("dataList", dataList);
 		model.addAttribute("resUrl", resUrl);
+		model.addAttribute("order", order);
+		model.addAttribute("sort", sort);
 		return "certificate/certificate_list";
 	}
 

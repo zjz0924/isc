@@ -59,68 +59,18 @@
 </head>
 
 <body>
-	<form id="queryForm" name="queryForm" action="${ctx}/statistic/statistic" method="post">
+	<form id="queryForm" name="queryForm" action="${ctx}/statistic/monthStatistic" method="post">
 		<div class="page-container">
 			<div class="text-c">
 				   时间：
-				<input type="text" onfocus="WdatePicker()" id="startCreateTime" name="startCreateTime" class="input-text Wdate" style="width:120px;" value="${startCreateTime}">
-				-
-				<input type="text" onfocus="WdatePicker()" id="endCreateTime" name="endCreateTime" class="input-text Wdate" style="width:120px;" value="${endCreateTime}">&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="text" onfocus="WdatePicker({minDate: '2018-08', dateFmt: 'yyyy-MM'})" id="month" name="month" class="input-text Wdate" style="width:120px;" value="<fmt:formatDate value='${ month}' type="date" pattern="yyyy-MM" />">
 				
 				<button type="button" class="btn btn-success" onclick="searchData();"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
-				<button type="button" class="btn btn-danger" onclick="resetData();"><i class="Hui-iconfont">&#xe665;</i> 重置</button>
 			</div>
 			
 			<div class="text-c" style="margin-top: 30px;">
-				<table class="table table-border table-bordered table-bg">
-					<thead>
-						<tr>
-							<th colspan="7" scope="col">数量统计</th>
-						</tr>
-						<tr class="text-c">
-							<th>新增/个</th>
-							<th>新增金额/元</th>
-							<th>续费/个</th>
-							<th>续费金额/元</th>
-							<th>补签/个</th>
-							<th>总金额/元</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr class="text-c">
-							<td>${numData.add}</td>
-							<td>${numData.addSum}</td>
-							<td>${numData.renew}</td>
-							<td>${numData.renewSum}</td>
-							<td>${numData.sumplement}</td>
-							<td style="color:red;font-weight:bold;">${numData.addSum + numData.renewSum}</td>
-						</tr>
-					</tbody>
-				</table>
+				<div id="container" style="min-width:700px;height:400px"></div>
 			</div>
-			
-			<div class="text-c" style="margin-top: 30px;">
-				<table class="table table-border table-bordered table-bg">
-					<thead>
-						<tr>
-							<th colspan="7" scope="col">收支统计</th>
-						</tr>
-						<tr class="text-c">
-							<th>收入/元</th>
-							<th>支出/元</th>
-							<th>净收入/元</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr class="text-c">
-							<td>${payData.addSum}</td>
-							<td>${payData.renewSum}</td>
-							<td style="color:red;font-weight:bold;"><fmt:formatNumber type="number" value="${payData.addSum - payData.renewSum}" pattern="0.0" maxFractionDigits="1"/></td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			
 		</div>
 	</form>
 	
@@ -132,7 +82,8 @@
 	<!--/_footer 作为公共模版分离出去-->
 	
 	<script type="text/javascript" src="${ctx}/resources/js/My97DatePicker/4.8/WdatePicker.js"></script> 
-	<script type="text/javascript" src="${ctx}/resources/js/laypage/1.2/laypage.js"></script>
+	<script type="text/javascript" src="${ctx}/resources/js/Highcharts/5.0.6/js/highcharts.js"></script>
+	<script type="text/javascript" src="${ctx}/resources/js/Highcharts/5.0.6/js/modules/exporting.js"></script>
 	<script type="text/javascript">
 		$(function(){
 			 document.onkeydown = function (event) {
@@ -141,17 +92,38 @@
 		        	searchData();
 		        }
 		     }; 
+		     
+		     $('#container').highcharts({
+		    	title: {
+		             text: '${monthTitle} 每天统计详情'
+		        },
+		    	chart: {
+		 			type: 'column'
+		 		},
+		 		xAxis: {
+		 			categories: ${date} 
+		 		},
+		        yAxis: {
+		            title: {
+		                text: '收入（元）'
+		            }
+		        },
+		 		plotOptions: {
+		 			series: {
+		 				allowPointSelect: true
+		 			}
+		 		},
+		 		series: [{
+		 			name: "收入",
+		 			data: ${val}
+		 		}]
+		     });
+		     
 		});
 	
 		function searchData(){
 			document.getElementById("queryForm").submit();
 		} 
-		
-		function resetData(){
-			$("#startCreateTime").val("");
-			$("#endCreateTime").val("");
-			document.getElementById("queryForm").submit();
-		}
 		
 	</script>
 	

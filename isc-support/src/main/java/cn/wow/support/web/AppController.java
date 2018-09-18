@@ -386,15 +386,15 @@ public class AppController extends AbstractController {
 		try {
 			Date date = new Date();
 
-			SignRecord signRecord = new SignRecord();
+ 			SignRecord signRecord = new SignRecord();
 			Combo combo = comboService.selectOne(comboId);
 			App app = appService.selectOne(appId);
 			
 			signRecord.setCertId(app.getCertId());
 			signRecord.setComboId(comboId);
 			signRecord.setCreateTime(date);
-			signRecord.setEffectiveDate(date);
-			signRecord.setExpireDate(ToolUtils.addMonth(date, combo.getDuration()));
+			signRecord.setEffectiveDate(app.getExpireDate());
+			signRecord.setExpireDate(ToolUtils.addMonth(app.getExpireDate(), combo.getDuration()));
 			signRecord.setType(2);
 			signRecord.setPrice(combo.getPrice());
 			signRecord.setAppId(appId);
