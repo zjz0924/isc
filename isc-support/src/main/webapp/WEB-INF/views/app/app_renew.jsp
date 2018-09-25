@@ -37,13 +37,26 @@
 			<div class="row cl">
 				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>支付方式：</label>
 				<div class="formControls col-xs-8 col-sm-9">
-					<select class="select input-text" id="payType" name="payType" style="width: 150px;">
+					<select class="select input-text" id="payType" name="payType">
 						<option value="支付宝" <c:if test="${vo.payType == '支付宝' }">selected="selected"</c:if>>支付宝</option>
 						<option value="微信" <c:if test="${vo.payType == '微信' }">selected="selected"</c:if>>微信</option>
 						<option value="银行卡" <c:if test="${vo.payType == '银行卡' }">selected="selected"</c:if>>银行卡</option>
 					</select>
 				</div>
 			</div>
+			
+			<div class="row cl">
+				<p style="color:red;margin-left: 20px;">注意：如果证书没有更改，请不要选择证书</p>
+				<label class="form-label col-xs-4 col-sm-3">证书：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<select class="select input-text" id="certId" name="certId">
+						<option value="">请选择</option>
+						<c:forEach items="${certificateList}" var="vo">
+							<option value="${vo.id}">${vo.name}</option>
+						</c:forEach>
+					</select>
+				</div>
+			</div>	
 			
 			<div class="row cl">
 				<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">

@@ -80,6 +80,7 @@
 						<li><a data-href="${ctx}/pay/list" data-title="支出记录" href="javascript:void(0)">支出记录</a></li>
 						<li><a data-href="${ctx}/statistic/income" data-title="收入记录" href="javascript:void(0)">收入记录</a></li>
 						<li><a data-href="${ctx}/statistic/monthStatistic" data-title="每天收入详情" href="javascript:void(0)">每天收入详情</a></li>
+						<li><a data-href="${ctx}/syscData/list" data-title="极光统计" href="javascript:void(0)">极光统计</a></li>
 					</ul>
 				</dd>
 			</dl>

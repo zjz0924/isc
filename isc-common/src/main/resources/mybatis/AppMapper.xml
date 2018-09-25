@@ -20,11 +20,11 @@
 	</resultMap>
 	
 	<sql id="base_columns">
-		id, name, contacts_id, effective_date, expire_date, remark, unsign_file, sign_file, create_time, update_time, is_delete, cert_id
+		a.id, a.name, a.contacts_id, a.effective_date, a.expire_date, a.remark, a.unsign_file, a.sign_file, a.create_time, a.update_time, a.is_delete, a.cert_id
 	</sql>
 	
 	<select id="selectOne" parameterType="java.lang.Long" resultMap="BaseResultMap">
-		select <include refid="base_columns" /> from app where id = #{id,jdbcType=BIGINT}
+		select <include refid="base_columns" /> from app a where id = #{id,jdbcType=BIGINT}
 	</select>
 	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
@@ -78,46 +78,49 @@
 	
 	
 	<select id="selectAllList" resultMap="BaseResultMap" parameterType="java.util.Map" >
-	  	select <include refid="base_columns" /> from app
+	  	select <include refid="base_columns" /> from app a left join contacts c on a.contacts_id = c.id
 	     <where>
-	     	  <if test="name != null">
-				and name = #{name,jdbcType=VARCHAR} 
+	     	  <if test="name != null"> 
+				and a.name = #{name,jdbcType=VARCHAR} 
 			  </if>
 			  <if test="qname != null">
-				and name like concat('%', #{qname,jdbcType=VARCHAR}, '%') 
+				and a.name like concat('%', #{qname,jdbcType=VARCHAR}, '%') 
 			  </if>
 			  <if test="startEffectiveDate != null and startEffectiveDate != ''">  
-		    	and effective_date &gt;= #{startEffectiveDate, jdbcType=DATE}
+		    	and a.effective_date &gt;= #{startEffectiveDate, jdbcType=DATE}
 		      </if>
 		      <if test="endEffectiveDate != null and endEffectiveDate != ''">  
-		    	and effective_date &lt;= #{endEffectiveDate, jdbcType=DATE}
+		    	and a.effective_date &lt;= #{endEffectiveDate, jdbcType=DATE}
 		      </if>
 			  <if test="startExpireDate != null and startExpireDate != ''">  
-		    	and expire_date &gt;= #{startExpireDate, jdbcType=DATE}
+		    	and a.expire_date &gt;= #{startExpireDate, jdbcType=DATE}
 		      </if>
 		      <if test="endExpireDate != null and endExpireDate != ''">  
-		    	and expire_date &lt;= #{endExpireDate, jdbcType=DATE}
+		    	and a.expire_date &lt;= #{endExpireDate, jdbcType=DATE}
 		      </if>
 		      <if test="startCreateTime != null and startCreateTime != ''">  
-		    	and create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
+		    	and a.create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
 		      </if>
 		      <if test="endCreateTime != null and endCreateTime != ''">  
-		    	and create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
+		    	and a.create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
 		      </if>
 		      <if test="startUpdateTime != null and startUpdateTime != ''">  
-		    	and update_time &gt;= #{startUpdateTime, jdbcType=TIMESTAMP}
+		    	and a.update_time &gt;= #{startUpdateTime, jdbcType=TIMESTAMP}
 		      </if>
 		      <if test="endUpdateTime != null and endUpdateTime != ''">  
-		    	and update_time &lt;= #{update_time, jdbcType=TIMESTAMP}
+		    	and a.update_time &lt;= #{endUpdateTime, jdbcType=TIMESTAMP}
 		      </if>
 			  <if test="isDelete != null">
-				and is_delete = #{isDelete,jdbcType=INTEGER}
+				and a.is_delete = #{isDelete,jdbcType=INTEGER}
 			  </if>
 			  <if test="id != null">
-				and id &lt;&gt; #{id,jdbcType=BIGINT}
+				and a.id &lt;&gt; #{id,jdbcType=BIGINT}
 			  </if>
 			  <if test="certId != null">
-				and cert_id = #{certId,jdbcType=BIGINT}
+				and a.cert_id = #{certId,jdbcType=BIGINT}
+			 </if>
+			 <if test="wechat != null">
+				and c.wechat like concat('%', #{wechat,jdbcType=VARCHAR}, '%') 
 			 </if>
 	      </where>
 	      
@@ -126,7 +129,7 @@
 	  			order by ${custom_order_sql}
 	  		</when>
 	  		<otherwise>
-	  			order by id desc
+	  			order by a.id desc
 	  		</otherwise>
 	 	 </choose>
 	  </select>

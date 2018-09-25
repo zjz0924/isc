@@ -22,6 +22,7 @@
 	<form id="queryForm" name="queryForm" action="${ctx}/app/list" method="post">
 		<div class="page-container">
 			<div class="text-c" style="text-align: left;"> 
+			          名称：<input type="text" class="input-text" style="width:200px;" id="name" name="name" value="${name}">&nbsp;&nbsp;&nbsp;&nbsp;
 			          
 			            生效时间：
 				<input type="text" onfocus="WdatePicker()" id="startEffectiveDate" name="startEffectiveDate" class="input-text Wdate" style="width:120px;" value="${startEffectiveDate}">
@@ -31,17 +32,17 @@
 				过期时间：
 				<input type="text" onfocus="WdatePicker()" id="startExpireDate" name="startExpireDate" class="input-text Wdate" style="width:120px;" value="${startExpireDate}">
 				-
-				<input type="text" onfocus="WdatePicker()" id="endExpireDate" name="endExpireDate" class="input-text Wdate" style="width:120px;" value="${endExpireDate}">&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="text" onfocus="WdatePicker()" id="endExpireDate" name="endExpireDate" class="input-text Wdate" style="width:120px;" value="${endExpireDate}">
+			</div>
 			
+			<div class="text-c" style="text-align: left; margin-top: 10px">
 				证书：<select class="select input-text" id="certId" name="certId" style="width: 200px;">
 						<option value="">全部</option>
 						<c:forEach items="${certificateList}" var="vo">
 							<option value="${vo.id}" <c:if test="${vo.id == certId}">selected="selected"</c:if>>${vo.name}</option>
 						</c:forEach>
-					</select>
-			</div>
+					</select>&nbsp;&nbsp;&nbsp;&nbsp;
 			
-			<div class="text-c" style="text-align: left; margin-top: 10px">
 				 创建时间：
 				<input type="text" onfocus="WdatePicker()" id="startCreateTime" name="startCreateTime" class="input-text Wdate" style="width:120px;" value="${startCreateTime}">
 				-
@@ -50,13 +51,12 @@
 				 更新时间：
 				<input type="text" onfocus="WdatePicker()" id="startUpdateTime" name="startUpdateTime" class="input-text Wdate" style="width:120px;" value="${startUpdateTime}">
 				-
-				<input type="text" onfocus="WdatePicker()" id="endUpdateTime" name="endUpdateTime" class="input-text Wdate" style="width:120px;" value="${endUpdateTime}">&nbsp;&nbsp;&nbsp;&nbsp;
-				
-				名称：<input type="text" class="input-text" style="width:200px;" id="name" name="name" value="${name}">
-				
+				<input type="text" onfocus="WdatePicker()" id="endUpdateTime" name="endUpdateTime" class="input-text Wdate" style="width:120px;" value="${endUpdateTime}">
 			</div>
 			
 			<div class="text-c" style="text-align: left; margin-top: 10px">
+				微信：<input type="text" class="input-text" style="width:200px;" id="wechat" name="wechat" value="${wechat}">&nbsp;&nbsp;&nbsp;&nbsp;
+				
 				排序：<select class="select input-text" id="sort" name="sort" style="width: 120px;margin-left: 31px;">
 			          	<option value="update_time" <c:if test="${sort == 'update_time'}">selected="selected"</c:if>>更新时间</option>
 			          	<option value="create_time" <c:if test="${sort == 'create_time'}">selected="selected"</c:if>>创建时间</option>
@@ -87,11 +87,11 @@
 						<th width="70">生效时间</th>
 						<th width="75">过期时间</th>
 						<th width="80">证书</th>
-						<th width="80">备注</th>
-						<th width="120">未签名文件</th>
-						<th width="130">已签名文件</th>
-						<th width="40">创建时间</th>
+						<th width="100">客户微信</th>
+						<th width="130">ipa包</th>
+						<th width="30">创建时间</th>
 						<th width="30">更新时间</th>
+						<th width="80">备注</th>
 						<th width="70">操作</th>
 					</tr> 
 				</thead>
@@ -104,14 +104,14 @@
 							<td><fmt:formatDate value='${vo.effectiveDate }' type="date" pattern="yyyy-MM-dd"/></td>
 							<td style="color:red; font-weight: bold;"><fmt:formatDate value='${vo.expireDate }' type="date" pattern="yyyy-MM-dd" /></td>
 							<td title="${vo.certificate.name}">${vo.certificate.name}</td>
-							<td title="${vo.remark}">${vo.remark}</td>
+							<td title="${vo.contacts.wechat }">${vo.contacts.wechat }</td>
 							<td>
-								<a style="text-decoration:none" href="${resUrl}${vo.unsignFile}" title="下载">${vo.unsignFileName}</a> 
+								<a style="text-decoration:none" href="${resUrl}${vo.unsignFile}" title="下载">${vo.unsignFileName}</a></br>
+								<a style="text-decoration:none" href="${resUrl}${vo.signFile}" title="下 载">${vo.signFileName}</a>
 							</td>
-							<td><a style="text-decoration:none" href="${resUrl}${vo.signFile}" title="下 载">${vo.signFileName}</a> </td>
-							
 							<td><fmt:formatDate value='${vo.createTime }' type="date" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 							<td><fmt:formatDate value='${vo.updateTime }' type="date" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+							<td title="${vo.remark}">${vo.remark}</td>
 							<td class="td-manage">
 								<a title="续费" href="javascript:void(0)" onclick="renew(${vo.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe60c;</i></a>
 								<a title="补签" href="javascript:void(0)" onclick="supplement(${vo.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe615;</i></a>
@@ -161,6 +161,7 @@
 			$("#startUpdateTime").val("");
 			$("#endUpdateTime").val("");
 			$("#certId").val("");
+			$("#wechat").val("");
 			document.getElementById("queryForm").submit();
 		}
 		

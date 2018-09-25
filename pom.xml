@@ -565,6 +565,18 @@
 		    <version>${mail.version}</version>
 		</dependency>
 		
+		<dependency>
+		    <groupId>com.alibaba</groupId>
+		    <artifactId>fastjson</artifactId>
+		    <version>1.2.48</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.codehaus.jackson</groupId>
+		    <artifactId>jackson-core-asl</artifactId>
+		    <version>1.9.13</version>
+		</dependency>
+		
 			
 		</dependencies>
 	</dependencyManagement>

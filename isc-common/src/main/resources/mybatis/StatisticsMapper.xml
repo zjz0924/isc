@@ -90,8 +90,8 @@
 		select a.datelist, case when b.price is null then 0 else b.price end price from 
 		(select datelist, 0 from calendar where datelist &gt;= #{startCreateTime, jdbcType=TIMESTAMP} and datelist &lt;= #{endCreateTime, jdbcType=TIMESTAMP}) a
 		left join 
-		(select effective_date, sum(price) price from sign_record where effective_date &gt;= #{startCreateTime, jdbcType=TIMESTAMP} and effective_date &lt;= #{endCreateTime, jdbcType=TIMESTAMP} and type !=3 group by effective_date) b
-		on a.datelist = b.effective_date
+		(select DATE_FORMAT(create_time,'%Y-%m-%d') create_time, sum(price) price from sign_record where DATE_FORMAT(create_time,'%Y-%m-%d') &gt;= #{startCreateTime, jdbcType=TIMESTAMP} and DATE_FORMAT(create_time,'%Y-%m-%d') &lt;= #{endCreateTime, jdbcType=TIMESTAMP} and type !=3 group by DATE_FORMAT(create_time,'%Y-%m-%d')) b
+		on a.datelist = b.create_time
 	</select>
 
 </mapper>

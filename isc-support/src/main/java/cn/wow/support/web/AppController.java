@@ -76,7 +76,7 @@ public class AppController extends AbstractController {
 	@RequestMapping(value = "/list")
 	public String list(HttpServletRequest request, Model model, String name, String startEffectiveDate,
 			String endEffectiveDate, String startExpireDate, String endExpireDate, String startCreateTime,
-			String endCreateTime, String startUpdateTime, String endUpdateTime, String certId, String sort, String order) {
+			String endCreateTime, String startUpdateTime, String endUpdateTime, String certId, String sort, String order, String wechat) {
 
 		Map<String, Object> map = new PageMap(request);
 		map.put("isDelete", "0");
@@ -146,10 +146,17 @@ public class AppController extends AbstractController {
 			queryMap.put("endUpdateTime", endUpdateTime + " 23:59:59");
 			model.addAttribute("endUpdateTime", endUpdateTime);
 		}
+		
 		if (StringUtils.isNotBlank(certId)) {
 			map.put("certId", certId);
 			queryMap.put("certId", certId);
 			model.addAttribute("certId", certId);
+		}
+		
+		if (StringUtils.isNotBlank(wechat)) {
+			map.put("wechat", wechat);
+			queryMap.put("wechat", wechat);
+			model.addAttribute("wechat", wechat);
 		}
 
 		List<App> dataList = appService.selectAllList(map);
@@ -372,14 +379,21 @@ public class AppController extends AbstractController {
 		comboMap.put("custom_order_sql", "name asc");
 		comboMap.put("isDelete", "0");
 		List<Combo> comboList = comboService.selectAllList(comboMap);
+		
+		// 证书信息
+		Map<String, Object> certificateMap = new PageMap(false);
+		certificateMap.put("custom_order_sql", "name asc");
+		certificateMap.put("isDelete", "0");
+		List<Certificate> certificateList = certificateService.selectAllList(certificateMap);
 
+		model.addAttribute("certificateList", certificateList);
 		model.addAttribute("comboList", comboList);
 		return "app/app_renew";
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/renew")
-	public AjaxVO renew(HttpServletRequest request, Model model, Long appId, Long comboId, String payType) {
+	public AjaxVO renew(HttpServletRequest request, Model model, Long appId, Long comboId, String payType, Long certId) {
 		AjaxVO vo = new AjaxVO();
 		vo.setMsg("续费成功");
 
@@ -390,7 +404,13 @@ public class AppController extends AbstractController {
 			Combo combo = comboService.selectOne(comboId);
 			App app = appService.selectOne(appId);
 			
-			signRecord.setCertId(app.getCertId());
+			if(certId == null) {
+				signRecord.setCertId(app.getCertId());
+			}else {
+				signRecord.setCertId(certId);
+				app.setCertId(certId);
+			}
+			
 			signRecord.setComboId(comboId);
 			signRecord.setCreateTime(date);
 			signRecord.setEffectiveDate(app.getExpireDate());
