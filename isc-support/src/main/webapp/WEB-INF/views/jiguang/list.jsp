@@ -61,11 +61,11 @@
 					<c:forEach items="${dataList}" var="vo" varStatus="var">
 						<tr class="text-c">
 							<td>${var.index + 1}</td>
-							<td title="${vo.name}">${vo.name}</td>
+							<td title="${vo.appName}">${vo.appName}</td>
 							<td title="${vo.item.amountNewToday}" style="color: red; font-weight: bold;">${vo.item.amountNewToday}</td>
 							<td title="${vo.item.userAmount}">${vo.item.userAmount}</td>
 							<td class="td-manage">
-								<a title="详情" href="javascript:void(0)" onclick="detail('${vo.key}', '${vo.name}')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe665;</i></a> &nbsp;
+								<a title="详情" href="javascript:void(0)" onclick="detail('${vo.appKey}', '${vo.appName}')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe665;</i></a> &nbsp;
 							</td>
 						</tr>
 					</c:forEach>
@@ -140,8 +140,9 @@
                 	},
                 	success: function(data){
                 		if(data.success){
-                			alert("同步成功");
-                			window.location.reload();
+                			layer.msg(data.msg, {icon: 5,time:1000}, function(){
+                				window.location.reload();
+                			});
         				}else{
         					layer.msg(data.msg, {icon: 5,time:1000}, function(){
         						layer.close(index);

@@ -1,48 +1,54 @@
 package cn.wow.common.service.impl;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-
-import cn.wow.common.domain.App;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import cn.wow.common.service.AppService;
 import cn.wow.common.service.SyncDataService;
 import cn.wow.common.utils.DateUtils;
 import cn.wow.common.utils.JsonUtil;
-import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.common.vo.AppDetailVO;
 import cn.wow.common.vo.AppListVO;
+import cn.wow.common.vo.AppNumVO;
 import cn.wow.common.vo.AppTotalItemVO;
-import cn.wow.common.vo.AppTotalVO;
 import cn.wow.common.vo.AppVO;
 
 @Service
 @Transactional
 public class SyncDataServiceImpl implements SyncDataService {
 
-	// 照片上传根路径
+	private static Logger logger = LoggerFactory.getLogger(SyncDataServiceImpl.class);
+	
+	// 上传根路径
 	@Value("${img.root.url}")
 	protected String rootPath;
+	
+	@Value("${jg.api.appNum}")
+	private int apiAppNum;
 
 	@Autowired
 	private AppService appService;
@@ -66,66 +72,62 @@ public class SyncDataServiceImpl implements SyncDataService {
 	 * 列表信息
 	 */
 	public void syncList(String token) throws Exception {
-		
-		// 本地app列表
-		Map<String, Object> map = new PageMap(false);
-		map.put("isDelete", "0");
-		List<App> appList = appService.selectAllList(map);
 
-		Set<String> appNameSet = new HashSet<String>();
-		for (App app : appList) {
-			appNameSet.add(app.getName());
-		}
-		
+		// 本地app列表
+		List<String> appNameList = appService.getAppNames();
+
 		// 获取极光的app列表
+		long t1 = System.currentTimeMillis();
 		String jgAppStr = getData(listAPI, token);
+		logger.info("App key Api 花费时间：" + (System.currentTimeMillis() - t1) + " ms");
+		
 		AppListVO jgAppList = JsonUtil.fromJson(jgAppStr, AppListVO.class);
-		List<AppVO> appVOList =  jgAppList.getApps();
+		List<AppVO> appVOList = jgAppList.getApps();
 		
+		// 过滤只有签名过的APP
+		List<AppVO> exisitAppList = new ArrayList<AppVO>();
+		for(AppVO vo: appVOList) {
+			if (appNameList.contains(vo.getName())) {
+				exisitAppList.add(vo);
+			}
+		}
+
 		// 每组去获取 极光的列表数据
-		List<AppTotalVO> totalList = new ArrayList<AppTotalVO>();
-		
-		int totalNum = appVOList == null ? 0 : appVOList.size();
-		int pageSize = 100;
-		int time = totalNum / pageSize;
-		
-		if(totalNum % 50 != 0) {
+		List<AppNumVO> totalList = new ArrayList<AppNumVO>();
+
+		int totalNum = exisitAppList == null ? 0 : exisitAppList.size();
+		int time = totalNum / apiAppNum;
+
+		if (totalNum % 50 != 0) {
 			++time;
 		}
-		
-		Map<String, String> appNameMap = new HashMap<String, String>();
-		
-		for(int i = 1; i <= time; i++) {
-			
+
+		for (int i = 1; i <= time; i++) {
+
 			StringBuffer appIdsBuf = new StringBuffer("");
-			
-			int fromIndex = pageSize * (i - 1);
-			int toIndex = pageSize * i;
+
+			int fromIndex = apiAppNum * (i - 1);
+			int toIndex = apiAppNum * i;
 			if (toIndex > totalNum) {
 				toIndex = totalNum;
 			}
-			
-			List<AppVO> subAppList = appVOList.subList(fromIndex, toIndex);
+
+			List<AppVO> subAppList = exisitAppList.subList(fromIndex, toIndex);
+			Map<String, String> appNameMap = new HashMap<String, String>();
 			for (AppVO vo : subAppList) {
-				if (appNameSet.contains(vo.getName())) {
-					appIdsBuf.append(vo.getAppKey() + ",");
-					appNameMap.put(vo.getAppKey(), vo.getName());
-				}
+				appIdsBuf.append(vo.getAppKey() + ",");
+				appNameMap.put(vo.getAppKey(), vo.getName());
 			}
-			
+
 			String appIds = appIdsBuf.toString();
 			if (StringUtils.isNotBlank(appIds)) {
 				appIds = appIds.substring(0, appIds.length() - 1);
 			}
 
 			// 获取APP数量
-			pareseNum(appIds, token, totalList);
+			pareseNum(appIds, token, totalList, appNameMap);
 		}
 
-		for (AppTotalVO vo : totalList) {
-			vo.setName(appNameMap.get(vo.getKey()));
-		}
-		
 		// 保存数据
 		writeJsonFile(JsonUtil.toJson(totalList));
 	}
@@ -138,7 +140,7 @@ public class SyncDataServiceImpl implements SyncDataService {
 		String endDate = DateUtils.getMonthEnd().replaceAll("-", "");
 
 		String api = MessageFormat.format(detailAPI, new Object[] { appKey, endDate, startDate });
-		
+
 		String jsonVal = getData(api, token);
 		AppDetailVO appDetailVO = JsonUtil.fromJson(jsonVal, AppDetailVO.class);
 
@@ -149,6 +151,8 @@ public class SyncDataServiceImpl implements SyncDataService {
 		HttpClient client = new HttpClient();
 		// 设置 Http 连接超时为5秒
 		client.getHttpConnectionManager().getParams().setConnectionTimeout(5000);
+		client.getParams().setParameter("http.protocol.cookie-policy", CookiePolicy.IGNORE_COOKIES);
+
 		GetMethod method = new GetMethod(url);
 
 		// 设置请求的编码方式
@@ -163,33 +167,42 @@ public class SyncDataServiceImpl implements SyncDataService {
 		}
 
 		// 返回响应消息
-		byte[] responseBody = method.getResponseBodyAsString().getBytes(method.getResponseCharSet());
-		String response = new String(responseBody, "utf-8");
+		InputStream inputStream = method.getResponseBodyAsStream();
+		BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
+		StringBuffer stringBuffer = new StringBuffer();
+		String str = "";
+		while ((str = br.readLine()) != null) {
+			stringBuffer.append(str);
+		}
+
 		// 释放连接
 		method.releaseConnection();
 
-		return response;
+		return stringBuffer.toString();
 	}
 
 	/**
 	 * 解析数量json
 	 */
-	public void pareseNum(String appIds, String token, List<AppTotalVO> list) throws Exception {
+	public void pareseNum(String appIds, String token, List<AppNumVO> list, Map<String, String> appNameMap) throws Exception {
+		long t1 = System.currentTimeMillis();
 		String totalStr = getData(totalAPI + appIds, token);
+		logger.info("App数量 Api 花费时间：" + (System.currentTimeMillis() - t1) + " ms");
 
-		Map<String, String> stringMap = new HashMap<>();
-		JSONObject jsonObject = JSON.parseObject(totalStr);
-		Set<String> keys = jsonObject.keySet();
-		Iterator<String> iterator = keys.iterator();
-		while (iterator.hasNext()) {
-			String key = (String) iterator.next();
-			stringMap.put(key, jsonObject.getString(key));
-		}
+		ObjectMapper objectMapper = new ObjectMapper();
+		JsonNode root = objectMapper.readTree(totalStr);
+		Iterator<Entry<String, JsonNode>> elements = root.fields();
 
-		for (Map.Entry<String, String> entry : stringMap.entrySet()) {
-			AppTotalVO vo = new AppTotalVO();
-			vo.setKey(entry.getKey());
-			vo.setItem(JsonUtil.fromJson(entry.getValue(), AppTotalItemVO.class));
+		while (elements.hasNext()) {
+			Entry<String, JsonNode> node = elements.next();
+			String key = node.getKey();
+			AppTotalItemVO item = objectMapper.readValue(node.getValue().toString(), AppTotalItemVO.class);
+
+			AppNumVO vo = new AppNumVO();
+			vo.setItem(item);
+			vo.setAppKey(key);
+			vo.setAppName(appNameMap.get(key));
+
 			list.add(vo);
 		}
 	}

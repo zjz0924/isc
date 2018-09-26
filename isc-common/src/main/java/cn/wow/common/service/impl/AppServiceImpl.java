@@ -100,6 +100,10 @@ public class AppServiceImpl implements AppService {
 		signRecordService.save(userName, signRecord);
 	}
 
+	public List<String> getAppNames() {
+		return appDao.getAppNames();
+	}
+
 	/**
 	 * 添加日志
 	 */

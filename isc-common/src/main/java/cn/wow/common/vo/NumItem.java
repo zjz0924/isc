@@ -9,7 +9,7 @@ import java.io.Serializable;
  */
 public class NumItem implements Serializable{
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -3085751210633033959L;
 	
 	// 名称
 	private String name;

@@ -25,7 +25,6 @@ import cn.wow.common.domain.OperationLog;
 import cn.wow.common.service.OperationLogService;
 import cn.wow.common.utils.JsonUtil;
 import cn.wow.common.utils.operationlog.FieldValue;
-import cn.wow.common.utils.operationlog.OperationType;
 import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.operationlog.OpLogDetailCoder;
 import cn.wow.operationlog.manager.EntityServiceTypeMap;

@@ -27,4 +27,7 @@ public interface AppService {
      * 续费
      */
     public void renewApp(String userName, App app, SignRecord signRecord);
+    
+    
+    public List<String> getAppNames();
 }

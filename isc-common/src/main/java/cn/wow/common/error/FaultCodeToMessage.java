@@ -1,8 +1,5 @@
 package cn.wow.common.error;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
-
 /**
  * 
  * This class converts fault code ids to readable Strings.

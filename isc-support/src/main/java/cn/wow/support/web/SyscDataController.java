@@ -6,15 +6,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jetty.util.log.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -23,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 
 import cn.wow.common.service.SyncDataService;
 import cn.wow.common.utils.AjaxVO;
@@ -31,8 +31,7 @@ import cn.wow.common.utils.JsonUtil;
 import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.common.vo.AppDetailTrendVO;
 import cn.wow.common.vo.AppDetailVO;
-import cn.wow.common.vo.AppTotalItemVO;
-import cn.wow.common.vo.AppTotalVO;
+import cn.wow.common.vo.AppNumVO;
 
 /**
  * 同步极光统计
@@ -42,10 +41,12 @@ import cn.wow.common.vo.AppTotalVO;
 @RequestMapping(value = "syscData")
 public class SyscDataController {
 
+	private static Logger logger = LoggerFactory.getLogger(SyscDataController.class);
+	
 	// 文件上传根路径
 	@Value("${img.root.url}")
 	protected String rootPath;
-
+	
 	@Autowired
 	private SyncDataService syncDataService;
 
@@ -59,8 +60,11 @@ public class SyscDataController {
 	@ResponseBody
 	@RequestMapping(value = "/sync")
 	public AjaxVO sync(HttpServletRequest request, String token) {
+		long t1 = System.currentTimeMillis();
+		
 		AjaxVO vo = new AjaxVO();
-
+		vo.setMsg("同步成功");
+		
 		if (!StringUtils.isNotBlank(token)) {
 			vo.setSuccess(false);
 			vo.setMsg("同步失败：token的值不能为空");
@@ -78,6 +82,7 @@ public class SyscDataController {
 			vo.setMsg("同步失败：" + ex.getMessage());
 		}
 
+		logger.info("同步花费时间：" + (System.currentTimeMillis() - t1) + " ms");
 		return vo;
 	}
 
@@ -98,12 +103,12 @@ public class SyscDataController {
 
 		try {
 			// 从json文件中读取
-			Collection<AppTotalVO> totalList = JsonUtil.fromJson(readJsonFile(), ArrayList.class, AppTotalVO.class);
+			Collection<AppNumVO> totalList = JsonUtil.fromJson(readJsonFile(), ArrayList.class, AppNumVO.class);
 
-			List<AppTotalVO> tempList = new ArrayList<AppTotalVO>();
+			List<AppNumVO> tempList = new ArrayList<AppNumVO>();
 			if (StringUtils.isNotBlank(name)) {
-				for (AppTotalVO vo : totalList) {
-					if (vo.getName().contains(name)) {
+				for (AppNumVO vo : totalList) {
+					if (vo.getAppName().contains(name)) {
 						tempList.add(vo);
 					}
 				}
@@ -113,16 +118,16 @@ public class SyscDataController {
 
 			if (NEW_SORT.equals(sort)) {
 				if (DESC_ORDER.equals(order)) {
-					Collections.sort(tempList, AppTotalVO.newDescComparator);
+					Collections.sort(tempList, AppNumVO.newDescComparator);
 				} else {
-					Collections.sort(tempList, AppTotalVO.newAscComparator);
+					Collections.sort(tempList, AppNumVO.newAscComparator);
 				}
 
 			} else {
 				if (DESC_ORDER.equals(order)) {
-					Collections.sort(tempList, AppTotalVO.totalDescComparator);
+					Collections.sort(tempList, AppNumVO.totalDescComparator);
 				} else {
-					Collections.sort(tempList, AppTotalVO.totalAscComparator);
+					Collections.sort(tempList, AppNumVO.totalAscComparator);
 				}
 			}
 
@@ -132,7 +137,7 @@ public class SyscDataController {
 				toIndex = tempList.size();
 			}
 
-			Page<AppTotalVO> dataList = PageHelper.startPage(pageNum, pageSize);
+			Page<AppNumVO> dataList = new Page<AppNumVO>(pageNum, pageSize);
 			dataList.setTotal(tempList.size());
 			dataList.addAll(tempList.subList(fromIndex, toIndex));
 

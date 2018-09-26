@@ -10,7 +10,6 @@
 
     <groupId>isc.service</groupId>
     <artifactId>isc-service</artifactId>
-    <version>1.0.0</version>
     <name>Isc service</name>
     <packaging>pom</packaging>
 

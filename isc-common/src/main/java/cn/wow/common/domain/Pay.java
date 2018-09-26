@@ -10,7 +10,7 @@ import java.util.Date;
  */
 public class Pay extends JpaEntity{
 	
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -8055357356928157757L;
 	
 	private Long id;
 	// 支付日期

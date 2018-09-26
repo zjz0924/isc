@@ -7,11 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 
 public class Certificate extends JpaEntity {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
+	private static final long serialVersionUID = 1801517424478540201L;
+	
 	private Long id;
 	// 证书名称
 	private String name;

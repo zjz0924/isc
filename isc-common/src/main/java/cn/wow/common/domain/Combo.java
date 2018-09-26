@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 // 套餐
 public class Combo extends JpaEntity{
 	
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 3824262286331847765L;
 	
 	private Long id;
     // 名称

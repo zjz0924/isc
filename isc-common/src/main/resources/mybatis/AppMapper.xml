@@ -135,5 +135,8 @@
 	  </select>
 	
 	
+	<select id="getAppNames" resultType="java.lang.String">
+		select DISTINCT(name) from app where is_delete = 0
+	</select>
 	
 </mapper>

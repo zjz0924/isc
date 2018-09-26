@@ -10,7 +10,7 @@ import java.util.Date;
  */
 public class Contacts extends JpaEntity{
 	
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 8023758471081102615L;
 	
 	private Long id;
     // 姓名

@@ -10,7 +10,7 @@ import java.util.Date;
  */
 public class SignRecord extends JpaEntity{
 	
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -3430951642439016298L;
 	
 	private Long id;
     // 类型： 1-新增，2-续费，3-补签

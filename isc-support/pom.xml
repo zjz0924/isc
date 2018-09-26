@@ -264,11 +264,6 @@
 			<artifactId>jackson-jaxrs-base</artifactId>
 		</dependency>
 		
-		<dependency>
-		    <groupId>com.alibaba</groupId>
-		    <artifactId>fastjson</artifactId>
-		</dependency>
-        
 	</dependencies>
 
 	<!-- 引入父项目中的version定义 -->

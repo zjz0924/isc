@@ -1,9 +1,8 @@
 package cn.wow.common.vo;
 
 import java.io.Serializable;
-import org.codehaus.jackson.annotate.JsonMethod;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.codehaus.jackson.annotate.JsonAutoDetect;
 
 /**
  * 极光统计 - app统计数目
@@ -11,11 +10,9 @@ import org.codehaus.jackson.annotate.JsonAutoDetect;
  * @author zhen
  *
  */
-
-@JsonAutoDetect(JsonMethod.FIELD)
 public class AppTotalItemVO implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 5992677469207997754L;
 
 	@JsonProperty("USER_AMOUNT")
 	private int userAmount;
