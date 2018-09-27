@@ -91,7 +91,7 @@
 		(select datelist, 0 from calendar where datelist &gt;= #{startCreateTime, jdbcType=TIMESTAMP} and datelist &lt;= #{endCreateTime, jdbcType=TIMESTAMP}) a
 		left join 
 		(select DATE_FORMAT(create_time,'%Y-%m-%d') create_time, sum(price) price from sign_record where DATE_FORMAT(create_time,'%Y-%m-%d') &gt;= #{startCreateTime, jdbcType=TIMESTAMP} and DATE_FORMAT(create_time,'%Y-%m-%d') &lt;= #{endCreateTime, jdbcType=TIMESTAMP} and type !=3 group by DATE_FORMAT(create_time,'%Y-%m-%d')) b
-		on a.datelist = b.create_time
+		on a.datelist = b.create_time order by a.datelist asc
 	</select>
 
 </mapper>
