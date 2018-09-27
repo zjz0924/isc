@@ -23,14 +23,24 @@
 		<div class="page-container">
 			<div class="text-c"> 
 				  支出时间：
-				<input type="text" onfocus="WdatePicker()" id="startPayDate" name="startPayDate" class="input-text Wdate" style="width:120px;" value="${startPayDate}">
+				<input type="text" onfocus="WdatePicker()" id="startPayDate" name="startPayDate" class="input-text Wdate" style="width:110px;" value="${startPayDate}">
 				-
-				<input type="text" onfocus="WdatePicker()" id="endPayDate" name="endPayDate" class="input-text Wdate" style="width:120px;" value="${endPayDate}">&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="text" onfocus="WdatePicker()" id="endPayDate" name="endPayDate" class="input-text Wdate" style="width:110px;" value="${endPayDate}">&nbsp;&nbsp;&nbsp;&nbsp;
 			
 			            创建时间：
-				<input type="text" onfocus="WdatePicker()" id="startCreateTime" name="startCreateTime" class="input-text Wdate" style="width:120px;" value="${startCreateTime}">
+				<input type="text" onfocus="WdatePicker()" id="startCreateTime" name="startCreateTime" class="input-text Wdate" style="width:110px;" value="${startCreateTime}">
 				-
-				<input type="text" onfocus="WdatePicker()" id="endCreateTime" name="endCreateTime" class="input-text Wdate" style="width:120px;" value="${endCreateTime}">&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="text" onfocus="WdatePicker()" id="endCreateTime" name="endCreateTime" class="input-text Wdate" style="width:110px;" value="${endCreateTime}">&nbsp;&nbsp;&nbsp;&nbsp;
+				
+				类型：
+				<select class="select input-text" id="type" name="type" style="width:120px;">
+					<option value="">请选择</option>
+						<option value="2" <c:if test="${type == 2}">selected="selected"</c:if>>购买账号</option>
+						<option value="3" <c:if test="${type == 3}">selected="selected"</c:if>>租用证书</option>
+						<option value="1" <c:if test="${type == 1}">selected="selected"</c:if>>服务器</option>
+						<option value="4" <c:if test="${type == 4}">selected="selected"</c:if>>分成</option>
+						<option value="0" <c:if test="${type == 0}">selected="selected"</c:if>>其它</option>
+				</select>&nbsp;&nbsp;&nbsp;&nbsp;
 				
 				<button type="button" class="btn btn-success" onclick="searchData();"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
 				<button type="button" class="btn btn-danger" onclick="resetData();"><i class="Hui-iconfont">&#xe665;</i> 重置</button>
@@ -48,8 +58,9 @@
 					<tr class="text-c">
 						<th width="40">序号</th>
 						<th width="150">支付时间</th>
-						<th width="400">备注</th>
-						<th width="100">金额/元</th>
+						<th width="120">支付类型</th>
+						<th width="200">备注</th>
+						<th width="120">金额/元</th>
 						<th width="60">创建时间</th>
 						<th width="40">操作</th>
 					</tr> 
@@ -60,6 +71,15 @@
 						<tr class="text-c">
 							<td>${var.index + 1}</td>
 							<td><fmt:formatDate value='${vo.payDate }' type="date" pattern="yyyy-MM-dd"/></td>
+							<td>
+								<c:choose>
+									<c:when test="${vo.type == 0}">其它</c:when>
+									<c:when test="${vo.type == 1}">服务器</c:when>
+									<c:when test="${vo.type == 2}">购买账号</c:when>
+									<c:when test="${vo.type == 3}">租用证书</c:when>
+									<c:otherwise>分成</c:otherwise>
+								</c:choose>
+							</td>
 							<td title="${vo.remark}">${vo.remark}</td>
 							<td title="${vo.price}">${vo.price}</td>
 							<td><fmt:formatDate value='${vo.createTime }' type="date" pattern="yyyy-MM-dd HH:mm:ss"/></td>
@@ -103,6 +123,7 @@
 			$("#endPayDate").val("");
 			$("#startCreateTime").val("");
 			$("#endCreateTime").val("");
+			$("#type").val("");
 			document.getElementById("queryForm").submit();
 		}
 		
@@ -111,7 +132,7 @@
 			if(id != null){
 				url += "?id=" + id
 			}
-			layer_show("添加支出", url, '500', '300');
+			layer_show("添加支出", url, '500', '350');
 		}
 		
 		

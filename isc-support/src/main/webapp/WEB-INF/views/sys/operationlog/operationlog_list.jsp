@@ -22,7 +22,7 @@
 		<form id="queryForm" name="queryForm" action="${ctx}/operationlog/list" method="post">
 			<div class="page-container">
 				<div class="text-c" style="margin-bottom:25px;"> 
-					用户名：<input type="text" class="input-text" style="width:150px" placeholder="用户名" id="userName" name="userName" value="${userName}">&nbsp;&nbsp;&nbsp;&nbsp;
+					用户名：<input type="text" class="input-text" style="width:150px" placeholder="" id="userName" name="userName" value="${userName}">&nbsp;&nbsp;&nbsp;&nbsp;
 				    
 				           类型：<select class="select input-text" id="type" name="type" style="width:150px">
 						<option value="">全部</option>

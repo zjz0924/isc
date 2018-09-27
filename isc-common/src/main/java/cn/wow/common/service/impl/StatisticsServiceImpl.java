@@ -108,6 +108,38 @@ public class StatisticsServiceImpl implements StatisticsService {
 		return item;
 	}
 
+	// 支出详情
+	public List<NumItem> statisticsPayDetail(Map<String, Object> queryMap) {
+		List<Map<Integer, Object>> data = statisticsDao.statisticsPayDetail(queryMap);
+		List<NumItem> dataList = new ArrayList<NumItem>();
+
+		if (data != null && data.size() > 0) {
+			for (Map<Integer, Object> map : data) {
+				NumItem item = new NumItem();
+
+				Integer type = (Integer) map.get("type");
+				double sum = (double) map.get("price");
+
+				String displayName = "";
+				if (type == 0) {
+					displayName = "其它";
+				} else if (type == 1) {
+					displayName = "服务器";
+				} else if (type == 2) {
+					displayName = "购买账号";
+				} else if (type == 3) {
+					displayName = "租用证书";
+				} else {
+					displayName = "分成";
+				}
+				item.setName(displayName);
+				item.setAddSum(sum);
+				dataList.add(item);
+			}
+		}
+		return dataList;
+	}
+
 	public List<Map<String, Object>> monthStatistic(Map<String, Object> queryMap) {
 		return statisticsDao.monthStatistic(queryMap);
 	}

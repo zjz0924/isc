@@ -30,6 +30,20 @@
 			</div>
 			
 			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3">支付类型：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<select class="select input-text" id="type" name="type">
+						<option value="">请选择</option>
+						<option value="2" <c:if test="${facadeBean.type == 2}">selected="selected"</c:if>>购买账号</option>
+						<option value="3" <c:if test="${facadeBean.type == 3}">selected="selected"</c:if>>租用证书</option>
+						<option value="1" <c:if test="${facadeBean.type == 1}">selected="selected"</c:if>>服务器</option>
+						<option value="4" <c:if test="${facadeBean.type == 4}">selected="selected"</c:if>>分成</option>
+						<option value="0" <c:if test="${facadeBean.type == 0}">selected="selected"</c:if>>其它</option>
+					</select>
+				</div>
+			</div>
+			
+			<div class="row cl">
 				<label class="form-label col-xs-4 col-sm-3">备注：</label>
 				<div class="formControls col-xs-8 col-sm-9">
 					<input type="text" class="input-text" value="${facadeBean.remark}" id="remark" name="remark">
@@ -66,6 +80,9 @@
 		$(function(){
 			$("#form-admin-add").validate({
 				rules:{
+					type: {
+						required:true
+					},
 					payDate: {
 						required:true
 					},

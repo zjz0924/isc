@@ -213,6 +213,10 @@ public class StatisticController extends AbstractController {
 		NumItem payData = statisticsService.statisticsPay(map);
 		model.addAttribute("payData", payData);
 
+		// 支出详情
+		List<NumItem> payDetailData = statisticsService.statisticsPayDetail(map);
+		model.addAttribute("payDetailData", payDetailData);
+
 		return "statistic/statistic";
 	}
 
@@ -225,7 +229,7 @@ public class StatisticController extends AbstractController {
 		Map<String, Object> queryMap = new PageMap(false);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd");
 		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM");
-		
+
 		Date date = null;
 		try {
 			if (StringUtils.isBlank(month)) {
@@ -242,19 +246,19 @@ public class StatisticController extends AbstractController {
 
 		List<Map<String, Object>> dataList = statisticsService.monthStatistic(queryMap);
 		model.addAttribute("dataList", dataList);
-		
+
 		// 时间列表
 		List<String> dateList = new ArrayList<String>();
 		// 值列表
 		List<Double> valueList = new ArrayList<Double>();
-		
+
 		for (Map<String, Object> map : dataList) {
 			Date dateVal = (Date) map.get("datelist");
 			dateList.add(sdf.format(dateVal));
-			
+
 			valueList.add((Double) map.get("price"));
 		}
-		
+
 		model.addAttribute("month", date);
 		model.addAttribute("monthTitle", sdf1.format(date));
 		model.addAttribute("date", JsonUtil.toJson(dateList));

@@ -8,10 +8,11 @@
 		<result column="is_delete" jdbcType="INTEGER" property="isDelete" />
 		<result column="price" property="price" jdbcType="DOUBLE" />
 		<result column="pay_date" property="payDate" jdbcType="DATE" />
+		<result column="type" jdbcType="INTEGER" property="type" />
 	</resultMap>
 
 	<sql id="base_columns">
-		id, remark, create_time, is_delete, price, pay_date
+		id, remark, create_time, is_delete, price, pay_date, type
 	</sql>
 
 	<select id="selectOne" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -26,9 +27,9 @@
 	</delete>
 
 	<insert id="insert" parameterType="cn.wow.common.domain.Pay">
-		insert into pay (remark, create_time, is_delete, price, pay_date) values
+		insert into pay (remark, create_time, is_delete, price, pay_date, type) values
 		(#{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
-		#{isDelete,jdbcType=INTEGER}, #{price,jdbcType=DOUBLE}, #{payDate,jdbcType=DATE} )
+		#{isDelete,jdbcType=INTEGER}, #{price,jdbcType=DOUBLE}, #{payDate,jdbcType=DATE}, #{type,jdbcType=INTEGER} )
 	</insert>
 
 	<update id="update" parameterType="cn.wow.common.domain.Pay">
@@ -43,6 +44,9 @@
 			<if test="price != null">
 				price = #{price,jdbcType=DOUBLE},
 			</if>
+			<if test="type != null">
+				type = #{type,jdbcType=INTEGER},
+			</if>
 			remark = #{remark,jdbcType=VARCHAR}
 		</set>
 		where id = #{id,jdbcType=BIGINT}
@@ -55,15 +59,12 @@
 		<include refid="base_columns" />
 		from pay
 		<where>
-		
 			<if test="startPayDate != null">
 				and pay_date &gt;=  #{startPayDate,jdbcType=DATE}
 			</if>
-			
 			<if test="endPayDate != null and endPayDate != ''">
 				and pay_date &lt;= #{endPayDate, jdbcType=DATE}
 			</if>
-		
 			<if test="startCreateTime != null and startCreateTime != ''">
 				and create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
 			</if>
@@ -72,6 +73,9 @@
 			</if>
 			<if test="isDelete != null">
 				and is_delete = #{isDelete,jdbcType=INTEGER}
+			</if>
+			<if test="type != null">
+				and type = #{type,jdbcType=INTEGER}
 			</if>
 		</where>
 
@@ -106,6 +110,9 @@
 			</if>
 			<if test="isDelete != null">
 				and is_delete = #{isDelete,jdbcType=INTEGER}
+			</if>
+			<if test="type != null">
+				and type = #{type,jdbcType=INTEGER}
 			</if>
 		</where>
 	</select>

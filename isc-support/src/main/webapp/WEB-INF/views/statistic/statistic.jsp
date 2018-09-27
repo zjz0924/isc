@@ -121,6 +121,27 @@
 				</table>
 			</div>
 			
+			<div class="text-c" style="margin-top: 30px;">
+				<table class="table table-border table-bordered table-bg">
+					<thead>
+						<tr>
+							<th colspan="7" scope="col">支出详情统计</th>
+						</tr>
+						<tr class="text-c">
+							<th>支出类型</th>
+							<th>支出金额/元</th>
+						</tr>
+					</thead>
+					<tbody>
+						<c:forEach items="${payDetailData}" var="vo">
+							<tr class="text-c">
+								<td>${vo.name}</td>
+								<td>${vo.addSum}</td>
+							</tr>
+						</c:forEach>
+					</tbody>
+				</table>
+			</div>
 		</div>
 	</form>
 	

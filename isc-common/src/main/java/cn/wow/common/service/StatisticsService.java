@@ -19,6 +19,10 @@ public interface StatisticsService {
 	// 收支统计
 	public NumItem statisticsPay(Map<String, Object> queryMap);
 	
+	// 支出详情
+	public List<NumItem> statisticsPayDetail(Map<String, Object> queryMap);
+	
+	
 	// 每月详情统计
 	public List<Map<String, Object>> monthStatistic(Map<String, Object> queryMap);
 }

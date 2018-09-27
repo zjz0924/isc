@@ -12,6 +12,9 @@ public interface StatisticsDao {
 	// 支出统计
 	public List<Map<Integer, Object>> statisticsPay(Object params);
 	
+	// 支出详情
+	public List<Map<Integer, Object>> statisticsPayDetail(Object params);
+	
 	// 每月详情统计
 	public List<Map<String, Object>> monthStatistic(Object params);
 }

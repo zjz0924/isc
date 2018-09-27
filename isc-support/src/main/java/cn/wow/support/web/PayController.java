@@ -52,7 +52,7 @@ public class PayController extends AbstractController {
 
 	@RequestMapping(value = "/list")
 	public String list(HttpServletRequest httpServletRequest, Model model, String startCreateTime,
-			String endCreateTime, String startPayDate, String endPayDate) {
+			String endCreateTime, String startPayDate, String endPayDate, String type) {
 		
 		Map<String, Object> map = new PageMap(httpServletRequest);
 		map.put("custom_order_sql", "pay_date desc");
@@ -79,7 +79,6 @@ public class PayController extends AbstractController {
 			queryMap.put("endCreateTime", endCreateTime + " 23:59:59");
 			model.addAttribute("endCreateTime", endCreateTime);
 		}
-
 		if (StringUtils.isNotBlank(startCreateTime)) {
 			map.put("startCreateTime", startCreateTime + " 00:00:00");
 			queryMap.put("startCreateTime", startCreateTime + " 00:00:00");
@@ -89,6 +88,11 @@ public class PayController extends AbstractController {
 			map.put("endCreateTime", endCreateTime + " 23:59:59");
 			queryMap.put("endCreateTime", endCreateTime + " 23:59:59");
 			model.addAttribute("endCreateTime", endCreateTime);
+		}
+		if (StringUtils.isNotBlank(type)) {
+			map.put("type", type);
+			queryMap.put("type", type);
+			model.addAttribute("type", type);
 		}
 
 		List<Pay> dataList = payService.selectAllList(map);
@@ -113,7 +117,7 @@ public class PayController extends AbstractController {
 
 	@ResponseBody
 	@RequestMapping(value = "/save")
-	public AjaxVO save(HttpServletRequest request, Model model, String id, String remark, Double price, String payDate) {
+	public AjaxVO save(HttpServletRequest request, Model model, String id, String remark, Double price, String payDate, int type) {
 		Pay pay = null;
 		AjaxVO vo = new AjaxVO();
 		vo.setMsg("编辑成功");
@@ -127,6 +131,7 @@ public class PayController extends AbstractController {
 					pay.setRemark(remark);
 					pay.setPrice(price);
 					pay.setPayDate(sdf.parse(payDate));
+					pay.setType(type);
 					payService.update(getCurrentUserName(), pay);
 				}
 			} else {
@@ -136,6 +141,7 @@ public class PayController extends AbstractController {
 				pay.setCreateTime(new Date());
 				pay.setIsDelete(0);
 				pay.setPayDate(sdf.parse(payDate));
+				pay.setType(type);
 				payService.save(getCurrentUserName(), pay);
 
 				vo.setMsg("添加成功");
@@ -201,12 +207,13 @@ public class PayController extends AbstractController {
 			Sheet sh = wb.createSheet("支出清单");
 			sh.setColumnWidth(0, (short) 4000);
 			sh.setColumnWidth(1, (short) 4000);
-			sh.setColumnWidth(2, (short) 4000);
-			sh.setColumnWidth(3, (short) 9000);
+			sh.setColumnWidth(2, (short) 12000);
+			sh.setColumnWidth(3, (short) 4000);
+			sh.setColumnWidth(4, (short) 6000);
 			
 			Map<String, CellStyle> styles = ImportExcelUtil.createStyles(wb);
 
-			String[] titles = {"支付时间", "备注", "金额/元", "创建时间"};
+			String[] titles = {"支付时间", "支付类型", "备注", "金额/元", "创建时间"};
 			int r = 0;
 			
 			Row titleRow = sh.createRow(0);
@@ -233,15 +240,31 @@ public class PayController extends AbstractController {
 
 				Cell cell2 = contentRow.createCell(1);
 				cell2.setCellStyle(styles.get("cell"));
-				cell2.setCellValue(pay.getRemark());
-
+				String displayName = "";
+				if (pay.getType() == 0) {
+					displayName = "其它";
+				} else if (pay.getType() == 1) {
+					displayName = "服务器";
+				} else if (pay.getType() == 2) {
+					displayName = "购买账号";
+				} else if (pay.getType() == 3) {
+					displayName = "租用证书";
+				} else {
+					displayName = "分成";
+				}
+				cell2.setCellValue(displayName);
+				
 				Cell cell3 = contentRow.createCell(2);
 				cell3.setCellStyle(styles.get("cell"));
-				cell3.setCellValue(pay.getPrice());
+				cell3.setCellValue(pay.getRemark());
 
 				Cell cell4 = contentRow.createCell(3);
 				cell4.setCellStyle(styles.get("cell"));
-				cell4.setCellValue(sdf.format(pay.getCreateTime()));
+				cell4.setCellValue(pay.getPrice());
+
+				Cell cell5 = contentRow.createCell(4);
+				cell5.setCellStyle(styles.get("cell"));
+				cell5.setCellValue(sdf.format(pay.getCreateTime()));
 
 				r++;
 			}

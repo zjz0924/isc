@@ -23,6 +23,8 @@ public class Pay extends JpaEntity{
     private Date createTime;
     // 是否删除
     private Integer isDelete;
+    // 类型: 0-其他，1-服务器，2-购买账号，3-租用证书，4-分成
+    private Integer type = 0;
 
     public Long getId() {
         return id;
@@ -70,6 +72,14 @@ public class Pay extends JpaEntity{
 
 	public void setPayDate(Date payDate) {
 		this.payDate = payDate;
+	}
+	
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
 	}
 
 	@Override
