@@ -122,6 +122,12 @@
 			 <if test="wechat != null">
 				and c.wechat like concat('%', #{wechat,jdbcType=VARCHAR}, '%') 
 			 </if>
+			 <if test="isNew != null">
+				and a.create_time = a.update_time
+			  </if>
+			  <if test="isUpdate != null">
+				and a.create_time &lt;&gt; a.update_time
+			  </if>
 	      </where>
 	      
 		  <choose>

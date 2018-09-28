@@ -69,6 +69,13 @@
 			          	<option value="asc" <c:if test="${order == 'asc'}">selected="selected"</c:if>>升序</option>
 					</select>&nbsp;&nbsp;&nbsp;&nbsp;
 					
+				是否新增：
+				<select class="select input-text" id="isNew" name="isNew" style="width: 120px;">
+			          	<option value="">全部</option>
+			          	<option value="0" <c:if test="${isNew == 0}">selected="selected"</c:if>>否</option>
+						<option value="1" <c:if test="${isNew == 1}">selected="selected"</c:if>>是</option>
+				</select>&nbsp;&nbsp;&nbsp;
+					
 				<button type="button" class="btn btn-success" onclick="searchData();"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
 				<button type="button" class="btn btn-danger" onclick="resetData();"><i class="Hui-iconfont">&#xe665;</i> 重置</button>	
 			</div>
@@ -162,6 +169,7 @@
 			$("#endUpdateTime").val("");
 			$("#certId").val("");
 			$("#wechat").val("");
+			$("#isNew").val("");
 			document.getElementById("queryForm").submit();
 		}
 		

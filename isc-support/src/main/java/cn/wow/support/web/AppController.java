@@ -76,7 +76,7 @@ public class AppController extends AbstractController {
 	@RequestMapping(value = "/list")
 	public String list(HttpServletRequest request, Model model, String name, String startEffectiveDate,
 			String endEffectiveDate, String startExpireDate, String endExpireDate, String startCreateTime,
-			String endCreateTime, String startUpdateTime, String endUpdateTime, String certId, String sort, String order, String wechat) {
+			String endCreateTime, String startUpdateTime, String endUpdateTime, String certId, String sort, String order, String wechat, String isNew) {
 
 		Map<String, Object> map = new PageMap(request);
 		map.put("isDelete", "0");
@@ -157,6 +157,17 @@ public class AppController extends AbstractController {
 			map.put("wechat", wechat);
 			queryMap.put("wechat", wechat);
 			model.addAttribute("wechat", wechat);
+		}
+		
+		if(StringUtils.isNotBlank(isNew)) {
+			if("0".equals(isNew)) {
+				map.put("isUpdate", 1);
+				queryMap.put("isUpdate", 1);
+			}else {
+				map.put("isNew", 1);
+				queryMap.put("isNew", 1);
+			}
+			model.addAttribute("isNew", isNew);
 		}
 
 		List<App> dataList = appService.selectAllList(map);

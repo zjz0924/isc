@@ -36,15 +36,16 @@
 				<thead>
 					<tr class="text-c">
 						<th width="30">序号</th>
-						<th width="100">名称</th>
+						<th width="80">名称</th>
 						<th width="70">生效时间</th>
 						<th width="75">过期时间</th>
 						<th width="100">证书</th>
-						<th width="100">备注</th>
-						<th width="130">未签名文件</th>
-						<th width="130">已签名文件</th>
-						<th width="50">创建时间</th>
-						<th width="50">更新时间</th>
+						<th width="100">客户微信</th>
+						<th width="130">ipa文件</th>
+						<th width="60">创建时间</th>
+						<th width="60">更新时间</th>
+						<th width="80">备注</th>
+						<th width="30">操作</th>
 					</tr> 
 				</thead>
 				
@@ -56,14 +57,17 @@
 							<td><fmt:formatDate value='${vo.effectiveDate }' type="date" pattern="yyyy-MM-dd"/></td>
 							<td style="color:red; font-weight: bold;"><fmt:formatDate value='${vo.expireDate }' type="date" pattern="yyyy-MM-dd" /></td>
 							<td title="${vo.certificate.name}">${vo.certificate.name}</td>
-							<td title="${vo.remark}">${vo.remark}</td>
+							<td title="${vo.contacts.wechat }">${vo.contacts.wechat }</td>
 							<td>
-								<a style="text-decoration:none" href="${resUrl}${vo.unsignFile}" title="下载">${vo.unsignFileName}</a> 
+								<a style="text-decoration:none" href="${resUrl}${vo.unsignFile}" title="下载">${vo.unsignFileName}</a></br>
+								<a style="text-decoration:none" href="${resUrl}${vo.signFile}" title="下 载">${vo.signFileName}</a> 
 							</td>
-							<td><a style="text-decoration:none" href="${resUrl}${vo.signFile}" title="下 载">${vo.signFileName}</a> </td>
-							
 							<td><fmt:formatDate value='${vo.createTime }' type="date" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 							<td><fmt:formatDate value='${vo.updateTime }' type="date" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+							<td title="${vo.remark}">${vo.remark}</td>
+							<td class="td-manage">
+								<a title="续费" href="javascript:void(0)" onclick="renew(${vo.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe60c;</i></a>
+							</td>
 						</tr>
 					</c:forEach>
 				</tbody>
@@ -114,6 +118,10 @@
 			layer_show("签名记录", url, '800', '500');
 		}
 		
+		function renew(appId){
+			var url = "${ctx}/app/renewDetail?appId=" + appId
+			layer_show("续费", url, '500', '300');
+		}
 	</script>
 	
 </body>
