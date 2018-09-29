@@ -92,7 +92,7 @@ public class AppController extends AbstractController {
 		map.put("custom_order_sql", orderSql);
 		
 		queryMap.clear();
-		queryMap.put("custom_order_sql", "expire_date asc, name asc");
+		queryMap.put("custom_order_sql", orderSql);
 		queryMap.put("isDelete", "0");
 
 		if (StringUtils.isNotBlank(name)) {
