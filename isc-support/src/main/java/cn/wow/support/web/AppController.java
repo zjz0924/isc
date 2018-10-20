@@ -305,7 +305,7 @@ public class AppController extends AbstractController {
 					signRecord.setComboId(comboId);
 					signRecord.setCreateTime(date);
 					signRecord.setEffectiveDate(date);
-					signRecord.setType(1);
+					signRecord.setType(valid);
 					signRecord.setCreateTime(date);
 					signRecord.setPayType(payType);
 

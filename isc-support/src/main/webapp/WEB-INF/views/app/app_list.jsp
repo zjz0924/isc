@@ -105,6 +105,7 @@
 						<th width="80">证书</th>
 						<th width="100">客户微信</th>
 						<th width="130">ipa包</th>
+						<th width="50">是否使用</th>
 						<th width="30">创建时间</th>
 						<th width="30">更新时间</th>
 						<th width="80">备注</th>
@@ -124,6 +125,10 @@
 							<td>
 								<a style="text-decoration:none" href="${resUrl}${vo.unsignFile}" title="下载">${vo.unsignFileName}</a></br>
 								<a style="text-decoration:none" href="${resUrl}${vo.signFile}" title="下 载">${vo.signFileName}</a>
+							</td>
+							<td>
+								<c:if test="${vo.valid == 0}"><span style="color:red; font-weight: bold;">否</span></c:if>
+								<c:if test="${vo.valid == 1}"><span style="color:green; font-weight: bold;">是</span></c:if>
 							</td>
 							<td><fmt:formatDate value='${vo.createTime }' type="date" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 							<td><fmt:formatDate value='${vo.updateTime }' type="date" pattern="yyyy-MM-dd HH:mm:ss"/></td>
