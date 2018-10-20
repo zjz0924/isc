@@ -45,6 +45,8 @@ public class App extends JpaEntity{
 	private Long certId;
 	
 	private Certificate certificate;
+	// 使用中， 0：否    1：是
+	private Integer valid;
 
 	public Long getId() {
 		return id;
@@ -182,6 +184,14 @@ public class App extends JpaEntity{
 
 	public void setCertificate(Certificate certificate) {
 		this.certificate = certificate;
+	}
+
+	public Integer getValid() {
+		return valid;
+	}
+
+	public void setValid(Integer valid) {
+		this.valid = valid;
 	}
 
 	@JsonIgnore

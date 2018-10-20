@@ -35,6 +35,16 @@
 							</div>
 						</div>
 						
+						<c:if test="${facadeBean.id != null}">
+							<label class="form-label col-xs-4 col-sm-3">是否使用：</label>
+							<div class="formControls col-xs-8 col-sm-9">
+								<select class="select input-text" id="valid" name="valid">
+									<option value="1" <c:if test="${facadeBean.valid == 1}">selected="selected"</c:if>>是</option>
+									<option value="0" <c:if test="${facadeBean.valid == 0}">selected="selected"</c:if>>否</option>
+								</select>
+							</div>
+						</c:if>
+						
 						<div class="row cl">
 							<label class="form-label col-xs-4 col-sm-3">备注：</label>
 							<div class="formControls col-xs-8 col-sm-9">

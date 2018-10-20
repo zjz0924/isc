@@ -66,7 +66,7 @@ public class AppController extends AbstractController {
 
 	@Value("${app.url}")
 	protected String appUrl;
-	
+
 	@Autowired
 	private OperationLogService operationLogService;
 
@@ -76,21 +76,22 @@ public class AppController extends AbstractController {
 	@RequestMapping(value = "/list")
 	public String list(HttpServletRequest request, Model model, String name, String startEffectiveDate,
 			String endEffectiveDate, String startExpireDate, String endExpireDate, String startCreateTime,
-			String endCreateTime, String startUpdateTime, String endUpdateTime, String certId, String sort, String order, String wechat, String isNew) {
+			String endCreateTime, String startUpdateTime, String endUpdateTime, String certId, String sort,
+			String order, String wechat, String isNew, String valid) {
 
 		Map<String, Object> map = new PageMap(request);
 		map.put("isDelete", "0");
-		
-		if(StringUtils.isBlank(sort)) {
+
+		if (StringUtils.isBlank(sort)) {
 			sort = "update_time";
 		}
-		if(StringUtils.isBlank(order)) {
+		if (StringUtils.isBlank(order)) {
 			order = "desc";
 		}
-		
+
 		String orderSql = sort + " " + order + ", name asc";
 		map.put("custom_order_sql", orderSql);
-		
+
 		queryMap.clear();
 		queryMap.put("custom_order_sql", orderSql);
 		queryMap.put("isDelete", "0");
@@ -146,44 +147,50 @@ public class AppController extends AbstractController {
 			queryMap.put("endUpdateTime", endUpdateTime + " 23:59:59");
 			model.addAttribute("endUpdateTime", endUpdateTime);
 		}
-		
+
 		if (StringUtils.isNotBlank(certId)) {
 			map.put("certId", certId);
 			queryMap.put("certId", certId);
 			model.addAttribute("certId", certId);
 		}
-		
+
 		if (StringUtils.isNotBlank(wechat)) {
 			map.put("wechat", wechat);
 			queryMap.put("wechat", wechat);
 			model.addAttribute("wechat", wechat);
 		}
-		
-		if(StringUtils.isNotBlank(isNew)) {
-			if("0".equals(isNew)) {
+
+		if (StringUtils.isNotBlank(isNew)) {
+			if ("0".equals(isNew)) {
 				map.put("isUpdate", 1);
 				queryMap.put("isUpdate", 1);
-			}else {
+			} else {
 				map.put("isNew", 1);
 				queryMap.put("isNew", 1);
 			}
 			model.addAttribute("isNew", isNew);
 		}
+		
+		if(StringUtils.isNotBlank(valid)) {
+			map.put("valid", valid);
+			queryMap.put("valid", valid);
+			model.addAttribute("valid", valid);
+		}
 
 		List<App> dataList = appService.selectAllList(map);
 		model.addAttribute("dataList", dataList);
 		model.addAttribute("resUrl", resUrl);
-		
+
 		// 证书信息
 		Map<String, Object> certificateMap = new PageMap(false);
 		certificateMap.put("custom_order_sql", "name asc");
 		certificateMap.put("isDelete", "0");
 		List<Certificate> certificateList = certificateService.selectAllList(certificateMap);
-		
+
 		model.addAttribute("certificateList", certificateList);
 		model.addAttribute("sort", sort);
 		model.addAttribute("order", order);
-		
+
 		return "app/app_list";
 	}
 
@@ -214,9 +221,10 @@ public class AppController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/save")
 	public AjaxVO save(HttpServletRequest request, Model model, String id, String appName, String appRemark,
-			String contactsName, String wechat, String alipay, String phone, String contactsRemark, Long certId, String payType,
-			Long comboId, @RequestParam(value = "unsignFile", required = false) MultipartFile unsignFile,
-			@RequestParam(value = "signFile", required = false) MultipartFile signFile) {
+			String contactsName, String wechat, String alipay, String phone, String contactsRemark, Long certId,
+			String payType, Long comboId,
+			@RequestParam(value = "unsignFile", required = false) MultipartFile unsignFile,
+			@RequestParam(value = "signFile", required = false) MultipartFile signFile, int valid) {
 		AjaxVO vo = new AjaxVO();
 		vo.setMsg("编辑成功");
 
@@ -230,17 +238,17 @@ public class AppController extends AbstractController {
 				app = appService.selectOne(Long.parseLong(id));
 
 				if (app != null) {
-					if(StringUtils.isBlank(appName) && unsignFile == null) {
+					if (StringUtils.isBlank(appName) && unsignFile == null) {
 						vo.setMsg("app名称和未签名文件不能同时为空");
 						vo.setSuccess(false);
 						return vo;
 					}
-					
-					if(StringUtils.isBlank(appName) && unsignFile != null) {
+
+					if (StringUtils.isBlank(appName) && unsignFile != null) {
 						String sourceName = unsignFile.getOriginalFilename();
 						appName = sourceName.substring(0, sourceName.indexOf("."));
 					}
-					
+
 					Map<String, Object> rMap = new HashMap<String, Object>();
 					rMap.put("name", appName);
 					rMap.put("isDelete", 0);
@@ -255,6 +263,7 @@ public class AppController extends AbstractController {
 						app.setName(appName);
 						app.setRemark(appRemark);
 						app.setUpdateTime(date);
+						app.setValid(valid);
 
 						if (unsignFile != null) {
 							String unsignFileName = uploadImg(unsignFile, appUrl + "/" + timeStr + "/", false, null);
@@ -269,17 +278,17 @@ public class AppController extends AbstractController {
 					}
 				}
 			} else {
-				if(StringUtils.isBlank(appName) && unsignFile == null) {
+				if (StringUtils.isBlank(appName) && unsignFile == null) {
 					vo.setMsg("app名称和未签名文件不能同时为空");
 					vo.setSuccess(false);
 					return vo;
 				}
-				
-				if(StringUtils.isBlank(appName) && unsignFile != null) {
+
+				if (StringUtils.isBlank(appName) && unsignFile != null) {
 					String sourceName = unsignFile.getOriginalFilename();
 					appName = sourceName.substring(0, sourceName.indexOf("."));
 				}
-				
+
 				Map<String, Object> rMap = new HashMap<String, Object>();
 				rMap.put("name", appName);
 				rMap.put("isDelete", 0);
@@ -311,6 +320,7 @@ public class AppController extends AbstractController {
 					app.setCreateTime(date);
 					app.setUpdateTime(date);
 					app.setIsDelete(0);
+					app.setValid(1);
 					app.setEffectiveDate(signRecord.getEffectiveDate());
 					app.setExpireDate(signRecord.getExpireDate());
 					app.setCertId(certId);
@@ -384,13 +394,13 @@ public class AppController extends AbstractController {
 	@RequestMapping(value = "/renewDetail")
 	public String renewDetail(HttpServletRequest request, Model model, Long appId) {
 		model.addAttribute("appId", appId);
-		
+
 		// 套餐信息
 		Map<String, Object> comboMap = new PageMap(false);
 		comboMap.put("custom_order_sql", "name asc");
 		comboMap.put("isDelete", "0");
 		List<Combo> comboList = comboService.selectAllList(comboMap);
-		
+
 		// 证书信息
 		Map<String, Object> certificateMap = new PageMap(false);
 		certificateMap.put("custom_order_sql", "name asc");
@@ -404,24 +414,25 @@ public class AppController extends AbstractController {
 
 	@ResponseBody
 	@RequestMapping(value = "/renew")
-	public AjaxVO renew(HttpServletRequest request, Model model, Long appId, Long comboId, String payType, Long certId) {
+	public AjaxVO renew(HttpServletRequest request, Model model, Long appId, Long comboId, String payType,
+			Long certId) {
 		AjaxVO vo = new AjaxVO();
 		vo.setMsg("续费成功");
 
 		try {
 			Date date = new Date();
 
- 			SignRecord signRecord = new SignRecord();
+			SignRecord signRecord = new SignRecord();
 			Combo combo = comboService.selectOne(comboId);
 			App app = appService.selectOne(appId);
-			
-			if(certId == null) {
+
+			if (certId == null) {
 				signRecord.setCertId(app.getCertId());
-			}else {
+			} else {
 				signRecord.setCertId(certId);
 				app.setCertId(certId);
 			}
-			
+
 			signRecord.setComboId(comboId);
 			signRecord.setCreateTime(date);
 			signRecord.setEffectiveDate(app.getExpireDate());
@@ -430,11 +441,11 @@ public class AppController extends AbstractController {
 			signRecord.setPrice(combo.getPrice());
 			signRecord.setAppId(appId);
 			signRecord.setPayType(payType);
-			
+
 			app.setUpdateTime(date);
 			app.setEffectiveDate(signRecord.getEffectiveDate());
 			app.setExpireDate(signRecord.getExpireDate());
-			
+
 			appService.renewApp(getCurrentUserName(), app, signRecord);
 
 		} catch (Exception ex) {
@@ -449,14 +460,13 @@ public class AppController extends AbstractController {
 		return vo;
 	}
 
-	
 	/**
 	 * 补签
 	 */
 	@RequestMapping(value = "/supplementDetail")
 	public String supplementDetail(HttpServletRequest request, Model model, Long appId) {
 		model.addAttribute("appId", appId);
-		
+
 		// 证书信息
 		Map<String, Object> certificateMap = new PageMap(false);
 		certificateMap.put("custom_order_sql", "name asc");
@@ -467,7 +477,6 @@ public class AppController extends AbstractController {
 		return "app/app_supplement";
 	}
 
-	
 	@ResponseBody
 	@RequestMapping(value = "/supplement")
 	public AjaxVO Supplement(HttpServletRequest request, Model model, Long appId, Long certId) {
@@ -481,7 +490,7 @@ public class AppController extends AbstractController {
 			Map<String, Object> map = new PageMap(false);
 			map.put("appId", appId);
 			map.put("custom_order_sql", "create_time desc");
-			
+
 			SignRecord addRecord = null;
 			List<SignRecord> signRecordList = signRecordService.selectAllList(map);
 			if (signRecordList != null && signRecordList.size() > 0) {
@@ -490,7 +499,7 @@ public class AppController extends AbstractController {
 
 			SignRecord signRecord = new SignRecord();
 			App app = appService.selectOne(appId);
-			
+
 			signRecord.setCertId(certId);
 			signRecord.setComboId(addRecord.getComboId());
 			signRecord.setCreateTime(date);
@@ -499,10 +508,10 @@ public class AppController extends AbstractController {
 			signRecord.setType(3);
 			signRecord.setPrice(0d);
 			signRecord.setAppId(appId);
-			
+
 			app.setUpdateTime(date);
 			app.setCertId(certId);
-			
+
 			appService.renewApp(getCurrentUserName(), app, signRecord);
 
 		} catch (Exception ex) {
@@ -517,7 +526,6 @@ public class AppController extends AbstractController {
 		return vo;
 	}
 
-	
 	/**
 	 * 导出用户
 	 */
@@ -528,7 +536,7 @@ public class AppController extends AbstractController {
 		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
 		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMMdd");
 		String filename = "APP清单-" + sdf2.format(new Date());
-		
+
 		try {
 			// 设置头
 			ImportExcelUtil.setResponseHeader(response, filename + ".xlsx");
@@ -546,22 +554,22 @@ public class AppController extends AbstractController {
 			sh.setColumnWidth(7, (short) 6000);
 			sh.setColumnWidth(8, (short) 6000);
 			sh.setColumnWidth(9, (short) 6000);
-			
+
 			Map<String, CellStyle> styles = ImportExcelUtil.createStyles(wb);
 
-			String[] titles = {"APP名称", "生效日期", "过期日期", "证书名称", "备注", "未签名文件", "已签名文件", "创建时间", "更新时间", "微信号"};
+			String[] titles = { "APP名称", "生效日期", "过期日期", "证书名称", "备注", "未签名文件", "已签名文件", "创建时间", "更新时间", "微信号" };
 			int r = 0;
-			
+
 			Row titleRow = sh.createRow(0);
 			titleRow.setHeight((short) 450);
-			for(int k = 0; k < titles.length; k++){
+			for (int k = 0; k < titles.length; k++) {
 				Cell cell = titleRow.createCell(k);
 				cell.setCellStyle(styles.get("header"));
 				cell.setCellValue(titles[k]);
 			}
-			
+
 			++r;
-			
+
 			List<App> dataList = appService.selectAllList(queryMap);
 			for (int j = 0; j < dataList.size(); j++) {// 添加数据
 				Row contentRow = sh.createRow(r);
@@ -582,7 +590,7 @@ public class AppController extends AbstractController {
 
 				Cell cell6 = contentRow.createCell(3);
 				cell6.setCellStyle(styles.get("cell"));
-				if(app.getCertificate() != null) {
+				if (app.getCertificate() != null) {
 					cell6.setCellValue(app.getCertificate().getName());
 				}
 
@@ -597,27 +605,27 @@ public class AppController extends AbstractController {
 				if (StringUtils.isNotBlank(app.getUnsignFileName())) {
 					cell8.setCellValue(app.getUnsignFileName());
 				}
-				
+
 				Cell cell9 = contentRow.createCell(6);
 				cell9.setCellStyle(styles.get("cell"));
 				if (StringUtils.isNotBlank(app.getSignFileName())) {
 					cell9.setCellValue(app.getSignFileName());
 				}
-				
+
 				Cell cell10 = contentRow.createCell(7);
 				cell10.setCellStyle(styles.get("cell"));
 				cell10.setCellValue(sdf.format(app.getCreateTime()));
-				
+
 				Cell cell11 = contentRow.createCell(8);
 				cell11.setCellStyle(styles.get("cell"));
 				cell11.setCellValue(sdf.format(app.getUpdateTime()));
-				
+
 				Cell cell12 = contentRow.createCell(9);
 				cell12.setCellStyle(styles.get("cell"));
-				if(app.getContacts() != null) {
+				if (app.getContacts() != null) {
 					cell12.setCellValue(app.getContacts().getWechat());
 				}
-				
+
 				r++;
 			}
 
@@ -625,15 +633,15 @@ public class AppController extends AbstractController {
 			wb.write(os);
 			os.flush();
 			os.close();
-			
-			String logDetail =  "导出APP清单";
+
+			String logDetail = "导出APP清单";
 			operationLogService.save(currentAccount.getUserName(), OperationType.EXPORT, ServiceType.APP, logDetail);
-			
+
 		} catch (Exception e) {
 			logger.error("App清单导出失败");
-			
+
 			e.printStackTrace();
 		}
 	}
-	
+
 }

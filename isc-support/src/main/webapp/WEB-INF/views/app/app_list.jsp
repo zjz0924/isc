@@ -22,7 +22,7 @@
 	<form id="queryForm" name="queryForm" action="${ctx}/app/list" method="post">
 		<div class="page-container">
 			<div class="text-c" style="text-align: left;"> 
-			          名称：<input type="text" class="input-text" style="width:200px;" id="name" name="name" value="${name}">&nbsp;&nbsp;&nbsp;&nbsp;
+			          名称：<input type="text" class="input-text" style="width:200px;margin-left:32px;" id="name" name="name" value="${name}">&nbsp;&nbsp;&nbsp;&nbsp;
 			          
 			            生效时间：
 				<input type="text" onfocus="WdatePicker()" id="startEffectiveDate" name="startEffectiveDate" class="input-text Wdate" style="width:120px;" value="${startEffectiveDate}">
@@ -36,7 +36,7 @@
 			</div>
 			
 			<div class="text-c" style="text-align: left; margin-top: 10px">
-				证书：<select class="select input-text" id="certId" name="certId" style="width: 200px;">
+				证书：<select class="select input-text" id="certId" name="certId" style="width: 200px;margin-left:32px;">
 						<option value="">全部</option>
 						<c:forEach items="${certificateList}" var="vo">
 							<option value="${vo.id}" <c:if test="${vo.id == certId}">selected="selected"</c:if>>${vo.name}</option>
@@ -55,7 +55,7 @@
 			</div>
 			
 			<div class="text-c" style="text-align: left; margin-top: 10px">
-				微信：<input type="text" class="input-text" style="width:200px;" id="wechat" name="wechat" value="${wechat}">&nbsp;&nbsp;&nbsp;&nbsp;
+				微信：<input type="text" class="input-text" style="width:200px;margin-left:32px;" id="wechat" name="wechat" value="${wechat}">&nbsp;&nbsp;&nbsp;&nbsp;
 				
 				排序：<select class="select input-text" id="sort" name="sort" style="width: 120px;margin-left: 31px;">
 			          	<option value="update_time" <c:if test="${sort == 'update_time'}">selected="selected"</c:if>>更新时间</option>
@@ -70,12 +70,21 @@
 					</select>&nbsp;&nbsp;&nbsp;&nbsp;
 					
 				是否新增：
-				<select class="select input-text" id="isNew" name="isNew" style="width: 120px;">
+				<select class="select input-text" id="isNew" name="isNew" style="width: 252px;">
 			          	<option value="">全部</option>
 			          	<option value="0" <c:if test="${isNew == 0}">selected="selected"</c:if>>否</option>
 						<option value="1" <c:if test="${isNew == 1}">selected="selected"</c:if>>是</option>
 				</select>&nbsp;&nbsp;&nbsp;
-					
+			</div>
+			
+			<div class="text-c" style="text-align: left; margin-top: 10px">
+				是否使用：
+				<select class="select input-text" id="valid" name="valid" style="width: 200px;">
+					<option value="">请选择</option>
+					<option value="1" <c:if test="${valid == 1}">selected="selected"</c:if>>是</option>
+					<option value="0" <c:if test="${valid == 0}">selected="selected"</c:if>>否</option>
+				</select>&nbsp;&nbsp;&nbsp;
+				
 				<button type="button" class="btn btn-success" onclick="searchData();"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
 				<button type="button" class="btn btn-danger" onclick="resetData();"><i class="Hui-iconfont">&#xe665;</i> 重置</button>	
 			</div>
@@ -170,6 +179,7 @@
 			$("#certId").val("");
 			$("#wechat").val("");
 			$("#isNew").val("");
+			$("#valid").val("");
 			document.getElementById("queryForm").submit();
 		}
 		
