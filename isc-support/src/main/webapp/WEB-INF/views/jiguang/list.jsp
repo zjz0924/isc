@@ -30,29 +30,40 @@
 			
 			<div class="cl pd-5 bg-1 bk-gray mt-20"> 
 				<span style="margin-left: 10px; display: inline-block;padding-top: 5px;">上次同步时间：<span style="font-weight:bold; color:red;"><fmt:formatDate value='${ lastSyncTime }' type="date" pattern="yyyy-MM-dd HH:mm:ss"/></span></span>
+				<span class="l" style="float: right !important;margin-right: 10px;"><a href="${ctx}/syscData/export" class="btn btn-success radius"><i class="Hui-iconfont">&#xe641;</i> 导出</a></span>
+			</div>
 			
-				<span class="l" style="float: right !important;margin-right: 10px;">
-					名称：<input type="text" class="input-text" style="width:180px" id="name" name="name" value="${name}">&nbsp;&nbsp;&nbsp;&nbsp;
-						排序：<select class="select input-text" id="sort" name="sort" style="width: 120px;margin-left: 31px;">
-			          	<option value="new" <c:if test="${sort == 'new'}">selected="selected"</c:if>>新增用户</option>
-			          	<option value="total" <c:if test="${sort == 'total'}">selected="selected"</c:if>>总用户</option>
-					</select>&nbsp;
-					<select class="select input-text" id="order" name="order" style="width: 120px;">
-			          	<option value="desc" <c:if test="${order == 'desc'}">selected="selected"</c:if>>降序</option>
-			          	<option value="asc" <c:if test="${order == 'asc'}">selected="selected"</c:if>>升序</option>
-					</select>&nbsp;&nbsp;&nbsp;
-					<button type="button" class="btn btn-success" onclick="searchData();"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
-					<button type="button" class="btn btn-danger" onclick="resetData();"><i class="Hui-iconfont">&#xe665;</i> 重置</button>
-				</span> 
+			<div class="cl pd-5 bg-1 bk-gray">&nbsp;&nbsp;
+				证书：<select class="select input-text" id="certId" name="certId" style="width: 200px;">
+						<option value="">全部</option>
+						<c:forEach items="${certificateList}" var="vo">
+							<option value="${vo.id}" <c:if test="${vo.id == certId}">selected="selected"</c:if>>${vo.name}</option>
+						</c:forEach>
+				</select>&nbsp;&nbsp;&nbsp;&nbsp;
+					
+				名称：<input type="text" class="input-text" style="width:180px" id="name" name="name" value="${name}">&nbsp;&nbsp;&nbsp;&nbsp;
+					排序：<select class="select input-text" id="sort" name="sort" style="width: 120px;">
+		          	<option value="new" <c:if test="${sort == 'new'}">selected="selected"</c:if>>新增用户</option>
+		          	<option value="total" <c:if test="${sort == 'total'}">selected="selected"</c:if>>总用户</option>
+				</select>&nbsp;&nbsp;&nbsp;&nbsp;
+					
+				<select class="select input-text" id="order" name="order" style="width: 120px;">
+		          	<option value="desc" <c:if test="${order == 'desc'}">selected="selected"</c:if>>降序</option>
+		          	<option value="asc" <c:if test="${order == 'asc'}">selected="selected"</c:if>>升序</option>
+				</select>&nbsp;&nbsp;&nbsp;&nbsp;
+				
+				<button type="button" class="btn btn-success" onclick="searchData();"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
+				<button type="button" class="btn btn-danger" onclick="resetData();"><i class="Hui-iconfont">&#xe665;</i> 重置</button>
 			</div>
 			
 			<table class="table table-border table-bordered table-bg">
 				<thead>
 					<tr class="text-c">
 						<th width="40">序号</th>
-						<th width="120">名称</th>
-						<th width="120">今日新增用户</th>
-						<th width="120">总用户</th>
+						<th width="250">名称</th>
+						<th width="120">证书</th>
+						<th width="180">今日新增用户</th>
+						<th width="180">总用户</th>
 						<th width="50">操作</th>
 					</tr> 
 				</thead>
@@ -62,6 +73,7 @@
 						<tr class="text-c">
 							<td>${var.index + 1}</td>
 							<td title="${vo.appName}">${vo.appName}</td>
+							<td title="${vo.certName}">${vo.certName}</td>
 							<td title="${vo.item.amountNewToday}" style="color: red; font-weight: bold;">${vo.item.amountNewToday}</td>
 							<td title="${vo.item.userAmount}">${vo.item.userAmount}</td>
 							<td class="td-manage">
@@ -100,6 +112,7 @@
 		
 		function resetData(){
 			$("#name").val("");
+			$("#certId").val("");
 			document.getElementById("queryForm").submit();
 		}
 		

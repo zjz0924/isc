@@ -1,6 +1,7 @@
 package cn.wow.support.web;
 
 import java.io.OutputStream;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -81,6 +82,7 @@ public class AppController extends AbstractController {
 
 		Map<String, Object> map = new PageMap(request);
 		map.put("isDelete", "0");
+		map.put("isUnsign", "0");
 
 		if (StringUtils.isBlank(sort)) {
 			sort = "update_time";
@@ -91,10 +93,11 @@ public class AppController extends AbstractController {
 
 		String orderSql = sort + " " + order + ", name asc";
 		map.put("custom_order_sql", orderSql);
-
+		
 		queryMap.clear();
 		queryMap.put("custom_order_sql", orderSql);
 		queryMap.put("isDelete", "0");
+		queryMap.put("isUnsign", "0");
 
 		if (StringUtils.isNotBlank(name)) {
 			map.put("qname", name);
@@ -170,8 +173,8 @@ public class AppController extends AbstractController {
 			}
 			model.addAttribute("isNew", isNew);
 		}
-		
-		if(StringUtils.isNotBlank(valid)) {
+
+		if (StringUtils.isNotBlank(valid)) {
 			map.put("valid", valid);
 			queryMap.put("valid", valid);
 			model.addAttribute("valid", valid);
@@ -212,6 +215,7 @@ public class AppController extends AbstractController {
 		certificateMap.put("isDelete", "0");
 		List<Certificate> certificateList = certificateService.selectAllList(certificateMap);
 
+		model.addAttribute("effectiveDate", new Date());
 		model.addAttribute("comboList", comboList);
 		model.addAttribute("certificateList", certificateList);
 
@@ -222,7 +226,7 @@ public class AppController extends AbstractController {
 	@RequestMapping(value = "/save")
 	public AjaxVO save(HttpServletRequest request, Model model, String id, String appName, String appRemark,
 			String contactsName, String wechat, String alipay, String phone, String contactsRemark, Long certId,
-			String payType, Long comboId,
+			String payType, Long comboId, String effectiveDate,
 			@RequestParam(value = "unsignFile", required = false) MultipartFile unsignFile,
 			@RequestParam(value = "signFile", required = false) MultipartFile signFile, int valid) {
 		AjaxVO vo = new AjaxVO();
@@ -264,6 +268,7 @@ public class AppController extends AbstractController {
 						app.setRemark(appRemark);
 						app.setUpdateTime(date);
 						app.setValid(valid);
+						app.setIsUnsign(0);
 
 						if (unsignFile != null) {
 							String unsignFileName = uploadImg(unsignFile, appUrl + "/" + timeStr + "/", false, null);
@@ -274,7 +279,7 @@ public class AppController extends AbstractController {
 							String signFileName = uploadImg(signFile, appUrl + "/" + timeStr + "/", false, null);
 							app.setSignFile(signFileName);
 						}
-						appService.update(getCurrentUserName(), app);
+						appService.update(getCurrentUserName(), app, null);
 					}
 				}
 			} else {
@@ -299,19 +304,29 @@ public class AppController extends AbstractController {
 					vo.setSuccess(false);
 					return vo;
 				} else {
+					// 生效时间
+					Date efDate = date;
+					if (StringUtils.isNotBlank(effectiveDate)) {
+						try {
+							efDate = new SimpleDateFormat("yyyy-MM-dd").parse(effectiveDate);
+						} catch (ParseException e) {
+							e.printStackTrace();
+						}
+					}
+
 					// 记录
 					SignRecord signRecord = new SignRecord();
 					signRecord.setCertId(certId);
 					signRecord.setComboId(comboId);
 					signRecord.setCreateTime(date);
-					signRecord.setEffectiveDate(date);
+					signRecord.setEffectiveDate(efDate);
 					signRecord.setType(valid);
 					signRecord.setCreateTime(date);
 					signRecord.setPayType(payType);
 
 					Combo combo = comboService.selectOne(comboId);
 					signRecord.setPrice(combo.getPrice());
-					signRecord.setExpireDate(ToolUtils.addMonth(date, combo.getDuration()));
+					signRecord.setExpireDate(ToolUtils.addMonth(signRecord.getEffectiveDate(), combo.getDuration()));
 
 					// app 信息
 					app = new App();
@@ -321,6 +336,7 @@ public class AppController extends AbstractController {
 					app.setUpdateTime(date);
 					app.setIsDelete(0);
 					app.setValid(1);
+					app.setIsUnsign(0);
 					app.setEffectiveDate(signRecord.getEffectiveDate());
 					app.setExpireDate(signRecord.getExpireDate());
 					app.setCertId(certId);
@@ -345,7 +361,7 @@ public class AppController extends AbstractController {
 					contacts.setWechat(wechat);
 					contacts.setCreateTime(date);
 
-					appService.addApp(getCurrentUserName(), app, signRecord, contacts, signFile, unsignFile);
+					appService.addApp(getCurrentUserName(), app, signRecord, contacts);
 					vo.setMsg("添加成功");
 				}
 			}
@@ -407,6 +423,8 @@ public class AppController extends AbstractController {
 		certificateMap.put("isDelete", "0");
 		List<Certificate> certificateList = certificateService.selectAllList(certificateMap);
 
+		App app = appService.selectOne(appId);
+		model.addAttribute("effectiveDate", app.getExpireDate());
 		model.addAttribute("certificateList", certificateList);
 		model.addAttribute("comboList", comboList);
 		return "app/app_renew";
@@ -414,8 +432,8 @@ public class AppController extends AbstractController {
 
 	@ResponseBody
 	@RequestMapping(value = "/renew")
-	public AjaxVO renew(HttpServletRequest request, Model model, Long appId, Long comboId, String payType,
-			Long certId) {
+	public AjaxVO renew(HttpServletRequest request, Model model, Long appId, Long comboId, String payType, Long certId,
+			String effectiveDate) {
 		AjaxVO vo = new AjaxVO();
 		vo.setMsg("续费成功");
 
@@ -433,10 +451,20 @@ public class AppController extends AbstractController {
 				app.setCertId(certId);
 			}
 
+			// 生效时间
+			Date efDate = app.getExpireDate();
+			if (StringUtils.isNotBlank(effectiveDate)) {
+				try {
+					efDate = new SimpleDateFormat("yyyy-MM-dd").parse(effectiveDate);
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+			}
+
 			signRecord.setComboId(comboId);
 			signRecord.setCreateTime(date);
-			signRecord.setEffectiveDate(app.getExpireDate());
-			signRecord.setExpireDate(ToolUtils.addMonth(app.getExpireDate(), combo.getDuration()));
+			signRecord.setEffectiveDate(efDate);
+			signRecord.setExpireDate(ToolUtils.addMonth(signRecord.getEffectiveDate(), combo.getDuration()));
 			signRecord.setType(2);
 			signRecord.setPrice(combo.getPrice());
 			signRecord.setAppId(appId);

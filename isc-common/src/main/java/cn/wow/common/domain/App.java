@@ -47,7 +47,9 @@ public class App extends JpaEntity{
 	private Certificate certificate;
 	// 使用中， 0：否    1：是
 	private Integer valid;
-
+	// 是否已签名，0：否   1：是
+	private Integer isUnsign;
+	
 	public Long getId() {
 		return id;
 	}
@@ -192,6 +194,14 @@ public class App extends JpaEntity{
 
 	public void setValid(Integer valid) {
 		this.valid = valid;
+	}
+
+	public Integer getIsUnsign() {
+		return isUnsign;
+	}
+
+	public void setIsUnsign(Integer isUnsign) {
+		this.isUnsign = isUnsign;
 	}
 
 	@JsonIgnore

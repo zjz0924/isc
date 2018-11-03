@@ -46,6 +46,13 @@
 			</div>
 			
 			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>生效时间：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<input type="text" onfocus="WdatePicker()" id="effectiveDate" name="effectiveDate" class="input-text Wdate" value="<fmt:formatDate value='${effectiveDate}' type="date" pattern="yyyy-MM-dd"/>">
+				</div>
+			</div>
+			
+			<div class="row cl">
 				<p style="color:red;margin-left: 20px;">注意：如果证书没有更改，请不要选择证书</p>
 				<label class="form-label col-xs-4 col-sm-3">证书：</label>
 				<div class="formControls col-xs-8 col-sm-9">
@@ -92,6 +99,12 @@
 							var comboId = $("#comboId").val();
 							if(comboId  == null || comboId == "" || comboId == undefined){
 								layer.msg("请选择套餐", {icon:5, time:1000});
+								return false;
+							}
+							
+							var effectiveDate = $("#effectiveDate").val();
+							if(effectiveDate  == null || effectiveDate == "" || effectiveDate == undefined){
+								layer.msg("请选择生效时间", {icon:5, time:1000});
 								return false;
 							}
 						},

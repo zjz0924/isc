@@ -5,7 +5,7 @@
 	<select id="statisticsNum" resultType="java.util.Map" parameterType="java.util.Map">
 		select 1 type, count(*) num, case when sum(price) is null then 0 else sum(price) end price from sign_record sr left join app a on sr.app_id = a.id
 		<where>
-			a.is_delete = 0 and type =1 
+			a.is_delete = 0 and type =1 and a.is_unsign = 0
 
 			<if test="startCreateTime != null and startCreateTime != ''">
 				and sr.create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
@@ -18,7 +18,7 @@
 		UNION ALL
 		select 2 type, count(*) num, case when sum(price) is null then 0 else sum(price) end price from sign_record sr left join app a on sr.app_id = a.id
 		<where>
-			a.is_delete = 0 and type =2 
+			a.is_delete = 0 and type =2 and a.is_unsign = 0
 
 			<if test="startCreateTime != null and startCreateTime != ''">
 				and sr.create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
@@ -31,7 +31,7 @@
 		UNION ALL
 		select 3 type, count(*) num, case when sum(price) is null then 0 else sum(price) end price from sign_record sr left join app a on sr.app_id = a.id
 		<where>
-			a.is_delete = 0 and type = 3 
+			a.is_delete = 0 and type = 3 and a.is_unsign = 0
 
 			<if test="startCreateTime != null and startCreateTime != ''">
 				and sr.create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
@@ -46,12 +46,12 @@
 	<!-- 证书统计 -->
 	<select id="statisticsCertificate" resultType="java.util.Map" parameterType="java.util.Map">
 		SELECT a. name, case when a.num is null then 0 else a.num end total, case when b.num is null then 0 else b.num end today FROM 
-	 	    (SELECT c. name, count(*) num FROM sign_record sr LEFT JOIN certificate c ON c.id = sr.cert_id LEFT JOIN app a ON a.id = sr.app_id WHERE c.is_delete = 0 AND a.is_delete = 0 AND sr.type != 2 GROUP BY sr.cert_id 
-			   UNION ALL SELECT name, 0 FROM certificate WHERE id NOT IN ( SELECT DISTINCT sr.cert_id FROM sign_record sr LEFT JOIN app a ON sr.app_id = a.id WHERE a.is_delete = 0 ) AND is_delete = 0 ORDER BY num DESC 
+	 	    (SELECT c. name, count(*) num FROM sign_record sr LEFT JOIN certificate c ON c.id = sr.cert_id LEFT JOIN app a ON a.id = sr.app_id WHERE c.is_delete = 0 AND a.is_delete = 0 And a.is_unsign = 0 AND sr.type != 2 GROUP BY sr.cert_id 
+			   UNION ALL SELECT name, 0 FROM certificate WHERE id NOT IN ( SELECT DISTINCT sr.cert_id FROM sign_record sr LEFT JOIN app a ON sr.app_id = a.id WHERE a.is_delete = 0 and a.is_unsign = 0) AND is_delete = 0 ORDER BY num DESC 
 			) a 
 			LEFT JOIN 
-			( SELECT c. name, count(*) num FROM sign_record sr LEFT JOIN certificate c ON c.id = sr.cert_id LEFT JOIN app a ON a.id = sr.app_id WHERE c.is_delete = 0 AND a.is_delete = 0 AND sr.type != 2 and sr.create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP} and sr.create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP} GROUP BY sr.cert_id 
-			  UNION ALL SELECT NAME, 0 FROM certificate WHERE id NOT IN ( SELECT DISTINCT sr.cert_id FROM sign_record sr LEFT JOIN app a ON sr.app_id = a.id WHERE a.is_delete = 0 ) AND is_delete = 0 ORDER BY num DESC 
+			( SELECT c. name, count(*) num FROM sign_record sr LEFT JOIN certificate c ON c.id = sr.cert_id LEFT JOIN app a ON a.id = sr.app_id WHERE c.is_delete = 0 AND a.is_delete = 0 And a.is_unsign = 0 AND sr.type != 2 and sr.create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP} and sr.create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP} GROUP BY sr.cert_id 
+			  UNION ALL SELECT NAME, 0 FROM certificate WHERE id NOT IN ( SELECT DISTINCT sr.cert_id FROM sign_record sr LEFT JOIN app a ON sr.app_id = a.id WHERE a.is_delete = 0 and a.is_unsign = 0) AND is_delete = 0 ORDER BY num DESC 
 			) b ON a. name = b. name
 	</select>
 	
@@ -59,7 +59,7 @@
 	<select id="statisticsPay" resultType="java.util.Map" parameterType="java.util.Map">
 		select 1 name, case when sum(price) is null then 0 else sum(price) end price from sign_record sr LEFT JOIN app a on a.id = sr.app_id 
 		<where>
-			a.is_delete = 0 and type != 3
+			a.is_delete = 0 and type != 3 and a.is_unsign = 0
 
 			<if test="startCreateTime != null and startCreateTime != ''">
 				and sr.create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}

@@ -19,6 +19,11 @@ public class AppNumVO implements Serializable {
 
 	private AppTotalItemVO item;
 
+	// 证书名
+	private String certName;
+	
+	private Long certId;
+
 	public AppTotalItemVO getItem() {
 		return item;
 	}
@@ -42,6 +47,24 @@ public class AppNumVO implements Serializable {
 	public void setAppKey(String appKey) {
 		this.appKey = appKey;
 	}
+
+	public String getCertName() {
+		return certName;
+	}
+
+	public void setCertName(String certName) {
+		this.certName = certName;
+	}
+
+	public Long getCertId() {
+		return certId;
+	}
+
+	public void setCertId(Long certId) {
+		this.certId = certId;
+	}
+
+
 
 	public static Comparator<AppNumVO> newAscComparator = new Comparator<AppNumVO>() {
 		public int compare(AppNumVO vo1, AppNumVO vo2) {

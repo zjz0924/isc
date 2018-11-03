@@ -15,13 +15,13 @@ public interface AppService {
 
     public int save(String userName, App sign);
 
-    public int update(String userName, App sign);
+    public int update(String userName, App sign, Contacts contacts);
 
     public int deleteByPrimaryKey(String userName, App sign);
 
     public List<App> selectAllList(Map<String, Object> map);
 
-    public void addApp(String userName, App app, SignRecord signRecord, Contacts contacts, MultipartFile signFile, MultipartFile unsignFile);
+    public void addApp(String userName, App app, SignRecord signRecord, Contacts contacts);
     
     /**
      * 续费

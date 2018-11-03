@@ -25,12 +25,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import cn.wow.common.domain.App;
+import cn.wow.common.domain.Certificate;
 import cn.wow.common.service.AppService;
 import cn.wow.common.service.SyncDataService;
 import cn.wow.common.utils.DateUtils;
 import cn.wow.common.utils.JsonUtil;
+import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.common.vo.AppDetailVO;
 import cn.wow.common.vo.AppListVO;
 import cn.wow.common.vo.AppNumVO;
@@ -42,11 +47,11 @@ import cn.wow.common.vo.AppVO;
 public class SyncDataServiceImpl implements SyncDataService {
 
 	private static Logger logger = LoggerFactory.getLogger(SyncDataServiceImpl.class);
-	
+
 	// 上传根路径
 	@Value("${img.root.url}")
 	protected String rootPath;
-	
+
 	@Value("${jg.api.appNum}")
 	private int apiAppNum;
 
@@ -74,20 +79,40 @@ public class SyncDataServiceImpl implements SyncDataService {
 	public void syncList(String token) throws Exception {
 
 		// 本地app列表
-		List<String> appNameList = appService.getAppNames();
+		Map<String, Object> queryMap = new PageMap(false);
+		queryMap.put("isDelete", 0);
+		List<App> appList = appService.selectAllList(queryMap);
+
+		Map<String, App> appMap = new HashMap<String, App>();
+		List<String> appNameList = new ArrayList<String>();
+
+		if (appList != null && appList.size() > 0) {
+			for (App app : appList) {
+				String appName = app.getName();
+				appNameList.add(appName);
+
+				if (appMap.get(appName) == null) {
+					appMap.put(appName, app);
+				}
+			}
+		}
 
 		// 获取极光的app列表
 		long t1 = System.currentTimeMillis();
 		String jgAppStr = getData(listAPI, token);
 		logger.info("App key Api 花费时间：" + (System.currentTimeMillis() - t1) + " ms");
-		
+
 		AppListVO jgAppList = JsonUtil.fromJson(jgAppStr, AppListVO.class);
 		List<AppVO> appVOList = jgAppList.getApps();
-		
+
 		// 过滤只有签名过的APP
 		List<AppVO> exisitAppList = new ArrayList<AppVO>();
-		for(AppVO vo: appVOList) {
+		for (AppVO vo : appVOList) {
 			if (appNameList.contains(vo.getName())) {
+				App app = appMap.get(vo.getName());
+				if (app != null && app.getCertificate() != null) {
+					vo.setCert(app.getCertificate());
+				}
 				exisitAppList.add(vo);
 			}
 		}
@@ -114,9 +139,12 @@ public class SyncDataServiceImpl implements SyncDataService {
 
 			List<AppVO> subAppList = exisitAppList.subList(fromIndex, toIndex);
 			Map<String, String> appNameMap = new HashMap<String, String>();
+			Map<String, Certificate> certMap = new HashMap<String, Certificate>();
+
 			for (AppVO vo : subAppList) {
 				appIdsBuf.append(vo.getAppKey() + ",");
 				appNameMap.put(vo.getAppKey(), vo.getName());
+				certMap.put(vo.getAppKey(), vo.getCert());
 			}
 
 			String appIds = appIdsBuf.toString();
@@ -125,7 +153,7 @@ public class SyncDataServiceImpl implements SyncDataService {
 			}
 
 			// 获取APP数量
-			pareseNum(appIds, token, totalList, appNameMap);
+			pareseNum(appIds, token, totalList, appNameMap, certMap);
 		}
 
 		// 保存数据
@@ -184,7 +212,8 @@ public class SyncDataServiceImpl implements SyncDataService {
 	/**
 	 * 解析数量json
 	 */
-	public void pareseNum(String appIds, String token, List<AppNumVO> list, Map<String, String> appNameMap) throws Exception {
+	public void pareseNum(String appIds, String token, List<AppNumVO> list, Map<String, String> appNameMap,
+			Map<String, Certificate> certMap) throws Exception {
 		long t1 = System.currentTimeMillis();
 		String totalStr = getData(totalAPI + appIds, token);
 		logger.info("App数量 Api 花费时间：" + (System.currentTimeMillis() - t1) + " ms");
@@ -202,6 +231,12 @@ public class SyncDataServiceImpl implements SyncDataService {
 			vo.setItem(item);
 			vo.setAppKey(key);
 			vo.setAppName(appNameMap.get(key));
+
+			Certificate cert = certMap.get(key);
+			if (cert != null) {
+				vo.setCertId(cert.getId());
+				vo.setCertName(cert.getName());
+			}
 
 			list.add(vo);
 		}

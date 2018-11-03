@@ -48,6 +48,9 @@ public class AppServiceImpl implements AppService {
 	@Autowired
 	private OperationLogService operationLogService;
 
+	@Autowired
+	private ContactsDao contactsDao;
+
 	@Value("${app.url}")
 	protected String appUrl;
 
@@ -59,7 +62,16 @@ public class AppServiceImpl implements AppService {
 		return appDao.insert(sign);
 	}
 
-	public int update(String userName, App sign) {
+	public int update(String userName, App sign, Contacts contacts) {
+		if (contacts != null) {
+			if (contacts.getId() == null) {
+				contactsDao.insert(contacts);
+			} else {
+				contactsDao.update(contacts);
+			}
+			sign.setContactsId(contacts.getId());
+		}
+
 		return appDao.update(sign);
 	}
 
@@ -73,30 +85,38 @@ public class AppServiceImpl implements AppService {
 	}
 
 	@OperationLogIgnore
-	public void addApp(String userName, App app, SignRecord signRecord, Contacts contacts, MultipartFile signFile,
-			MultipartFile unsignFile) {
-		Map<String, Object> rMap = new HashMap<String, Object>();
-		rMap.put("mwechat", contacts.getWechat());
-		List<Contacts> contactsList = contactsService.selectAllList(rMap);
+	public void addApp(String userName, App app, SignRecord signRecord, Contacts contacts) {
 
-		if (contactsList == null || contactsList.size() < 1) {
-			contactsService.save(userName, contacts);
-		} else {
-			contacts = contactsList.get(0);
+		if (contacts != null) {
+			Map<String, Object> rMap = new HashMap<String, Object>();
+			rMap.put("mwechat", contacts.getWechat());
+			List<Contacts> contactsList = contactsService.selectAllList(rMap);
+
+			if (contactsList == null || contactsList.size() < 1) {
+				contactsService.save(userName, contacts);
+			} else {
+				contacts = contactsList.get(0);
+			}
+
+			app.setContactsId(contacts.getId());
 		}
 
 		// 添加日志
 		addLog(userName, app);
+		if (app.getId() == null) {
+			this.save(userName, app);
+		} else {
+			this.update(userName, app, null);
+		}
 
-		app.setContactsId(contacts.getId());
-		this.save(userName, app);
-
-		signRecord.setAppId(app.getId());
-		signRecordService.save(userName, signRecord);
+		if (signRecord != null) {
+			signRecord.setAppId(app.getId());
+			signRecordService.save(userName, signRecord);
+		}
 	}
 
 	public void renewApp(String userName, App app, SignRecord signRecord) {
-		this.update(userName, app);
+		this.update(userName, app, null);
 		signRecordService.save(userName, signRecord);
 	}
 
@@ -112,10 +132,16 @@ public class AppServiceImpl implements AppService {
 		map.put("ENTITY", JsonUtil.toJson(app));
 		map.put("OLDENTITY", null);
 		map.put("ENTITYTYPE", "cn.wow.common.domain.App");
-		map.put("OPERATION", "新建");
+		if (app.getId() == null) {
+			map.put("OPERATION", "新建");
+		} else {
+			map.put("OPERATION", "编辑");
+		}
+
 		String logDetail = JsonUtil.toJson(map);
 
-		operationLogService.save(userName, OperationType.CREATE, ServiceType.APP, logDetail);
+		operationLogService.save(userName, app.getId() == null ? OperationType.CREATE : OperationType.UPDATE,
+				ServiceType.APP, logDetail);
 	}
 
 }
