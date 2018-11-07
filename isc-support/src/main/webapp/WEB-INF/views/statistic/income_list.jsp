@@ -50,7 +50,14 @@
 					<option value="支付宝" <c:if test="${payType == '支付宝' }">selected="selected"</c:if>>支付宝</option>
 					<option value="微信" <c:if test="${payType == '微信' }">selected="selected"</c:if>>微信</option>
 					<option value="银行卡" <c:if test="${payType == '银行卡' }">selected="selected"</c:if>>银行卡</option>
-				</select>&nbsp;&nbsp;
+				</select>&nbsp;&nbsp;&nbsp;&nbsp;
+				
+				是否有效：
+				<select class="select input-text" id="isEffective" name="isEffective" style="width: 110px;">
+			          	<option value="-1" <c:if test="${isEffective == -1}">selected="selected"</c:if>>全部</option>
+			          	<option value="0" <c:if test="${isEffective == 0}">selected="selected"</c:if>>否</option>
+						<option value="1" <c:if test="${isEffective == 1}">selected="selected"</c:if>>是</option>
+				</select>&nbsp;&nbsp;&nbsp;
 			         
 				<button type="button" class="btn btn-success" onclick="searchData();"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
 				<button type="button" class="btn btn-danger" onclick="resetData();"><i class="Hui-iconfont">&#xe665;</i> 重置</button>
@@ -126,6 +133,7 @@
 			$("#endEffectiveDate").val("");
 			$("#startExpireDate").val("");
 			$("#endExpireDate").val("");
+			$("#isEffective").val("1");
 			document.getElementById("queryForm").submit();
 		}
 	</script>

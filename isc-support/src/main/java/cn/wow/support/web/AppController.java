@@ -78,7 +78,7 @@ public class AppController extends AbstractController {
 	public String list(HttpServletRequest request, Model model, String name, String startEffectiveDate,
 			String endEffectiveDate, String startExpireDate, String endExpireDate, String startCreateTime,
 			String endCreateTime, String startUpdateTime, String endUpdateTime, String certId, String sort,
-			String order, String wechat, String isNew, String valid) {
+			String order, String wechat, String isNew, String valid, String isEffective) {
 
 		Map<String, Object> map = new PageMap(request);
 		map.put("isDelete", "0");
@@ -93,7 +93,7 @@ public class AppController extends AbstractController {
 
 		String orderSql = sort + " " + order + ", name asc";
 		map.put("custom_order_sql", orderSql);
-		
+
 		queryMap.clear();
 		queryMap.put("custom_order_sql", orderSql);
 		queryMap.put("isDelete", "0");
@@ -180,6 +180,12 @@ public class AppController extends AbstractController {
 			model.addAttribute("valid", valid);
 		}
 
+		if (StringUtils.isNotBlank(isEffective)) {
+			map.put("isEffective", isEffective);
+			queryMap.put("isEffective", isEffective);
+			model.addAttribute("isEffective", isEffective);
+		}
+
 		List<App> dataList = appService.selectAllList(map);
 		model.addAttribute("dataList", dataList);
 		model.addAttribute("resUrl", resUrl);
@@ -228,7 +234,8 @@ public class AppController extends AbstractController {
 			String contactsName, String wechat, String alipay, String phone, String contactsRemark, Long certId,
 			String payType, Long comboId, String effectiveDate,
 			@RequestParam(value = "unsignFile", required = false) MultipartFile unsignFile,
-			@RequestParam(value = "signFile", required = false) MultipartFile signFile, int valid) {
+			@RequestParam(value = "signFile", required = false) MultipartFile signFile, Integer valid,
+			Integer isEffective) {
 		AjaxVO vo = new AjaxVO();
 		vo.setMsg("编辑成功");
 
@@ -269,6 +276,7 @@ public class AppController extends AbstractController {
 						app.setUpdateTime(date);
 						app.setValid(valid);
 						app.setIsUnsign(0);
+						app.setIsEffective(isEffective);
 
 						if (unsignFile != null) {
 							String unsignFileName = uploadImg(unsignFile, appUrl + "/" + timeStr + "/", false, null);
@@ -340,6 +348,7 @@ public class AppController extends AbstractController {
 					app.setEffectiveDate(signRecord.getEffectiveDate());
 					app.setExpireDate(signRecord.getExpireDate());
 					app.setCertId(certId);
+					app.setIsEffective(isEffective);
 
 					if (unsignFile != null) {
 						String unsignFileName = uploadImg(unsignFile, appUrl + "/" + timeStr + "/", false, null);
@@ -582,10 +591,13 @@ public class AppController extends AbstractController {
 			sh.setColumnWidth(7, (short) 6000);
 			sh.setColumnWidth(8, (short) 6000);
 			sh.setColumnWidth(9, (short) 6000);
+			sh.setColumnWidth(10, (short) 4000);
+			sh.setColumnWidth(11, (short) 4000);
 
 			Map<String, CellStyle> styles = ImportExcelUtil.createStyles(wb);
 
-			String[] titles = { "APP名称", "生效日期", "过期日期", "证书名称", "备注", "未签名文件", "已签名文件", "创建时间", "更新时间", "微信号" };
+			String[] titles = { "APP名称", "生效日期", "过期日期", "证书名称", "备注", "未签名文件", "已签名文件", "创建时间", "更新时间", "微信号", "是否使用",
+					"是否有效" };
 			int r = 0;
 
 			Row titleRow = sh.createRow(0);
@@ -652,6 +664,20 @@ public class AppController extends AbstractController {
 				cell12.setCellStyle(styles.get("cell"));
 				if (app.getContacts() != null) {
 					cell12.setCellValue(app.getContacts().getWechat());
+				}
+
+				Cell cell13 = contentRow.createCell(10);
+				cell13.setCellStyle(styles.get("cell"));
+				if (app.getValid() != null) {
+					String val = app.getValid().intValue() == 0 ? "否" : "是";
+					cell13.setCellValue(val);
+				}
+				
+				Cell cell14 = contentRow.createCell(11);
+				cell14.setCellStyle(styles.get("cell"));
+				if (app.getIsEffective() != null) {
+					String val = app.getIsEffective().intValue() == 0 ? "否" : "是";
+					cell14.setCellValue(val);
 				}
 
 				r++;

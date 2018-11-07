@@ -69,15 +69,16 @@ public class StatisticController extends AbstractController {
 	@RequestMapping(value = "/income")
 	public String income(HttpServletRequest httpServletRequest, Model model, String name, String startCreateTime,
 			String endCreateTime, String type, String payType, String startEffectiveDate, String endEffectiveDate,
-			String startExpireDate, String endExpireDate) {
+			String startExpireDate, String endExpireDate, String isEffective) {
 
 		Map<String, Object> map = new PageMap(httpServletRequest);
-		map.put("custom_order_sql", "create_time desc");
+		map.put("custom_order_sql", "r.create_time desc");
 		map.put("isDelete", "0");
 		map.put("nottype", 3);
+		map.put("isDelete", 1);
 
 		queryMap.clear();
-		queryMap.put("custom_order_sql", "create_time desc");
+		queryMap.put("custom_order_sql", "r.create_time desc");
 		queryMap.put("isDelete", "0");
 		queryMap.put("nottype", 3);
 
@@ -129,6 +130,18 @@ public class StatisticController extends AbstractController {
 			model.addAttribute("endExpireDate", endExpireDate);
 		}
 
+		if (StringUtils.isBlank(isEffective)) {
+			map.put("isEffective", 1);
+			queryMap.put("isEffective", 1);
+			model.addAttribute("isEffective", 1);
+		} else {
+			if (!"-1".equals(isEffective)) {
+				map.put("isEffective", isEffective);
+				queryMap.put("isEffective", isEffective);
+				model.addAttribute("isEffective", isEffective);
+			}
+		}
+
 		List<SignRecord> dataList = signRecordService.selectAllList(map);
 
 		// 总金额
@@ -149,6 +162,7 @@ public class StatisticController extends AbstractController {
 		map.put("custom_order_sql", "expire_date asc");
 		map.put("isDelete", "0");
 		map.put("valid", 1);
+		map.put("isEffective", 1);
 
 		String endExpireDate = null;
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

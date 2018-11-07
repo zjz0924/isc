@@ -80,9 +80,16 @@
 			<div class="text-c" style="text-align: left; margin-top: 10px">
 				是否使用：
 				<select class="select input-text" id="valid" name="valid" style="width: 200px;">
-					<option value="">请选择</option>
+					<option value="">全部</option>
 					<option value="1" <c:if test="${valid == 1}">selected="selected"</c:if>>是</option>
 					<option value="0" <c:if test="${valid == 0}">selected="selected"</c:if>>否</option>
+				</select>&nbsp;&nbsp;&nbsp;&nbsp;
+				
+				是否有效：
+				<select class="select input-text" id="isEffective" name="isEffective" style="width: 252px;">
+			          	<option value="">全部</option>
+			          	<option value="0" <c:if test="${isEffective == 0}">selected="selected"</c:if>>否</option>
+						<option value="1" <c:if test="${isEffective == 1}">selected="selected"</c:if>>是</option>
 				</select>&nbsp;&nbsp;&nbsp;
 				
 				<button type="button" class="btn btn-success" onclick="searchData();"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
@@ -99,16 +106,17 @@
 				<thead>
 					<tr class="text-c">
 						<th width="30">序号</th>
-						<th width="80">名称</th>
+						<th width="70">名称</th>
 						<th width="70">生效时间</th>
 						<th width="75">过期时间</th>
 						<th width="80">证书</th>
-						<th width="100">客户微信</th>
-						<th width="130">ipa包</th>
-						<th width="50">是否使用</th>
+						<th width="80">客户微信</th>
+						<th width="125">ipa包</th>
+						<th width="28">使用</th>
+						<th width="28">有效</th>
 						<th width="30">创建时间</th>
 						<th width="30">更新时间</th>
-						<th width="80">备注</th>
+						<th width="60">备注</th>
 						<th width="70">操作</th>
 					</tr> 
 				</thead>
@@ -129,6 +137,10 @@
 							<td>
 								<c:if test="${vo.valid == 0}"><span style="color:red; font-weight: bold;">否</span></c:if>
 								<c:if test="${vo.valid == 1}"><span style="color:green; font-weight: bold;">是</span></c:if>
+							</td>
+							<td>
+								<c:if test="${vo.isEffective == 0}"><span style="color:red; font-weight: bold;">否</span></c:if>
+								<c:if test="${vo.isEffective == 1}"><span style="color:green; font-weight: bold;">是</span></c:if>
 							</td>
 							<td><fmt:formatDate value='${vo.createTime }' type="date" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 							<td><fmt:formatDate value='${vo.updateTime }' type="date" pattern="yyyy-MM-dd HH:mm:ss"/></td>
@@ -185,6 +197,7 @@
 			$("#wechat").val("");
 			$("#isNew").val("");
 			$("#valid").val("");
+			$("#isEffective").val("");
 			document.getElementById("queryForm").submit();
 		}
 		

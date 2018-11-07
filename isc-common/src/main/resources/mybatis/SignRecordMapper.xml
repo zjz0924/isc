@@ -18,7 +18,7 @@
 	</resultMap>
 	
 	<sql id="base_columns">
-		id, type, combo_id, price, effective_date, expire_date, app_id, create_time, cert_id, pay_type
+		r.id, r.type, r.combo_id, r.price, r.effective_date, r.expire_date, r.app_id, r.create_time, r.cert_id, r.pay_type
 	</sql>
 	
 	<select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long">
@@ -72,44 +72,47 @@
     <select id="selectAllList" resultMap="BaseResultMap" parameterType="java.util.Map" >
   	select 
     <include refid="base_columns" />
-      from sign_record
+      from sign_record r left join app a on a.id = r.app_id 
      <where>
 	      <if test="type != null">
-		    and type = #{type,jdbcType=INTEGER}
+		    and r.type = #{type,jdbcType=INTEGER}
 	      </if>
 	      <if test="nottype != null">
-		    and type != #{nottype,jdbcType=INTEGER}
+		    and r.type != #{nottype,jdbcType=INTEGER}
 	      </if>
 	      <if test="comboId != null">
-			and combo_id = #{comboId,jdbcType=BIGINT}
+			and r.combo_id = #{comboId,jdbcType=BIGINT}
 	      </if>
 	      <if test="startEffectiveDate != null and startEffectiveDate != ''">  
-	    	and effective_date &gt;= #{startEffectiveDate, jdbcType=DATE}
+	    	and r.effective_date &gt;= #{startEffectiveDate, jdbcType=DATE}
 	      </if>
 	      <if test="endEffectiveDate != null and endEffectiveDate != ''">  
-	    	and effective_date &lt;= #{endEffectiveDate, jdbcType=DATE}
+	    	and r.effective_date &lt;= #{endEffectiveDate, jdbcType=DATE}
 	      </if>
 	      <if test="startExpireDate != null and startExpireDate != ''">  
-	    	and expire_date &gt;= #{startExpireDate, jdbcType=DATE}
+	    	and r.expire_date &gt;= #{startExpireDate, jdbcType=DATE}
 	      </if>
 	      <if test="endExpireDate != null and endExpireDate != ''">  
-	    	and expire_date &lt;= #{endExpireDate, jdbcType=DATE}
+	    	and r.expire_date &lt;= #{endExpireDate, jdbcType=DATE}
 	      </if>
 	      <if test="appId != null">
-			and app_id = #{appId,jdbcType=BIGINT}
+			and r.app_id = #{appId,jdbcType=BIGINT}
 	      </if>
 	      <if test="certId != null">
-			and cert_id = #{certId,jdbcType=BIGINT}
+			and r.cert_id = #{certId,jdbcType=BIGINT}
 			</if>
 	      <if test="startCreateTime != null and startCreateTime != ''">  
-	    	and create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
+	    	and r.create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
 	      </if>
 	      <if test="endCreateTime != null and endCreateTime != ''">  
-	    	and create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
+	    	and r.create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
 	      </if>
 	      <if test="payType != null">
-			and	pay_type = #{payType,jdbcType=VARCHAR}
+			and	r.pay_type = #{payType,jdbcType=VARCHAR}
 		  </if>
+		  <if test="isEffective != null">
+			and a.is_effective = #{isEffective,jdbcType=INTEGER}
+	      </if>
       </where>
       
 	  <choose>
@@ -117,51 +120,57 @@
   			order by ${custom_order_sql}
   		</when>
   		<otherwise>
-  			order by id desc
+  			order by r.id desc
   		</otherwise>
  	 </choose>
   </select>
   
   
   <select id="statisticTotal" resultType="java.lang.Double" parameterType="java.util.Map" >
-  	select case when sum(price)  is null then 0 else sum(price)  end price from sign_record
+  	select case when sum(price)  is null then 0 else sum(price)  end price from sign_record r left join app a on a.id = r.app_id 
      <where>
 	      <if test="type != null">
-		    and type = #{type,jdbcType=INTEGER}
+		    and r.type = #{type,jdbcType=INTEGER}
 	      </if>
 	      <if test="nottype != null">
-		    and type != #{nottype,jdbcType=INTEGER}
+		    and r.type != #{nottype,jdbcType=INTEGER}
 	      </if>
 	      <if test="comboId != null">
-			and combo_id = #{comboId,jdbcType=BIGINT}
+			and r.combo_id = #{comboId,jdbcType=BIGINT}
 	      </if>
 	      <if test="startEffectiveDate != null and startEffectiveDate != ''">  
-	    	and effective_date &gt;= #{startEffectiveDate, jdbcType=DATE}
+	    	and r.effective_date &gt;= #{startEffectiveDate, jdbcType=DATE}
 	      </if>
 	      <if test="endEffectiveDate != null and endEffectiveDate != ''">  
-	    	and effective_date &lt;= #{endEffectiveDate, jdbcType=DATE}
+	    	and r.effective_date &lt;= #{endEffectiveDate, jdbcType=DATE}
 	      </if>
 	      <if test="startExpireDate != null and startExpireDate != ''">  
-	    	and expire_date &gt;= #{startExpireDate, jdbcType=DATE}
+	    	and r.expire_date &gt;= #{startExpireDate, jdbcType=DATE}
 	      </if>
 	      <if test="endExpireDate != null and endExpireDate != ''">  
-	    	and expire_date &lt;= #{endExpireDate, jdbcType=DATE}
+	    	and r.expire_date &lt;= #{endExpireDate, jdbcType=DATE}
 	      </if>
 	      <if test="appId != null">
-			and app_id = #{appId,jdbcType=BIGINT}
+			and r.app_id = #{appId,jdbcType=BIGINT}
 	      </if>
 	      <if test="certId != null">
-			and cert_id = #{certId,jdbcType=BIGINT}
+			and r.cert_id = #{certId,jdbcType=BIGINT}
 			</if>
 	      <if test="startCreateTime != null and startCreateTime != ''">  
-	    	and create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
+	    	and r.create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
 	      </if>
 	      <if test="endCreateTime != null and endCreateTime != ''">  
-	    	and create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
+	    	and r.create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
 	      </if>
 	      <if test="payType != null">
-			and	pay_type = #{payType,jdbcType=VARCHAR}
+			and	r.pay_type = #{payType,jdbcType=VARCHAR}
 		  </if>
+		  <if test="isEffective != null">
+			and a.is_effective = #{isEffective,jdbcType=INTEGER}
+	      </if>
+	      <if test="isDelete != null">
+			and a.is_delete = #{isDelete,jdbcType=INTEGER}
+	      </if>
       </where>
   </select>
 	

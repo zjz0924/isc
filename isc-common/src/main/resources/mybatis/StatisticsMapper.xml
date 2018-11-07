@@ -5,7 +5,7 @@
 	<select id="statisticsNum" resultType="java.util.Map" parameterType="java.util.Map">
 		select 1 type, count(*) num, case when sum(price) is null then 0 else sum(price) end price from sign_record sr left join app a on sr.app_id = a.id
 		<where>
-			a.is_delete = 0 and type =1 and a.is_unsign = 0
+			a.is_delete = 0 and type =1 and a.is_unsign = 0 and a.is_effective = 1
 
 			<if test="startCreateTime != null and startCreateTime != ''">
 				and sr.create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
@@ -18,7 +18,7 @@
 		UNION ALL
 		select 2 type, count(*) num, case when sum(price) is null then 0 else sum(price) end price from sign_record sr left join app a on sr.app_id = a.id
 		<where>
-			a.is_delete = 0 and type =2 and a.is_unsign = 0
+			a.is_delete = 0 and type =2 and a.is_unsign = 0 and a.is_effective = 1
 
 			<if test="startCreateTime != null and startCreateTime != ''">
 				and sr.create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
@@ -31,7 +31,7 @@
 		UNION ALL
 		select 3 type, count(*) num, case when sum(price) is null then 0 else sum(price) end price from sign_record sr left join app a on sr.app_id = a.id
 		<where>
-			a.is_delete = 0 and type = 3 and a.is_unsign = 0
+			a.is_delete = 0 and type = 3 and a.is_unsign = 0 and a.is_effective = 1
 
 			<if test="startCreateTime != null and startCreateTime != ''">
 				and sr.create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}

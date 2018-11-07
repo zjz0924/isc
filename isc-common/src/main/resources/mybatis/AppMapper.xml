@@ -16,13 +16,14 @@
 		<result column="cert_id" jdbcType="BIGINT" property="certId" />
 		<result column="valid" jdbcType="INTEGER" property="valid" />
 		<result column="is_unsign" jdbcType="INTEGER" property="isUnsign" />
+		<result column="is_effective" jdbcType="INTEGER" property="isEffective" />
 		
 		<association property="certificate" javaType="cn.wow.common.domain.Certificate" column="cert_id" select="cn.wow.common.dao.CertificateDao.selectOne"/> 
 		<association property="contacts" javaType="cn.wow.common.domain.Contacts" column="contacts_id" select="cn.wow.common.dao.ContactsDao.selectOne"/> 
 	</resultMap>
 	
 	<sql id="base_columns">
-		a.id, a.name, a.contacts_id, a.effective_date, a.expire_date, a.remark, a.unsign_file, a.sign_file, a.create_time, a.update_time, a.is_delete, a.cert_id, a.valid, a.is_unsign
+		a.id, a.name, a.contacts_id, a.effective_date, a.expire_date, a.remark, a.unsign_file, a.sign_file, a.create_time, a.update_time, a.is_delete, a.cert_id, a.valid, a.is_unsign, a.is_effective
 	</sql>
 	
 	<select id="selectOne" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -38,10 +39,10 @@
 		    SELECT @@IDENTITY
 		</selectKey>
 		
-		insert into app (name, contacts_id, effective_date, expire_date, remark, unsign_file, sign_file, create_time, update_time, is_delete, cert_id, valid, is_unsign)
+		insert into app (name, contacts_id, effective_date, expire_date, remark, unsign_file, sign_file, create_time, update_time, is_delete, cert_id, valid, is_unsign, is_effective)
 		values (#{name,jdbcType=VARCHAR}, #{contactsId, jdbcType=BIGINT}, #{effectiveDate,jdbcType=DATE},
 		#{expireDate,jdbcType=DATE}, #{remark,jdbcType=VARCHAR},  #{unsignFile,jdbcType=VARCHAR}, #{signFile,jdbcType=VARCHAR},
-		#{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{isDelete,jdbcType=INTEGER}, #{certId,jdbcType=BIGINT}, #{valid,jdbcType=INTEGER}, #{isUnsign,jdbcType=INTEGER}
+		#{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{isDelete,jdbcType=INTEGER}, #{certId,jdbcType=BIGINT}, #{valid,jdbcType=INTEGER}, #{isUnsign,jdbcType=INTEGER}, #{isEffective,jdbcType=INTEGER}
 		)
 	</insert>
 	
@@ -80,6 +81,9 @@
 			</if>
 			<if test="contactsId != null">
 				contacts_id = #{contactsId, jdbcType=BIGINT},
+			</if>
+			<if test="isEffective != null">
+				is_effective = #{isEffective,jdbcType=INTEGER},
 			</if>
 			
 			remark = #{remark,jdbcType=VARCHAR}
@@ -145,6 +149,9 @@
 			  <if test="isUnsign != null">
 				and a.is_unsign = #{isUnsign,jdbcType=INTEGER}
 			  </if>
+			  <if test="isEffective != null">
+				and a.is_effective = #{isEffective,jdbcType=INTEGER}
+			</if>
 	      </where>
 	      
 		  <choose>

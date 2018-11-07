@@ -49,6 +49,8 @@ public class App extends JpaEntity{
 	private Integer valid;
 	// 是否已签名，0：否   1：是
 	private Integer isUnsign;
+	// 是否有效， 0：否， 1：是
+	private Integer isEffective;
 	
 	public Long getId() {
 		return id;
@@ -202,6 +204,14 @@ public class App extends JpaEntity{
 
 	public void setIsUnsign(Integer isUnsign) {
 		this.isUnsign = isUnsign;
+	}
+
+	public Integer getIsEffective() {
+		return isEffective;
+	}
+
+	public void setIsEffective(Integer isEffective) {
+		this.isEffective = isEffective;
 	}
 
 	@JsonIgnore
